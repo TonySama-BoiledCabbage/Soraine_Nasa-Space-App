@@ -37,7 +37,7 @@ pnpm build
 
 On macOS/Linux: `SORAINE_BASE_PATH=/research/ pnpm build`.
 
-Copy the contents of `navigator/dist` into the combined app's public `research` directory. The host must serve `/research/` as that directory's `index.html`. Keep the trailing slash in the base path. The build includes the orb, poster and font locally and makes no Higgsfield request at runtime.
+Copy the contents of `navigator/dist` into the combined app's public `research` directory. In Tony's current static app, that is a generated `research/` directory at the repository root, next to `index.html`. The host must serve `/research/` as that directory's `index.html`. Keep the trailing slash in the base path. The build includes the orb, poster and font locally and makes no Higgsfield request at runtime. The release builder has an explicit file allowlist; see [REPO-INTEGRATION.md](REPO-INTEGRATION.md) before publishing a combined build.
 
 ```js
 const frame = document.querySelector('#research-frame');
@@ -79,4 +79,4 @@ Direct React composition is also supported through the exported `ResearchNavigat
 5. Open the NASA source or download the selected evidence.
 6. Check the final app on the team laptop with the 3D scene running. The isolated prototype tests do not measure that combined workload.
 
-The root repository was inspected before this handoff and contained only its README. Ethan's scene import and Tony's design document were still being prepared, so this contribution does not assume their final filenames or routing choices.
+Tony's kitchen upload was reviewed at `7d8ea73` and brought into this contribution branch. Its vanilla Three.js entry is `kitchen/main.js`; panel rendering is in `kitchen/pages.js`. The repository-specific integration notes map those files to this module. Tony's separate design Markdown was not present in that commit.

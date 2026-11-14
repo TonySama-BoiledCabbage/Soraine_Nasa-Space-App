@@ -5,6 +5,7 @@ This contribution connects our research to Ethan's Moon scene and Johnson's Mars
 | Start here | What it contains |
 | --- | --- |
 | [MERGE-GUIDE.md](MERGE-GUIDE.md) | How the scene teams connect their objects and keep their current UI |
+| [REPO-INTEGRATION.md](REPO-INTEGRATION.md) | How this contribution fits Tony's uploaded kitchen app |
 | [research/](research/README.md) | One shared information JSON, lookup adapter, types and examples |
 | [navigator/](navigator/README.md) | Runnable Jarvis prototype with orb, smooth transitions and the Ultem comparison |
 | [research/archive/](research/archive/README.md) | Complete merged research and the original Hogan/Ethan/Tony contributor records |
@@ -37,3 +38,5 @@ The prototype has a guided command interface, not a connected language model. It
 The research JSON and adapter do not move a camera, change a mesh or calculate fire physics. Changing a cabin slider never rewrites the published experiment values. The same source can support a simple scene tooltip or a detailed dashboard.
 
 The previous dashboard, downloaded reference art, generated build folders, dependency folders and Myco configuration are not needed to run this contribution. They remain outside this handoff.
+
+Tony's kitchen upload is now included in the PR branch. The root README links this section; the navigator and shared data remain separate from the kitchen's camera, physics and scenario code until the team connects them.

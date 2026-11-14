@@ -20,4 +20,10 @@ Vite reports a large initial JavaScript chunk: approximately 1.06 MB minified, 2
 
 Ethan's real Moon scene and Johnson's real Mars scene were not present in this checkout. The bridge was tested against the included host example. Final frame rate and camera behavior must be checked once those scenes are connected.
 
+## Follow-up after Tony's kitchen upload
+
+Tony's `main` commit `7d8ea73` was merged into the contribution branch. The existing `python -m backend check` passed for all four scenarios. The shared information validator and five navigator tests passed again, and 27 relative documentation links resolved. The proposed changes pass `git diff --check` against the updated `origin/main`.
+
+The root README now links the contribution, and `REPO-INTEGRATION.md` describes the actual kitchen files. No kitchen renderer, physics, scenario data or release-builder code was changed in this follow-up. The runtime connection between that scene and the navigator is still a separate integration step.
+
 Reproduction commands and optional browser tooling are in [navigator/README.md](navigator/README.md). Browser images and recordings are generated locally in the ignored `navigator/qa` directory.

@@ -27,3 +27,11 @@ The clean checkout passed the shared information validator, five navigator tests
 Hogan then asked which database the data needs. Codex measured the actual runtime pack and added a recommendation to keep JSON for the current demo, with SQLite as a possible later query layer. The explanation uses the official SQLite and Apache Hadoop documentation and distinguishes the curated pack from NASA's full raw archive.
 
 Hogan also asked about Google BigQuery. Codex added its role as a possible future shared analytics backend, using Google's official overview and sandbox documentation. No Google Cloud resources or billing were configured.
+
+## Repository upload review and section, 2026-11-14
+
+Hogan asked Codex to review Tony's uploaded repository and give this contribution a clear section. Codex fetched `main` at `7d8ea73`, read the kitchen entry point, scenario and panel logic, props, data contracts and release builder, then merged that upstream commit into the contribution branch without conflicts.
+
+Codex added the root README's “Hogan: Research & Dashboard” section and a repository-specific integration guide. The guide identifies the existing detail-panel integration point, maps `iss` to `microgravity`, separates acceleration units from nominal gravity, and explains the release allowlist and same-origin iframe requirement. Tony's scene code and configuration were preserved. His separate design Markdown was not present in the reviewed commit.
+
+Validation after the update: the existing backend contract check passed for four scenarios, the shared information validator and five navigator tests passed, all 27 relative documentation links resolved, and the proposed diff passed whitespace checks against the updated upstream branch.
