@@ -17,3 +17,11 @@ CSV remains useful for importing or exporting a specific table. It does not deci
 - Hadoop handles distributed processing across clusters. The present 339 KiB curated dataset does not justify it. [Apache Hadoop overview](https://hadoop.apache.org/)
 
 No storage migration is included in this contribution. The next useful data work is selecting additional exact experiments and preserving their conditions and citations, rather than importing every raw archive file.
+
+## Google BigQuery
+
+BigQuery is a viable future shared analytics backend. It provides managed SQL analytics and accepts structured data loaded from CSV and JSON, including nested and repeated fields. It becomes useful if the team expands into much larger experimental tables or needs shared analytical queries. [Google's BigQuery overview](https://docs.cloud.google.com/bigquery/docs/introduction)
+
+For the current 339 KiB pack, JSON keeps the demonstration self-contained. A future BigQuery service could return the same panel shape through an asynchronous adapter, while the scene components retain their object IDs and presentation logic. The research would still need consistent units, source links and experiment conditions; moving it to a larger database does not replace that work.
+
+The BigQuery sandbox supports trying the service without a credit card or billing account, but it has limits and automatically expires tables after 60 days. It should not become the only copy of the research archive. [BigQuery sandbox documentation](https://docs.cloud.google.com/bigquery/docs/sandbox)

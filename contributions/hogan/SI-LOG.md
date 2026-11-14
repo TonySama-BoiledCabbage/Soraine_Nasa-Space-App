@@ -25,3 +25,5 @@ The original data files are retained unchanged. Local authentication details, My
 The clean checkout passed the shared information validator, five navigator tests and a production build at `/research/`. Eighteen desktop/mobile browser checks passed with no runtime errors. Both scene handoffs and video/poster/procedural fallback checks passed. The shared TypeScript panel contract was completed with the material and selected/comparison case fields already returned by the adapter. See [VALIDATION.md](VALIDATION.md) for the tested scope and build-size limitation.
 
 Hogan then asked which database the data needs. Codex measured the actual runtime pack and added a recommendation to keep JSON for the current demo, with SQLite as a possible later query layer. The explanation uses the official SQLite and Apache Hadoop documentation and distinguishes the curated pack from NASA's full raw archive.
+
+Hogan also asked about Google BigQuery. Codex added its role as a possible future shared analytics backend, using Google's official overview and sandbox documentation. No Google Cloud resources or billing were configured.
