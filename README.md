@@ -23,3 +23,11 @@ ES modules and GLB files need a real `http://` origin, so opening `index.html` s
 
 - The flame shapes and the props' scan "kick" are visual heuristics, not combustion or measured data. Facts in `scenarios.json` carry a `src` field, and entries marked `schematic` or `unverified` are labelled as such in the UI.
 - The terrains are procedural concept models. Their relief is not to scale.
+
+## Shared research dashboard
+
+[Open the public dashboard](https://soraine-dashboard-334840303039.us-central1.run.app) · [Team integration guide](dashboard/TEAM-HANDOFF.md)
+
+The Three.js research dashboard combines NASA planetary maps with material comparisons, searchable evidence and source links. Its Cloud Run backend reads the team-owned BigQuery copy. Source is in `dashboard/`; the scene code above remains independently editable.
+
+Dashboard changes merged into `main` run tests and deploy through the included GitHub Actions workflow. See the team guide for Moon/Mars links, database access and module ownership.
