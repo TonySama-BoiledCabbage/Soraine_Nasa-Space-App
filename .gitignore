@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+serve.log
+/release/
+/*-release/
+.DS_Store
+Thumbs.db
