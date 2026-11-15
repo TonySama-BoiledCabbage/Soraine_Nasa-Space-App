@@ -1,0 +1,11 @@
+[package]
+name = "soraine-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Soraine research logic: joins, filters, limits, reading text and scene links. No rendering, no I/O."
+
+[dependencies]
+icu_collator = "2.4.0"
+serde_json = "1"
+url = "2"

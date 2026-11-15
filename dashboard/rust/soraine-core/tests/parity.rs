@@ -1,0 +1,143 @@
+//! The Rust port must return exactly what the JavaScript modules return for the
+//! published data. `golden.json` is written by `tools/make-golden.mjs`.
+use serde_json::Value;
+use soraine_core::data::*;
+use soraine_core::discovery::*;
+use soraine_core::reading::*;
+use soraine_core::scene_link::*;
+use std::path::Path;
+
+fn load(relative: &str) -> Value {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(relative);
+    let text = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+    serde_json::from_str(text.trim_start_matches('\u{feff}')).unwrap()
+}
+fn bundle() -> Value { load("../../dist/data/research.json") }
+fn golden() -> Value { load("tests/golden.json") }
+fn id(row: Option<&Row>) -> Value { row.map_or(Value::Null, |r| Value::String(r.get("measurement_id"))) }
+fn s(v: &Value) -> &str { v.as_str().unwrap() }
+
+#[test]
+fn join_matches_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    assert_eq!(rows.len() as u64, golden["rowCount"].as_u64().unwrap());
+    for (row, expected) in rows.iter().zip(golden["joined"].as_array().unwrap()) {
+        let actual = serde_json::json!([row.get("measurement_id"), row.kind.name, row.kind.color,
+            row.experiment_field("experiment_id").cloned().unwrap_or(Value::Null), row.source_field("source_id").cloned().unwrap_or(Value::Null)]);
+        assert_eq!(&actual, expected);
+    }
+}
+
+#[test]
+fn limits_and_comparison_match_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for case in golden["limits"].as_array().unwrap() {
+        let limits = get_limits(&rows, s(&case[0]), s(&case[1]));
+        assert_eq!((id(limits.uloi), id(limits.moc)), (case[2].clone(), case[3].clone()), "{case}");
+    }
+    for (material, expected) in MATERIALS.iter().zip(golden["comparison"].as_array().unwrap()) {
+        let actual: Vec<Value> = comparison_rows(&rows, material).into_iter().map(|(w, l)| serde_json::json!([w, id(l.uloi), id(l.moc)])).collect();
+        assert_eq!(&Value::Array(actual), expected);
+    }
+}
+
+#[test]
+fn filters_match_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for case in golden["filters"].as_array().unwrap() {
+        let f = &case["filter"];
+        let pick = |key: &str, default: &'static str| f.get(key).and_then(Value::as_str).unwrap_or(default).to_string();
+        let (query, world, material, kind) = (pick("query", ""), pick("world", "All"), pick("material", "All"), pick("kind", "All"));
+        let filter = Filter { query: &query, world: &world, material: &material, kind: &kind };
+        let ids: Vec<Value> = filter_rows(&rows, &filter).into_iter().map(|r| id(Some(r))).collect();
+        assert_eq!(&Value::Array(ids), &case["ids"], "{f}");
+    }
+}
+
+#[test]
+fn csv_matches_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    assert_eq!(csv(&join_research(&bundle)), s(&golden["csv"]));
+}
+
+#[test]
+fn reading_text_matches_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for case in golden["reading"].as_array().unwrap() {
+        assert_eq!(reading_summary(&rows, s(&case[0]), s(&case[1])), s(&case[2]), "{case}");
+    }
+    for case in golden["context"].as_array().unwrap() { assert_eq!(comparison_context(s(&case[0])), s(&case[1])); }
+}
+
+#[test]
+fn source_and_file_order_match_javascript() {
+    let (bundle, golden) = (bundle(), golden());
+    let sorted: Vec<Value> = sources_by_results(bundle["sources"].as_array().unwrap(), bundle["measurements"].as_array().unwrap())
+        .into_iter().map(|s| s["source_id"].clone()).collect();
+    assert_eq!(&Value::Array(sorted), &golden["sources"]);
+    let original = load("../../dist/data/original-data.json");
+    let files: Vec<Value> = original_files_by_relevance(original["datasets"].as_array().unwrap()).into_iter().map(|d| d["id"].clone()).collect();
+    assert_eq!(&Value::Array(files), &golden["files"]);
+}
+
+#[test]
+fn scene_links_match_javascript() {
+    for case in golden()["links"].as_array().unwrap() {
+        let args = &case["args"];
+        let default = Link::default();
+        let pick = |key: &str, fallback: &str| args.get(key).and_then(Value::as_str).unwrap_or(fallback).to_string();
+        let (world, material, view) = (pick("world", default.world), pick("material", default.material), pick("view", default.view));
+        let link = Link { world: &world, material: &material, view: &view, record: args.get("record").and_then(Value::as_str) };
+        let result = research_url(&link, case["base"].as_str().unwrap_or(RESEARCH_SITE));
+        match case.get("out").and_then(Value::as_str) {
+            Some(expected) => assert_eq!(result.as_deref(), Ok(expected), "{case}"),
+            None => assert_eq!(result.map_err(|e| e.to_string()), Err(s(&case["error"]).to_string()), "{case}"),
+        }
+    }
+}
+
+#[test]
+fn formatting_matches_javascript() {
+    let golden = golden();
+    for case in golden["numbers"].as_array().unwrap() {
+        let digits = case[1].as_u64().unwrap_or(1) as usize;
+        assert_eq!(number(Some(&case[0]), digits), s(&case[2]), "{case}");
+    }
+    for case in golden["esc"].as_array().unwrap() { assert_eq!(esc(s(&case[0])), s(&case[1])); }
+    for case in golden["safeUrl"].as_array().unwrap() { assert_eq!(safe_url(s(&case[0])), s(&case[1]), "{case}"); }
+}
+
+// The assertions below are the existing JavaScript unit tests, restated.
+#[test]
+fn ultem_comparison_preserves_the_exact_starred_moon_and_mars_metrics() {
+    let bundle = bundle();
+    let rows = join_research(&bundle);
+    let (moon, mars) = (get_limits(&rows, "Ultem 1000", "Moon"), get_limits(&rows, "Ultem 1000", "Mars"));
+    assert_eq!((moon.uloi.unwrap().value(), moon.moc.unwrap().value()), (21.0, 19.9));
+    assert_eq!((mars.uloi.unwrap().value(), mars.moc.unwrap().value()), (22.0, 21.1));
+    assert_eq!((moon.uloi.unwrap().metric(), moon.moc.unwrap().metric()), ("ULOI*", "MOC*"));
+    assert_eq!(moon.uloi.unwrap().get("source_id"), "NTRS-20130010991");
+    assert_eq!(moon.uloi.unwrap().experiment_field("pressure_kpa"), mars.uloi.unwrap().experiment_field("pressure_kpa"));
+}
+
+#[test]
+fn every_result_resolves_its_experiment_and_source() {
+    let bundle = bundle();
+    let rows = join_research(&bundle);
+    for table in ["measurements", "experiments", "sources", "evidence"] {
+        assert_eq!(bundle[table].as_array().unwrap().len() as u64, bundle["tableCounts"][table].as_u64().unwrap());
+    }
+    assert!(rows.iter().all(|r| r.experiment.is_some() && r.source.is_some()));
+    let unique: std::collections::HashSet<String> = rows.iter().map(|r| r.get("measurement_id")).collect();
+    assert_eq!(unique.len(), rows.len());
+}
+
+#[test]
+fn missing_evidence_never_becomes_a_numerical_comparison() {
+    assert!(reading_summary(&[], "Ultem 1000", "Moon").contains("No matching published"));
+    assert_eq!(number(None, 1), "Not reported");
+}

@@ -1,0 +1,1793 @@
+{
+ "rowCount": 59,
+ "joined": [
+  [
+   "E001",
+   "Published limit",
+   "#b6cfff",
+   "CTX-3547172a3ba9f699f65fcd89",
+   "NTRS-20130010991"
+  ],
+  [
+   "E002",
+   "Published limit",
+   "#b6cfff",
+   "CTX-18fa040a1726a99a824e23d8",
+   "NTRS-20130010991"
+  ],
+  [
+   "E003",
+   "Published limit",
+   "#b6cfff",
+   "CTX-0e7b03ae47da48c15f5ebf89",
+   "NTRS-20130010991"
+  ],
+  [
+   "E004",
+   "Published limit",
+   "#b6cfff",
+   "CTX-f4d137b7eba99dee1efccc86",
+   "NTRS-20130010991"
+  ],
+  [
+   "E005",
+   "Published limit",
+   "#b6cfff",
+   "CTX-199c5d277e48fc9a46bdbabe",
+   "NTRS-20130010991"
+  ],
+  [
+   "E006",
+   "Published limit",
+   "#b6cfff",
+   "CTX-11183388e59ab8e75e96fb6b",
+   "NTRS-20130010991"
+  ],
+  [
+   "E007",
+   "Published limit",
+   "#b6cfff",
+   "CTX-93456ca3b82aa77193cfacd5",
+   "NTRS-20130010991"
+  ],
+  [
+   "E008",
+   "Published limit",
+   "#b6cfff",
+   "CTX-71f23e3d83f6120d39c2e016",
+   "NTRS-20130010991"
+  ],
+  [
+   "E009",
+   "Published limit",
+   "#b6cfff",
+   "CTX-4fd5cf75b06b96d2a0556d63",
+   "NTRS-20130010991"
+  ],
+  [
+   "E010",
+   "Published limit",
+   "#b6cfff",
+   "CTX-8504e82603a121f9cbf96c62",
+   "NTRS-20130010991"
+  ],
+  [
+   "E011",
+   "Published limit",
+   "#b6cfff",
+   "CTX-40e98742a28ff55a568c41e5",
+   "NTRS-20130010991"
+  ],
+  [
+   "E012",
+   "Published limit",
+   "#b6cfff",
+   "CTX-4dd099260f5d7d89c05b0996",
+   "NTRS-20130010991"
+  ],
+  [
+   "E013",
+   "Published limit",
+   "#b6cfff",
+   "CTX-ccf813488a0d6959101c9ae9",
+   "NTRS-20130010991"
+  ],
+  [
+   "E014",
+   "Published limit",
+   "#b6cfff",
+   "CTX-98e2337d1a800e0c70e75453",
+   "NTRS-20130010991"
+  ],
+  [
+   "E015",
+   "Published limit",
+   "#b6cfff",
+   "CTX-8f6c751142e6600306c52db3",
+   "NTRS-20130010991"
+  ],
+  [
+   "E016",
+   "Published limit",
+   "#b6cfff",
+   "CTX-ae726595b45335957026df6c",
+   "NTRS-20130010991"
+  ],
+  [
+   "E017",
+   "Published limit",
+   "#b6cfff",
+   "CTX-55440b587ff90b96ce0c972e",
+   "NTRS-20130010991"
+  ],
+  [
+   "E018",
+   "Published limit",
+   "#b6cfff",
+   "CTX-b426e9d084f5e54cfd383524",
+   "NTRS-20130010991"
+  ],
+  [
+   "E019",
+   "Published limit",
+   "#b6cfff",
+   "CTX-9c560084ef03a999f13a0dad",
+   "NTRS-20130010991"
+  ],
+  [
+   "E020",
+   "Published limit",
+   "#b6cfff",
+   "CTX-ef2f536a98797287ce3afa08",
+   "NTRS-20130010991"
+  ],
+  [
+   "E021",
+   "Published limit",
+   "#b6cfff",
+   "CTX-9aa53bc1c1fb2b9ee4a3fe4f",
+   "NTRS-20130010991"
+  ],
+  [
+   "E022",
+   "Published limit",
+   "#b6cfff",
+   "CTX-72522fd1d15c37e50e4aab22",
+   "NTRS-20130010991"
+  ],
+  [
+   "E023",
+   "Published limit",
+   "#b6cfff",
+   "CTX-c22fe77a7de178954279e11b",
+   "NTRS-20130010991"
+  ],
+  [
+   "E024",
+   "Published limit",
+   "#b6cfff",
+   "CTX-423b7bf803533f38ef6777a3",
+   "NTRS-20130010991"
+  ],
+  [
+   "E025",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-20fd5fd2d6b2baeed887578f",
+   "NTRS-20130010991"
+  ],
+  [
+   "E026",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-9d7db920328308a8f37be7eb",
+   "NTRS-20130010991"
+  ],
+  [
+   "E027",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-7c5ddbb3af4da971935b6257",
+   "NTRS-20130010991"
+  ],
+  [
+   "E028",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-80bf576c1065d0b2fb02a996",
+   "NTRS-20130010991"
+  ],
+  [
+   "E029",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-10571a06403e92c7f0b69e34",
+   "NTRS-20130010991"
+  ],
+  [
+   "E030",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-d82421dbb90897b2bd33c314",
+   "NTRS-20130010991"
+  ],
+  [
+   "E031",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-7415ca2c1c8eb86f04c216ef",
+   "NTRS-20130010991"
+  ],
+  [
+   "E032",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-0cc7211584f570af402c6f97",
+   "NTRS-20130010991"
+  ],
+  [
+   "E033",
+   "Derived summary",
+   "#b8a4cd",
+   "CTX-0acaab7e69a9b9ba06dfd346",
+   "NTRS-20130010991"
+  ],
+  [
+   "E034",
+   "Fitted result",
+   "#819bd2",
+   "CTX-c0931da94e6b9e0f99fcc3cd",
+   "NTRS-20250010653"
+  ],
+  [
+   "E035",
+   "Fitted result",
+   "#819bd2",
+   "CTX-f719c532f3512604bde51f62",
+   "NTRS-20250010653"
+  ],
+  [
+   "E036",
+   "Fitted result",
+   "#819bd2",
+   "CTX-c0931da94e6b9e0f99fcc3cd",
+   "NTRS-20250010653"
+  ],
+  [
+   "E037",
+   "Fitted result",
+   "#819bd2",
+   "CTX-f719c532f3512604bde51f62",
+   "NTRS-20250010653"
+  ],
+  [
+   "E038",
+   "Fitted result",
+   "#819bd2",
+   "CTX-a4ace23ecb08c5f0524132c4",
+   "NTRS-20250010653"
+  ],
+  [
+   "E039",
+   "Fitted result",
+   "#819bd2",
+   "CTX-2fce4191d371f18f6211ef27",
+   "NTRS-20250010653"
+  ],
+  [
+   "E040",
+   "Reported summary",
+   "#a6afbd",
+   "CTX-a48f13200e4ae9067b54bfa0",
+   "NTRS-20260001966"
+  ],
+  [
+   "E041",
+   "Reported summary",
+   "#a6afbd",
+   "CTX-cb564861c4e3131d274da47b",
+   "NTRS-20260001966"
+  ],
+  [
+   "E042",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-3c7578ca358fb9c8de1ea334",
+   "NTRS-20250002114"
+  ],
+  [
+   "E043",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-3c7578ca358fb9c8de1ea334",
+   "NTRS-20250002114"
+  ],
+  [
+   "E044",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-3c7578ca358fb9c8de1ea334",
+   "NTRS-20250002114"
+  ],
+  [
+   "E045",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-f7a10e61432dad709f8bc625",
+   "NTRS-20250002114"
+  ],
+  [
+   "E046",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-f7a10e61432dad709f8bc625",
+   "NTRS-20250002114"
+  ],
+  [
+   "E047",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-f7a10e61432dad709f8bc625",
+   "NTRS-20250002114"
+  ],
+  [
+   "E048",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-6be6cbaef318b6f575f53b67",
+   "NTRS-20250002114"
+  ],
+  [
+   "E049",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-6be6cbaef318b6f575f53b67",
+   "NTRS-20250002114"
+  ],
+  [
+   "E050",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-6be6cbaef318b6f575f53b67",
+   "NTRS-20250002114"
+  ],
+  [
+   "E051",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-b8fe0137879e174c6f2d5f05",
+   "NTRS-20250002114"
+  ],
+  [
+   "E052",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-b8fe0137879e174c6f2d5f05",
+   "NTRS-20250002114"
+  ],
+  [
+   "E053",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-b8fe0137879e174c6f2d5f05",
+   "NTRS-20250002114"
+  ],
+  [
+   "E054",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-d49e98abc7655315809121b4",
+   "NTRS-20250002114"
+  ],
+  [
+   "E055",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-d49e98abc7655315809121b4",
+   "NTRS-20250002114"
+  ],
+  [
+   "E056",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-d49e98abc7655315809121b4",
+   "NTRS-20250002114"
+  ],
+  [
+   "E057",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-9550918d6d80a40bddc54e5c",
+   "NTRS-20250002114"
+  ],
+  [
+   "E058",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-9550918d6d80a40bddc54e5c",
+   "NTRS-20250002114"
+  ],
+  [
+   "E059",
+   "Model-derived",
+   "#d8ae81",
+   "CTX-9550918d6d80a40bddc54e5c",
+   "NTRS-20250002114"
+  ]
+ ],
+ "limits": [
+  [
+   "Ultem 1000",
+   "Microgravity",
+   "E020",
+   "E023"
+  ],
+  [
+   "Ultem 1000",
+   "Moon",
+   "E014",
+   "E017"
+  ],
+  [
+   "Ultem 1000",
+   "Mars",
+   "E008",
+   "E011"
+  ],
+  [
+   "Ultem 1000",
+   "Earth",
+   "E002",
+   "E005"
+  ],
+  [
+   "Mylar G",
+   "Microgravity",
+   "E019",
+   "E022"
+  ],
+  [
+   "Mylar G",
+   "Moon",
+   "E013",
+   "E016"
+  ],
+  [
+   "Mylar G",
+   "Mars",
+   "E007",
+   "E010"
+  ],
+  [
+   "Mylar G",
+   "Earth",
+   "E001",
+   "E004"
+  ],
+  [
+   "Nomex HT90-40",
+   "Microgravity",
+   "E021",
+   "E024"
+  ],
+  [
+   "Nomex HT90-40",
+   "Moon",
+   "E015",
+   "E018"
+  ],
+  [
+   "Nomex HT90-40",
+   "Mars",
+   "E009",
+   "E012"
+  ],
+  [
+   "Nomex HT90-40",
+   "Earth",
+   "E003",
+   "E006"
+  ]
+ ],
+ "comparison": [
+  [
+   [
+    "Microgravity",
+    "E020",
+    "E023"
+   ],
+   [
+    "Moon",
+    "E014",
+    "E017"
+   ],
+   [
+    "Mars",
+    "E008",
+    "E011"
+   ],
+   [
+    "Earth",
+    "E002",
+    "E005"
+   ]
+  ],
+  [
+   [
+    "Microgravity",
+    "E019",
+    "E022"
+   ],
+   [
+    "Moon",
+    "E013",
+    "E016"
+   ],
+   [
+    "Mars",
+    "E007",
+    "E010"
+   ],
+   [
+    "Earth",
+    "E001",
+    "E004"
+   ]
+  ],
+  [
+   [
+    "Microgravity",
+    "E021",
+    "E024"
+   ],
+   [
+    "Moon",
+    "E015",
+    "E018"
+   ],
+   [
+    "Mars",
+    "E009",
+    "E012"
+   ],
+   [
+    "Earth",
+    "E003",
+    "E006"
+   ]
+  ]
+ ],
+ "filters": [
+  {
+   "filter": {},
+   "ids": [
+    "E001",
+    "E002",
+    "E003",
+    "E004",
+    "E005",
+    "E006",
+    "E007",
+    "E008",
+    "E009",
+    "E010",
+    "E011",
+    "E012",
+    "E013",
+    "E014",
+    "E015",
+    "E016",
+    "E017",
+    "E018",
+    "E019",
+    "E020",
+    "E021",
+    "E022",
+    "E023",
+    "E024",
+    "E025",
+    "E026",
+    "E027",
+    "E028",
+    "E029",
+    "E030",
+    "E031",
+    "E032",
+    "E033",
+    "E034",
+    "E035",
+    "E036",
+    "E037",
+    "E038",
+    "E039",
+    "E040",
+    "E041",
+    "E042",
+    "E043",
+    "E044",
+    "E045",
+    "E046",
+    "E047",
+    "E048",
+    "E049",
+    "E050",
+    "E051",
+    "E052",
+    "E053",
+    "E054",
+    "E055",
+    "E056",
+    "E057",
+    "E058",
+    "E059"
+   ]
+  },
+  {
+   "filter": {
+    "query": "Ultem Moon MOC"
+   },
+   "ids": [
+    "E017"
+   ]
+  },
+  {
+   "filter": {
+    "query": "  MOON   uloi* "
+   },
+   "ids": [
+    "E013",
+    "E014",
+    "E015"
+   ]
+  },
+  {
+   "filter": {
+    "query": "ntrs"
+   },
+   "ids": [
+    "E001",
+    "E002",
+    "E003",
+    "E004",
+    "E005",
+    "E006",
+    "E007",
+    "E008",
+    "E009",
+    "E010",
+    "E011",
+    "E012",
+    "E013",
+    "E014",
+    "E015",
+    "E016",
+    "E017",
+    "E018",
+    "E019",
+    "E020",
+    "E021",
+    "E022",
+    "E023",
+    "E024",
+    "E025",
+    "E026",
+    "E027",
+    "E028",
+    "E029",
+    "E030",
+    "E031",
+    "E032",
+    "E033",
+    "E034",
+    "E035",
+    "E036",
+    "E037",
+    "E038",
+    "E039",
+    "E040",
+    "E041",
+    "E042",
+    "E043",
+    "E044",
+    "E045",
+    "E046",
+    "E047",
+    "E048",
+    "E049",
+    "E050",
+    "E051",
+    "E052",
+    "E053",
+    "E054",
+    "E055",
+    "E056",
+    "E057",
+    "E058",
+    "E059"
+   ]
+  },
+  {
+   "filter": {
+    "query": "kPa"
+   },
+   "ids": []
+  },
+  {
+   "filter": {
+    "query": "21"
+   },
+   "ids": [
+    "E001",
+    "E011",
+    "E014",
+    "E015",
+    "E021",
+    "E042",
+    "E043",
+    "E044",
+    "E045",
+    "E046",
+    "E047",
+    "E048",
+    "E049",
+    "E050",
+    "E051",
+    "E052",
+    "E053",
+    "E054",
+    "E055",
+    "E056",
+    "E057",
+    "E058",
+    "E059"
+   ]
+  },
+  {
+   "filter": {
+    "query": "published limit"
+   },
+   "ids": [
+    "E001",
+    "E002",
+    "E003",
+    "E004",
+    "E005",
+    "E006",
+    "E007",
+    "E008",
+    "E009",
+    "E010",
+    "E011",
+    "E012",
+    "E013",
+    "E014",
+    "E015",
+    "E016",
+    "E017",
+    "E018",
+    "E019",
+    "E020",
+    "E021",
+    "E022",
+    "E023",
+    "E024"
+   ]
+  },
+  {
+   "filter": {
+    "query": "zzz"
+   },
+   "ids": []
+  },
+  {
+   "filter": {
+    "query": "NOMEX"
+   },
+   "ids": [
+    "E003",
+    "E006",
+    "E009",
+    "E012",
+    "E015",
+    "E018",
+    "E021",
+    "E024",
+    "E027",
+    "E030",
+    "E033",
+    "E048",
+    "E049",
+    "E050"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Microgravity",
+    "material": "All"
+   },
+   "ids": [
+    "E019",
+    "E020",
+    "E021",
+    "E022",
+    "E023",
+    "E024",
+    "E031",
+    "E032",
+    "E033"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Microgravity",
+    "material": "Ultem 1000"
+   },
+   "ids": [
+    "E020",
+    "E023",
+    "E032"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Microgravity",
+    "material": "Mylar G"
+   },
+   "ids": [
+    "E019",
+    "E022",
+    "E031"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Microgravity",
+    "material": "Nomex HT90-40"
+   },
+   "ids": [
+    "E021",
+    "E024",
+    "E033"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "material": "All"
+   },
+   "ids": [
+    "E013",
+    "E014",
+    "E015",
+    "E016",
+    "E017",
+    "E018",
+    "E028",
+    "E029",
+    "E030",
+    "E034",
+    "E036",
+    "E038",
+    "E040",
+    "E041"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "material": "Ultem 1000"
+   },
+   "ids": [
+    "E014",
+    "E017",
+    "E029"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "material": "Mylar G"
+   },
+   "ids": [
+    "E013",
+    "E016",
+    "E028"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "material": "Nomex HT90-40"
+   },
+   "ids": [
+    "E015",
+    "E018",
+    "E030"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Mars",
+    "material": "All"
+   },
+   "ids": [
+    "E007",
+    "E008",
+    "E009",
+    "E010",
+    "E011",
+    "E012",
+    "E025",
+    "E026",
+    "E027"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Mars",
+    "material": "Ultem 1000"
+   },
+   "ids": [
+    "E008",
+    "E011",
+    "E026"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Mars",
+    "material": "Mylar G"
+   },
+   "ids": [
+    "E007",
+    "E010",
+    "E025"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Mars",
+    "material": "Nomex HT90-40"
+   },
+   "ids": [
+    "E009",
+    "E012",
+    "E027"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Earth",
+    "material": "All"
+   },
+   "ids": [
+    "E001",
+    "E002",
+    "E003",
+    "E004",
+    "E005",
+    "E006",
+    "E035",
+    "E037",
+    "E039"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Earth",
+    "material": "Ultem 1000"
+   },
+   "ids": [
+    "E002",
+    "E005"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Earth",
+    "material": "Mylar G"
+   },
+   "ids": [
+    "E001",
+    "E004"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Earth",
+    "material": "Nomex HT90-40"
+   },
+   "ids": [
+    "E003",
+    "E006"
+   ]
+  },
+  {
+   "filter": {
+    "kind": "reported_experimental_limit_aggregate"
+   },
+   "ids": [
+    "E001",
+    "E002",
+    "E003",
+    "E004",
+    "E005",
+    "E006",
+    "E007",
+    "E008",
+    "E009",
+    "E010",
+    "E011",
+    "E012",
+    "E013",
+    "E014",
+    "E015",
+    "E016",
+    "E017",
+    "E018",
+    "E019",
+    "E020",
+    "E021",
+    "E022",
+    "E023",
+    "E024"
+   ]
+  },
+  {
+   "filter": {
+    "kind": "reported_fit_to_experimental_data"
+   },
+   "ids": [
+    "E034",
+    "E035",
+    "E036",
+    "E037",
+    "E038",
+    "E039"
+   ]
+  },
+  {
+   "filter": {
+    "kind": "reported_experimental_summary"
+   },
+   "ids": [
+    "E040",
+    "E041"
+   ]
+  },
+  {
+   "filter": {
+    "kind": "source_derived_from_limit_aggregates"
+   },
+   "ids": [
+    "E025",
+    "E026",
+    "E027",
+    "E028",
+    "E029",
+    "E030",
+    "E031",
+    "E032",
+    "E033"
+   ]
+  },
+  {
+   "filter": {
+    "kind": "model_derived_compensation_from_experiments"
+   },
+   "ids": [
+    "E042",
+    "E043",
+    "E044",
+    "E045",
+    "E046",
+    "E047",
+    "E048",
+    "E049",
+    "E050",
+    "E051",
+    "E052",
+    "E053",
+    "E054",
+    "E055",
+    "E056",
+    "E057",
+    "E058",
+    "E059"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "material": "Ultem 1000",
+    "kind": "reported_experimental_limit_aggregate"
+   },
+   "ids": [
+    "E014",
+    "E017"
+   ]
+  },
+  {
+   "filter": {
+    "world": "Moon",
+    "kind": "model_derived_compensation_from_experiments"
+   },
+   "ids": []
+  },
+  {
+   "filter": {
+    "world": "Venus"
+   },
+   "ids": []
+  }
+ ],
+ "csv": "measurement_id,material,gravity,metric,value,unit,evidence_type,source_url,pdf_page,limitation\r\n\"E001\",\"Mylar G\",\"Earth\",\"ULOI\",\"21.2\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E002\",\"Ultem 1000\",\"Earth\",\"ULOI\",\"23.5\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E003\",\"Nomex HT90-40\",\"Earth\",\"ULOI\",\"23.5\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E004\",\"Mylar G\",\"Earth\",\"MOC\",\"20.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E005\",\"Ultem 1000\",\"Earth\",\"MOC\",\"23.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E006\",\"Nomex HT90-40\",\"Earth\",\"MOC\",\"22.1\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E007\",\"Mylar G\",\"Mars\",\"ULOI*\",\"18.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E008\",\"Ultem 1000\",\"Mars\",\"ULOI*\",\"22.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E009\",\"Nomex HT90-40\",\"Mars\",\"ULOI*\",\"19.9\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E010\",\"Mylar G\",\"Mars\",\"MOC*\",\"17.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E011\",\"Ultem 1000\",\"Mars\",\"MOC*\",\"21.1\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E012\",\"Nomex HT90-40\",\"Mars\",\"MOC*\",\"19.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E013\",\"Mylar G\",\"Moon\",\"ULOI*\",\"15.6\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E014\",\"Ultem 1000\",\"Moon\",\"ULOI*\",\"21.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E015\",\"Nomex HT90-40\",\"Moon\",\"ULOI*\",\"21.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E016\",\"Mylar G\",\"Moon\",\"MOC*\",\"14.1\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E017\",\"Ultem 1000\",\"Moon\",\"MOC*\",\"19.9\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E018\",\"Nomex HT90-40\",\"Moon\",\"MOC*\",\"19.9\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E019\",\"Mylar G\",\"Microgravity\",\"ULOI*\",\"17.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E020\",\"Ultem 1000\",\"Microgravity\",\"ULOI*\",\"24.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E021\",\"Nomex HT90-40\",\"Microgravity\",\"ULOI*\",\"23.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E022\",\"Mylar G\",\"Microgravity\",\"MOC*\",\"16.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E023\",\"Ultem 1000\",\"Microgravity\",\"MOC*\",\"23.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E024\",\"Nomex HT90-40\",\"Microgravity\",\"MOC*\",\"22.0\",\"O2 molar percent\",\"reported_experimental_limit_aggregate\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.\"\r\n\"E025\",\"Mylar G\",\"Mars\",\"reported_delta_O2_vs_1g\",\"-3.1\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E026\",\"Ultem 1000\",\"Mars\",\"reported_delta_O2_vs_1g\",\"-1.7\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E027\",\"Nomex HT90-40\",\"Mars\",\"reported_delta_O2_vs_1g\",\"-3.35\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E028\",\"Mylar G\",\"Moon\",\"reported_delta_O2_vs_1g\",\"-5.75\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E029\",\"Ultem 1000\",\"Moon\",\"reported_delta_O2_vs_1g\",\"-2.8\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E030\",\"Nomex HT90-40\",\"Moon\",\"reported_delta_O2_vs_1g\",\"-2.35\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E031\",\"Mylar G\",\"Microgravity\",\"reported_delta_O2_vs_1g\",\"-4.1\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E032\",\"Ultem 1000\",\"Microgravity\",\"reported_delta_O2_vs_1g\",\"0.25\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E033\",\"Nomex HT90-40\",\"Microgravity\",\"reported_delta_O2_vs_1g\",\"-0.3\",\"O2 percentage points\",\"source_derived_from_limit_aggregates\",\"https://ntrs.nasa.gov/citations/20130010991\",\"6\",\"Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.\"\r\n\"E034\",\"SIBAL\",\"Moon\",\"flame_base_speed_fit\",\"0.9\",\"mm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"33\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E035\",\"SIBAL\",\"Earth\",\"flame_base_speed_fit\",\"1.5\",\"mm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"33\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E036\",\"SIBAL\",\"Moon\",\"flame_tip_speed_fit\",\"1.1\",\"mm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"33\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E037\",\"SIBAL\",\"Earth\",\"flame_tip_speed_fit\",\"2.8\",\"mm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"33\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E038\",\"PMMA\",\"Moon\",\"flame_tip_speed_fit\",\"0.15\",\"cm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"36\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E039\",\"PMMA\",\"Earth\",\"flame_tip_speed_fit\",\"0.4\",\"cm/s\",\"reported_fit_to_experimental_data\",\"https://ntrs.nasa.gov/citations/20250010653\",\"36\",\"Fitted summaries, not replicate trials. PMMA flame-tip motion is not solid pyrolysis-front spread; base motion is unsteady. Rotation and Coriolis effects; comparator tracking limitations. Do not turn rates into hazard rankings.\"\r\n\"E040\",\"SIBAL\",\"Moon\",\"flame_base_speed_reported\",\"0.11\",\"cm/s\",\"reported_experimental_summary\",\"https://ntrs.nasa.gov/citations/20260001966\",\"22\",\"Different platforms and run conditions; aircraft ~20 s, drop tower ~5 s. No repeated-run uncertainty supplied. Values copied from slide text, not digitized from graph.\"\r\n\"E041\",\"SIBAL\",\"Moon\",\"flame_base_speed_reported\",\"0.086\",\"cm/s\",\"reported_experimental_summary\",\"https://ntrs.nasa.gov/citations/20260001966\",\"22\",\"Different platforms and run conditions; aircraft ~20 s, drop tower ~5 s. No repeated-run uncertainty supplied. Values copied from slide text, not digitized from graph.\"\r\n\"E042\",\"PMMA\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"0.00022\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E043\",\"PMMA\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"0.00056\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E044\",\"PMMA\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"1.9\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E045\",\"Polycarbonate\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"0.0004\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E046\",\"Polycarbonate\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"0.00065\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E047\",\"Polycarbonate\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"2.3\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E048\",\"Nomex Velcro\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"1.6e-05\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E049\",\"Nomex Velcro\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"9e-05\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E050\",\"Nomex Velcro\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"0.32\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E051\",\"P 213\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"0.0003\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E052\",\"P 213\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"0.0004\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E053\",\"P 213\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"1.4\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E054\",\"Beefy-T (flaming)\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"0.00017\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E055\",\"Beefy-T (flaming)\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"0.00023\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E056\",\"Beefy-T (flaming)\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"0.82\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E057\",\"Beefy-T (smolder)\",\"Earth-to-Moon model\",\"O2_vs_flow_best_fit_slope\",\"0.00034\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E058\",\"Beefy-T (smolder)\",\"Earth-to-Moon model\",\"O2_vs_flow_95pct_conservative_slope\",\"0.0005\",\"s/cm; O2 fraction basis\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"\r\n\"E059\",\"Beefy-T (smolder)\",\"Earth-to-Moon model\",\"lunar_compensation_delta_at_assumed_35_cm_s\",\"1.8\",\"O2 percentage points\",\"model_derived_compensation_from_experiments\",\"https://ntrs.nasa.gov/citations/20250002114\",\"11\",\"Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.\"",
+ "reading": [
+  [
+   "Ultem 1000",
+   "Microgravity",
+   "These microgravity results include forced airflow. Floating does not mean that oxygen stops reaching a flame."
+  ],
+  [
+   "Ultem 1000",
+   "Moon",
+   "In this study, the lunar-gravity flame-survival limit is 1 percentage point lower than the other partial-gravity case."
+  ],
+  [
+   "Ultem 1000",
+   "Mars",
+   "In this study, the lunar-gravity flame-survival limit is 1 percentage point lower than the other partial-gravity case."
+  ],
+  [
+   "Ultem 1000",
+   "Earth",
+   "Earth tests provide a reference. A material’s Earth result does not establish its fire behaviour in reduced gravity."
+  ],
+  [
+   "Mylar G",
+   "Microgravity",
+   "These microgravity results include forced airflow. Floating does not mean that oxygen stops reaching a flame."
+  ],
+  [
+   "Mylar G",
+   "Moon",
+   "In this study, the lunar-gravity flame-survival limit is 2.4 percentage points lower than the other partial-gravity case."
+  ],
+  [
+   "Mylar G",
+   "Mars",
+   "In this study, the lunar-gravity flame-survival limit is 2.4 percentage points lower than the other partial-gravity case."
+  ],
+  [
+   "Mylar G",
+   "Earth",
+   "Earth tests provide a reference. A material’s Earth result does not establish its fire behaviour in reduced gravity."
+  ],
+  [
+   "Nomex HT90-40",
+   "Microgravity",
+   "These microgravity results include forced airflow. Floating does not mean that oxygen stops reaching a flame."
+  ],
+  [
+   "Nomex HT90-40",
+   "Moon",
+   "In this study, the Martian-gravity flame-survival limit is 1.1 percentage points lower than the other partial-gravity case."
+  ],
+  [
+   "Nomex HT90-40",
+   "Mars",
+   "In this study, the Martian-gravity flame-survival limit is 1.1 percentage points lower than the other partial-gravity case."
+  ],
+  [
+   "Nomex HT90-40",
+   "Earth",
+   "Earth tests provide a reference. A material’s Earth result does not establish its fire behaviour in reduced gravity."
+  ]
+ ],
+ "context": [
+  [
+   "Ultem 1000",
+   "Compare the same specimen and test pressure. Earth and reduced-gravity tests use different burn endpoints."
+  ],
+  [
+   "Mylar G",
+   "Earth uses related Melinex 515 film; reduced-gravity tests use Mylar G. The sample and test endpoints differ."
+  ],
+  [
+   "Nomex HT90-40",
+   "Compare the same specimen and test pressure. Earth and reduced-gravity tests use different burn endpoints."
+  ]
+ ],
+ "sources": [
+  "NTRS-20130010991",
+  "NTRS-20250002114",
+  "NTRS-20250010653",
+  "NTRS-20260001966",
+  "ARTIFACT-74a365bea6872e10043ff51a",
+  "ARTIFACT-166fb1bd3e26a42ab2ec6fbb",
+  "ARTIFACT-305595c81ac95704dc1182e7",
+  "ARTIFACT-664ebd1630d08cb4dcf84717",
+  "ARTIFACT-ef9d1c82fe3fdabbac7d72a1",
+  "ARTIFACT-f39263c2a326ddc58663bbb5",
+  "ARTIFACT-f494000d13a5ce3a39ea18e2",
+  "ARTIFACT-596ae7e20b2a579b0ebdcdb5",
+  "ARTIFACT-e51b6eb80dec1760f6ccd4b5",
+  "ARTIFACT-a1ddfa24c64680d1e863020a",
+  "ARTIFACT-8714ecadeb8308aac60f98fc",
+  "ARTIFACT-895f5e0be4bcb2d57cf200d0",
+  "ARTIFACT-8220e6a8d3ce750f86f79382",
+  "ARTIFACT-aee6bf67d4487070ebdce9dc",
+  "ARTIFACT-53a53370067f7f2f474e6907",
+  "ARTIFACT-0260bb86e10cde9e7f2718fb",
+  "ARTIFACT-7deec15145ac18ade8d4bbe1",
+  "ARTIFACT-5f3087132e663be54ab7967b",
+  "ARTIFACT-a53e1fdfc2d4aafc3a6ece13",
+  "ARTIFACT-8db8eda9bf716e2c1a780110",
+  "ARTIFACT-bd5eebabd50fa91302b7353d",
+  "ARTIFACT-84492dde63e3334c76318f5f",
+  "ARTIFACT-ee9128b1bc33a87ceb354127",
+  "ARTIFACT-b74a7d055f199c713003ae1f",
+  "ARTIFACT-cc9336c41ffede05ba952241",
+  "ARTIFACT-62a14ca93ad62a3f791cb4f9",
+  "ARTIFACT-bfb709f74a7d88fce7e9c1ba",
+  "ARTIFACT-c711941ef6c667cbfa70d240",
+  "ARTIFACT-3f6529ec2ce40b235c2ccbc8",
+  "ARTIFACT-ea25dc751549f23836b84c0f",
+  "ARTIFACT-8a90bcf504b2d8b63734be35",
+  "ARTIFACT-57552902d9111e5e800ca7e8",
+  "ARTIFACT-a2a45256c8ca2994b51c6559",
+  "ARTIFACT-bc00f39d882264519a29d99f",
+  "ARTIFACT-658a5cfea1f20dcabe0ad5bd",
+  "ARTIFACT-ee7684f32a7c7caddaeca919",
+  "ARTIFACT-be5fe001ffbdfccca4c5c607",
+  "ARTIFACT-d38e2b3ecf04a90d3f5e49c2",
+  "ARTIFACT-ff6d69180c66aeda4f5f140e",
+  "ARTIFACT-175c4f7bb09a403dc01d41f7",
+  "ARTIFACT-56ff95dfbbcd49625960b129",
+  "ARTIFACT-98b1aac69caf28ece081c88a",
+  "ARTIFACT-3e00432662d056376faa7349",
+  "ARTIFACT-1a0ac7b72fe9fa94fa3419f4",
+  "ARTIFACT-39551cd66f9182b11d380fb6",
+  "ARTIFACT-14c8e0165d132b491cb0c432",
+  "ARTIFACT-74886f25eeb347ab0628ad3b",
+  "ARTIFACT-3fd53fcb27ce32de9131c509",
+  "ARTIFACT-dd24c23fd1279d3f69bba1f8",
+  "ARTIFACT-475b7a6722f582621cb5abae",
+  "ARTIFACT-a621f49bc1b61e588197d1e4",
+  "ARTIFACT-3e0354a412598d5236cd1898",
+  "ARTIFACT-dc2276350456b8c2a0349275",
+  "ARTIFACT-4291025b17ff56c94fbf5ecf",
+  "ARTIFACT-1c7121496aeaf04892dbf32d",
+  "ARTIFACT-a0064e0b63db4907c7a113e6",
+  "ARTIFACT-679927d3913b0f9f70edf693",
+  "ARTIFACT-c1a45fc6ad2e90eead237544",
+  "ARTIFACT-24b23245a56ddbe162f0c67c",
+  "ARTIFACT-269e6a06a0ec66f215c9c7d4",
+  "ARTIFACT-baed2f2fbc27965acaee2335",
+  "ARTIFACT-091facc749ff2a1d70040600",
+  "ARTIFACT-97788647846225b655a5927f",
+  "ARTIFACT-6def3ac0cd6ba70ff6f204ea",
+  "ARTIFACT-b66cf0637bd4ed8cc5358ac0",
+  "ARTIFACT-94615e723b27bc573251ddb8",
+  "ARTIFACT-157892c1cdc7dc04372188b4",
+  "ARTIFACT-7f377555599a7dd491430148",
+  "ARTIFACT-052124f5b0ef64866045def2",
+  "ARTIFACT-b9c96f77df0cd8ac2dee62da",
+  "ARTIFACT-ad23c5a2239b6a6c5b95ace8",
+  "ARTIFACT-66506a62a6ae122dfbab870e",
+  "ARTIFACT-caa55e72424217c25bdad624",
+  "ARTIFACT-93cc6ae481264e0c8bce2c89",
+  "ARTIFACT-bb4a85f290dd266ece82607e",
+  "ARTIFACT-d3b83ce057b8fd6e0625c086",
+  "ARTIFACT-40ac9dbe9e363286034ed56e",
+  "ARTIFACT-9c181501c8f48c63b1dfeefa",
+  "ARTIFACT-63943f864ae118bd32ec0d8b",
+  "ARTIFACT-a407d2c8bdf23228fb17d49a",
+  "ARTIFACT-e017981312d0e19fe921927e",
+  "ARTIFACT-b7a37cc80a6ff7bcd8384a96",
+  "R07",
+  "ARTIFACT-262e520bead4a36f333ac60c",
+  "ARTIFACT-02d3c89205b09ee6d97ee97e",
+  "ARTIFACT-3359a0ac03ba15dce968be25",
+  "ARTIFACT-b9cf62c24473e9a490d6d436",
+  "ARTIFACT-85efe7d26fac1a8c2abec4f7",
+  "ARTIFACT-3028dd4c332d5acdf9255b32",
+  "ARTIFACT-f868c7fc17d658ba7dd700d4",
+  "ARTIFACT-bd0d4a11067a4eec66c97552",
+  "ARTIFACT-9c1c74dfda1275cdf045eac7",
+  "ARTIFACT-fb33130552f9fd981145eb75",
+  "ARTIFACT-4b7dd8b35cd51eaab4214fcf",
+  "ARTIFACT-70a149afaf98599b00dc92cc",
+  "ARTIFACT-eae67217c60be11d32402104",
+  "ARTIFACT-927641d5aaaeac42eba074e3",
+  "ARTIFACT-841172a501806d5e92575f71",
+  "ARTIFACT-29ce5832160c1fb47021e67e",
+  "ARTIFACT-854450d7d86f610876c70e67",
+  "ARTIFACT-745fc4297f9b9a8a2ca53dd2",
+  "ARTIFACT-fdf882f7ff177aae17115e2f",
+  "ARTIFACT-c2b7e4f4e9123e752e1e00cb",
+  "ARTIFACT-0ac210e96e649e642d7579b9",
+  "ARTIFACT-0e41688273ed7d9045733574",
+  "ARTIFACT-13c4242c512d4e1198e4d99f",
+  "ARTIFACT-1d4bcd27c62dc491c6afbc46",
+  "ARTIFACT-295fd23d32ffdcd4a336ef9e",
+  "ARTIFACT-8f1993967297435fffde383b",
+  "ARTIFACT-6f40f4c20b2a435575394ed8",
+  "ARTIFACT-e8d4a691ddacbb0ebd11797c",
+  "ARTIFACT-652e0915aa606aee234d5465",
+  "ARTIFACT-9c4e36ba932bef24de12ca81",
+  "ARTIFACT-e4d2afbabb1bca0708bf4294",
+  "ARTIFACT-7341a8e7fab00146a19b5997",
+  "ARTIFACT-182e4f9b9f679192d2f44654",
+  "ARTIFACT-58e2d53f4dc6d366f6ba0bd7",
+  "ARTIFACT-f3693bdb1bf1a92637849883",
+  "ARTIFACT-acf416e1db6c22fce61d3dba",
+  "ARTIFACT-a3c3dc80ec26fed37313d635",
+  "ARTIFACT-fc0f225bfa4ac3ec07944c51",
+  "ARTIFACT-d696bba956f63a5ed0649a1d",
+  "ARTIFACT-b0affde7328119fd91de052a",
+  "ARTIFACT-9c138096c82e8922c04773a8",
+  "ARTIFACT-5a23c4b5ffd5f919ce8643f4",
+  "ARTIFACT-9132ec8a732a0ec06ea3b4cb",
+  "ARTIFACT-0eeabb57900cca9b90ab7775",
+  "ARTIFACT-785dc1cf6e1ae0bdd9f40282",
+  "ARTIFACT-1100f7744414bee39a52836b",
+  "ARTIFACT-7047a6c2df744330fae4b2c1",
+  "ARTIFACT-c983930af83d60daf66a120b",
+  "ARTIFACT-d40f348d2ff8ad2a46a8d1c6",
+  "ARTIFACT-e925d8f23e41267b4c0c93ba",
+  "ARTIFACT-c6faae73fd0f47007cb8a81c",
+  "R04",
+  "PSI-20",
+  "ARTIFACT-a1453a0ed66b25066b65a669",
+  "ARTIFACT-eb2d05945cc98047c395c560",
+  "PSI-21",
+  "ARTIFACT-740049714dbdd1e2202953d4",
+  "PSI-159",
+  "ARTIFACT-95536509d8a7f7946685e366",
+  "PSI-10",
+  "ARTIFACT-fa21e13573bd536f2d97b176",
+  "PSI-22",
+  "ARTIFACT-383e2a2ae3948093adaf663c",
+  "PSI-23",
+  "ARTIFACT-c6eba5509c318fdf64af99a5",
+  "NTRS-20010074096",
+  "NTRS-20205008167",
+  "R05",
+  "R06",
+  "ARTIFACT-8680cc7098b5b16147e363d8",
+  "ARTIFACT-aefa9d80136dc0dc2a288704",
+  "ARTIFACT-09a9e41565b5a382c70b0740",
+  "PSI-26",
+  "ARTIFACT-ab6f5c7b6871300ce2afda6d",
+  "PSI-25",
+  "ARTIFACT-76133d72a45e1fca5fe79a9c",
+  "ARTIFACT-9fce736eab41870dc0f76099",
+  "NTRS-20210011385",
+  "PSI-60",
+  "ARTIFACT-5f10812e3d156d5826ec1e57",
+  "PSI-62",
+  "ARTIFACT-69793dcc36780f7b56d4ad33",
+  "PSI-39",
+  "ARTIFACT-b90837d4dece75d6857af6bc",
+  "NTRS-20110012896",
+  "NTRS-20210021318",
+  "NTRS-20130011664",
+  "ARTIFACT-d03cbffbc32241df5975c52f",
+  "PSI-47",
+  "ARTIFACT-50b38eaf57717677dd8397bf",
+  "PSI-117",
+  "ARTIFACT-62a22f5a54f490cb516d47dc",
+  "ARTIFACT-1123afc1286ac406ad921ec7",
+  "NTRS-20100001376",
+  "R09",
+  "R08",
+  "PSI-69",
+  "ARTIFACT-298579935f48dd7a6ba0a7dc",
+  "PSI-68",
+  "ARTIFACT-b6f50d085da8e63102b35adc",
+  "ARTIFACT-d3f88c712cc892f4dd80ff17",
+  "CHALLENGE-2026",
+  "NTRS-20210020446",
+  "NTRS-20260003925",
+  "ARTIFACT-b9fc2d8939828c81de48a9f9",
+  "NTRS-20260000646",
+  "ARTIFACT-50feb3020954d95ac15b1a9a",
+  "NTRS-20040161244",
+  "NTRS-20040084156",
+  "R02",
+  "R03",
+  "ARTIFACT-f507202afae4bd4ff4705f88",
+  "R10",
+  "ARTIFACT-99f24d214c74a3a87aaaf624",
+  "NTRS-20070031686",
+  "ARTIFACT-e362473536d93e4355802a96",
+  "NTRS-20010074098",
+  "NTRS-20250000176",
+  "R01",
+  "CSV-48247d46e76656525320c494",
+  "CSV-7c58f382fec565d8977666f5",
+  "ARTIFACT-2f19dd2bf2f10cf2d12c695b",
+  "CSV-4bc098e223ad2ec81423a577",
+  "ARTIFACT-06eeea01f4323f92ec1486e0",
+  "CSV-39818be913c0f2c3a21fcaab",
+  "ARTIFACT-b590735f27a9c3a19a1dbea4",
+  "CSV-974a5cb1644b8ad046f28870",
+  "ARTIFACT-3cd9850ede1fd4accdfe996e",
+  "CSV-25e5b9c75bc8ea0b68a48b6b",
+  "ARTIFACT-ff8e864e207d4c266d779b8b",
+  "CSV-7503a7bf1ff0da22af6e9e1d",
+  "ARTIFACT-596df0a982c92445ac71c9f8",
+  "ARTIFACT-346dc1d907fcbc08de3da3dd",
+  "ARTIFACT-7b88ab65d5109130932aff72",
+  "CSV-6ab5078e0b8546c1497fac55",
+  "ARTIFACT-14961382d59e3ecc8e92015b",
+  "CSV-f5671de74a5ca46ebdd599b2",
+  "CSV-5f831dce1e1a8ef3571b79fc",
+  "ARTIFACT-7c276f11aff41895f2e5d83c",
+  "CSV-39934408ad87038c72f6a878",
+  "ARTIFACT-d3fb726e79c18c62ee62fbda",
+  "CSV-c00f3e277a26e16cb0240af6",
+  "ARTIFACT-8f46dc35abc986c678478ad1",
+  "CSV-12bd7a22afc859f73fa64ec6",
+  "ARTIFACT-01a0f707225af5c05153791b",
+  "CSV-b9926b066ed45a39b5d96e5a",
+  "ARTIFACT-4139d10053baf3cdea3a85e2",
+  "CSV-fa0a9a6e384c7e455825173a",
+  "ARTIFACT-e68da0f014c067c98026ea52",
+  "CSV-80ec9fe199b86ea52672f459",
+  "ARTIFACT-d2dc3d2d9900afd55009e319",
+  "CSV-d7e348964c9bac66d1bcdc54",
+  "ARTIFACT-c63cab3c91a701bb6c509c4c",
+  "CSV-bf936826cebf542e1f8c5022",
+  "ARTIFACT-c864b1a70fe1fde72d400820",
+  "ARTIFACT-c8c763fe00f298eb6d076c7a",
+  "ARTIFACT-ee97311d7505cb0592513e5c",
+  "CSV-eacd2c1271783e87fb48bf6d",
+  "ARTIFACT-d7085f7361d9f031882beec4",
+  "CSV-78b3107b936c02156f4b2063",
+  "ARTIFACT-d2b3ff58f1acb57a56426f25",
+  "CSV-bee738b8412dcc18f34efad4",
+  "ARTIFACT-3b09696cd1d0d03b9a89e289",
+  "CSV-e7a94940d9d2f3c035985141",
+  "ARTIFACT-d863679aab98e8ed517bb66f",
+  "ARTIFACT-40543e0532154ef2934ab843",
+  "PSI-142",
+  "ARTIFACT-cef10541d440f8fbb03f6838",
+  "ARTIFACT-fa173c96f392b7aac3ef5650",
+  "ARTIFACT-6988337dc913ee1d39b410a6",
+  "ARTIFACT-be8148aee494a4bd21b16ccd",
+  "ARTIFACT-da58f209e8869b4f4a33dc1c",
+  "ARTIFACT-382ce9055358ee43cbf1903f",
+  "ARTIFACT-5f3becc25701fac97b58bcc8",
+  "NTRS-20040053504",
+  "ARTIFACT-6f6990e990988468ad4d3419",
+  "PSI-101",
+  "ARTIFACT-2a8aa1e24889e74c11119060",
+  "PSI-102",
+  "ARTIFACT-0c200997f893e01016071cb5",
+  "PSI-107",
+  "ARTIFACT-95a7ee5a6b6edda981228ee4",
+  "ARTIFACT-e8791c8e58e6f241e9708b12",
+  "NTRS-20250006779",
+  "PSI-99",
+  "ARTIFACT-28cd2ba346fb8b6d0c3af0a9",
+  "PSI-100",
+  "ARTIFACT-7c96a620a0d11368c0f5cded",
+  "ARTIFACT-3ef9bb756d82a1f05e30c645",
+  "PSI-98",
+  "ARTIFACT-d2d30d4626060c892c9d5fd5",
+  "NTRS-20040161216",
+  "ARTIFACT-dbd2ab3d99250391e8af0c74",
+  "PSI-106",
+  "ARTIFACT-4ad4b96b40699b8674dcaf87",
+  "NTRS-20260002050",
+  "NTRS-20260006059",
+  "NTRS-20040053567",
+  "NTRS-20010059376",
+  "PSI-115",
+  "ARTIFACT-9003a18267850935a0866226",
+  "ARTIFACT-18c72b1958f6d71415c4dc35",
+  "ARTIFACT-fd177eae3f294be10be15e93",
+  "ARTIFACT-ff7820a48708dd22a8b9ad11",
+  "ARTIFACT-2d178f547f1b957e81344aac",
+  "ARTIFACT-ceaf851208e45d69a23da05f",
+  "ARTIFACT-1e7c725cb839d1275d2ab349",
+  "ARTIFACT-b5ca952f2db08691d7a965a2",
+  "ARTIFACT-c1b13eb4d3c326e862bc5197",
+  "ARTIFACT-4620cede2189a14dbd23967a",
+  "ARTIFACT-8e0d4f262332a13c9ff3a43a",
+  "ARTIFACT-65cf04d1cdf058f56b588aef",
+  "ARTIFACT-7d39ecb55209677157f35e34",
+  "ARTIFACT-ba5db5c35026524beab21603",
+  "ARTIFACT-0d6399d9d6e6784cf3f2069b",
+  "ARTIFACT-e39879f81433bab7ec0170a0",
+  "ARTIFACT-45b89cdf44f15eaf743c40a3",
+  "ARTIFACT-bbb58638cf9acfd87386a2f7",
+  "ARTIFACT-b5aa3e8e238841f8b65f7d8e",
+  "NTRS-20260006043"
+ ],
+ "files": [
+  "saffire-ii",
+  "bass-ii",
+  "saffire-i",
+  "same-r",
+  "saffire-iii",
+  "bass"
+ ],
+ "links": [
+  {
+   "args": {},
+   "base": null,
+   "out": "https://soraine.vercel.app/?world=earth&material=Ultem+1000#compare"
+  },
+  {
+   "args": {
+    "world": "Lunar",
+    "material": "Nomex HT90-40",
+    "record": "E014",
+    "view": "evidence"
+   },
+   "base": null,
+   "out": "https://soraine.vercel.app/?world=moon&material=Nomex+HT90-40&record=E014#evidence"
+  },
+  {
+   "args": {
+    "world": "Mars"
+   },
+   "base": "http://localhost:5180/dashboard/dist/?old=1#overview",
+   "out": "http://localhost:5180/dashboard/dist/?world=mars&material=Ultem+1000#compare"
+  },
+  {
+   "args": {
+    "world": "ISS",
+    "material": "Mylar G",
+    "view": "sources"
+   },
+   "base": null,
+   "out": "https://soraine.vercel.app/?world=microgravity&material=Mylar+G#sources"
+  },
+  {
+   "args": {
+    "world": "MARTIAN",
+    "view": "experiments",
+    "record": "E1234"
+   },
+   "base": null,
+   "out": "https://soraine.vercel.app/?world=mars&material=Ultem+1000&record=E1234#experiments"
+  },
+  {
+   "args": {
+    "world": "venus"
+   },
+   "base": null,
+   "error": "Unknown gravity context."
+  },
+  {
+   "args": {
+    "material": "spoon"
+   },
+   "base": null,
+   "error": "Choose a published comparison material."
+  },
+  {
+   "args": {
+    "view": "admin"
+   },
+   "base": null,
+   "error": "Unknown research view."
+  },
+  {
+   "args": {
+    "record": "<script>"
+   },
+   "base": null,
+   "error": "Invalid evidence record ID."
+  },
+  {
+   "args": {
+    "record": "E01"
+   },
+   "base": null,
+   "error": "Invalid evidence record ID."
+  },
+  {
+   "args": {
+    "record": "E014 "
+   },
+   "base": null,
+   "error": "Invalid evidence record ID."
+  },
+  {
+   "args": {},
+   "base": "javascript:alert(1)",
+   "error": "Research links require HTTP or HTTPS."
+  },
+  {
+   "args": {},
+   "base": "not a url",
+   "error": "Invalid URL"
+  },
+  {
+   "args": {
+    "world": "moon"
+   },
+   "base": "https://example.org/a b/?x=1",
+   "out": "https://example.org/a%20b/?world=moon&material=Ultem+1000#compare"
+  }
+ ],
+ "numbers": [
+  [
+   null,
+   null,
+   "Not reported"
+  ],
+  [
+   "",
+   null,
+   "Not reported"
+  ],
+  [
+   "0",
+   null,
+   "0"
+  ],
+  [
+   "0.000016",
+   6,
+   "0.000016"
+  ],
+  [
+   "1234567.891",
+   null,
+   "1,234,567.9"
+  ],
+  [
+   "1234567.891",
+   2,
+   "1,234,567.89"
+  ],
+  [
+   "2.5",
+   0,
+   "3"
+  ],
+  [
+   "1.5",
+   0,
+   "2"
+  ],
+  [
+   "0.5",
+   0,
+   "1"
+  ],
+  [
+   "0.05",
+   null,
+   "0.1"
+  ],
+  [
+   "-0.04",
+   null,
+   "-0"
+  ],
+  [
+   "-1234.5",
+   0,
+   "-1,235"
+  ],
+  [
+   "19.95",
+   null,
+   "20"
+  ],
+  [
+   "1.005",
+   2,
+   "1.01"
+  ],
+  [
+   "21.1",
+   null,
+   "21.1"
+  ],
+  [
+   "999.95",
+   null,
+   "1,000"
+  ],
+  [
+   "0.125",
+   2,
+   "0.13"
+  ],
+  [
+   "abc",
+   null,
+   "NaN"
+  ],
+  [
+   "1e21",
+   null,
+   "1,000,000,000,000,000,000,000"
+  ],
+  [
+   "70.3",
+   null,
+   "70.3"
+  ],
+  [
+   " 42 ",
+   null,
+   "42"
+  ],
+  [
+   "1.1000000000000014",
+   null,
+   "1.1"
+  ],
+  [
+   "1000",
+   null,
+   "1,000"
+  ],
+  [
+   "-0.06",
+   null,
+   "-0.1"
+  ]
+ ],
+ "esc": [
+  [
+   "",
+   ""
+  ],
+  [
+   "plain",
+   "plain"
+  ],
+  [
+   "<a href=\"x\">Tom & 'Jerry'</a>",
+   "&lt;a href=&quot;x&quot;&gt;Tom &amp; &#39;Jerry&#39;&lt;/a&gt;"
+  ],
+  [
+   "é ✓ 月",
+   "é ✓ 月"
+  ]
+ ],
+ "safeUrl": [
+  [
+   "https://ntrs.nasa.gov/citations/20130010991",
+   "https://ntrs.nasa.gov/citations/20130010991"
+  ],
+  [
+   "http://example.org/a b",
+   "http://example.org/a%20b"
+  ],
+  [
+   "javascript:alert(1)",
+   "#"
+  ],
+  [
+   "data:text/html,x",
+   "#"
+  ],
+  [
+   "ftp://example.org/",
+   "#"
+  ],
+  [
+   "/relative",
+   "#"
+  ],
+  [
+   "",
+   "#"
+  ],
+  [
+   "HTTPS://EXAMPLE.org",
+   "https://example.org/"
+  ]
+ ]
+}
