@@ -5,7 +5,17 @@ use crate::data::{Row, EVIDENCE_TYPES, MATERIALS, WORLDS};
 use serde_json::{json, Value};
 use url::Url;
 
-pub const VIEWS: [&str; 5] = ["overview", "experiments", "compare", "evidence", "sources"];
+pub const VIEWS: [&str; 6] = ["overview", "experiments", "compare", "evidence", "sources", "scenes"];
+
+/// The 3D scene (in `dist/scenes/`) that shows a gravity environment.
+pub fn scene_for_world(world: &str) -> &'static str {
+    match world { "Moon" => "moon", "Mars" => "mars", "Microgravity" => "orbit", _ => "earth" }
+}
+
+/// The gravity environment a 3D scene shows.
+pub fn world_for_scene(scene: &str) -> Option<&'static str> {
+    Some(match scene { "earth" => "Earth", "moon" => "Moon", "mars" => "Mars", "orbit" => "Microgravity", _ => return None })
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct State {
@@ -70,6 +80,7 @@ pub fn sync_url(state: &State, href: &str) -> Option<String> {
         }
         "experiments" => { put("dataset", &state.original_dataset); put("q", &state.original_query); }
         "sources" => { put("q", &state.source_query); if state.source_type != "All" { put("collection", &state.source_type); } }
+        "scenes" => put("world", &state.world.to_lowercase()),
         _ => {}
     }
     if pairs.is_empty() { url.set_query(None); } else { url.query_pairs_mut().clear().extend_pairs(pairs); }

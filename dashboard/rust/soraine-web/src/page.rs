@@ -40,6 +40,7 @@ struct App {
     material_view: Option<MaterialView>,
     original_cleanup: Option<Function>,
     original_listener: Option<Closure<dyn FnMut(JsValue)>>,
+    scene_listener: Option<Closure<dyn FnMut(JsValue)>>,
     toast_timer: Option<i32>,
 }
 
@@ -227,6 +228,7 @@ fn render() {
             "evidence" => Some(views::evidence(&a.rows, &s.evidence_filter())),
             "compare" => Some(views::compare(&a.rows, &s.material, &s.world)),
             "sources" => Some(views::source_view(&a.bundle, &s.source_query, &s.source_type)),
+            "scenes" => Some(views::scenes(&s.world)),
             _ => { a.specimen_instance += 1; Some(views::overview(&a.rows, &s.material, &s.world, a.specimen_instance)) }
         };
         (a.render_sequence, s.view.clone(), s.world.clone(), markup)
@@ -277,6 +279,7 @@ fn render() {
             view.set_inner_html(&markup.unwrap_or_default());
             if name == "evidence" { render_evidence_rows(); }
             if name == "sources" { render_sources(); }
+            if name == "scenes" { follow_scene_frame(); }
             label_table_cells();
         }
     }
@@ -306,6 +309,22 @@ fn render() {
             Err(error) => web_sys::console::warn_2(&"Globe fallback:".into(), &message(&error)),
         }
     });
+}
+
+/// Keep the selected gravity environment in step with the 3D scene the visitor moves to.
+fn follow_scene_frame() {
+    let Some(frame) = query("#scene-frame") else { return };
+    let on_scene = Closure::<dyn FnMut(JsValue)>::new(|event: JsValue| {
+        let Some(world) = js_get(&js_get(&event, "detail"), "to").as_string().and_then(|scene| app::world_for_scene(&scene)) else { return };
+        if app(|a| { let changed = a.state.view == "scenes" && a.state.world != world; if changed { a.state.world = world.to_string(); } changed }).unwrap_or(false) {
+            sync_url();
+            if let Some(link) = query("#scene-open") { let _ = link.set_attribute("href", &format!("./scenes/index.html#{}", app::scene_for_world(world))); }
+        }
+    });
+    let listener: Function = on_scene.as_ref().clone().unchecked_into();
+    let target = frame.clone();
+    listen(&frame, "load", move |_| { let _ = js_call(&js_get(&target, "contentWindow"), "addEventListener", &["soraine:scene".into(), listener.clone().into()]); });
+    app(|a| a.scene_listener = Some(on_scene));
 }
 
 fn navigate(name: &str) {
@@ -465,7 +484,7 @@ fn set_disabled(selector: &str) { if let Some(button) = query(selector).and_then
 pub fn start() {
     for el in query_all(&body(), "[data-icon]") { el.set_inner_html(&views::icon(&el.get_attribute("data-icon").unwrap_or_default())); }
     for button in query_all(&body(), ".main-nav button") {
-        let name = match button.get_attribute("data-view").as_deref() { Some("overview") => "grid", Some("experiments") => "database", Some("compare") => "chart", Some("evidence") => "layers", Some("sources") => "book", _ => "" };
+        let name = match button.get_attribute("data-view").as_deref() { Some("overview") => "grid", Some("experiments") => "database", Some("compare") => "chart", Some("evidence") => "layers", Some("sources") => "book", Some("scenes") => "flame", _ => "" };
         button.set_inner_html(&format!("{}<span>{}</span>", views::icon(name), button.text_content().unwrap_or_default()));
     }
     if let Some(export) = query("#export-all") { let _ = export.set_attribute("aria-label", "Export all research data"); }
@@ -503,7 +522,7 @@ pub fn start() {
                 let location = window().location();
                 let record = app::restore_url_state(&mut state, &location.search().unwrap_or_default(), &location.hash().unwrap_or_default(), &rows, &bundle);
                 APP.with(|cell| *cell.borrow_mut() = Some(App { bundle, rows, state, render_sequence: 0, specimen_instance: 0, material_token: 0, globe: None, globe_world: String::new(),
-                    material_view: None, original_cleanup: None, original_listener: None, toast_timer: None }));
+                    material_view: None, original_cleanup: None, original_listener: None, scene_listener: None, toast_timer: None }));
                 render();
                 if let Some(record) = record { show_dialog(app(|a| views::record_dialog(&a.rows, &record)).flatten()); }
             }

@@ -354,5 +354,13 @@ pub fn about_dialog(bundle: &Value) -> String {
         .replace("{sources}", &count("sources")).replace("{evidence}", &count("evidence"))
 }
 
+/// The 3D tab: the kitchen scenes from `dist/scenes/`, opened on the selected gravity environment.
+/// This view is new in the Rust build; the scenes themselves run in their own frame.
+pub fn scenes(world: &str) -> String {
+    let scene = crate::app::scene_for_world(world);
+    format!(r##"<div class="view-title-row"><div><div class="eyebrow">INTERACTIVE SCENES</div><h2>One kitchen. Four worlds.</h2><p>The same stove, pan and egg on Earth, the Moon, Mars and in orbit. Drag to look around and tap an object for a close view.</p></div><div class="scene-actions"><a class="export-btn" id="scene-open" href="./scenes/index.html#{scene}" target="_blank" rel="noopener">{external}Open full screen</a><button class="export-btn" data-view="compare">{chart}Compare the evidence</button></div></div><section class="scene-stage" aria-label="Interactive 3D scenes"><iframe id="scene-frame" class="scene-frame" title="Flame in Freefall 3D scenes" src="./scenes/index.html#{scene}" allow="fullscreen"></iframe></section><p class="browser-legend">Illustrative scenes, not to scale. Flame shapes follow a simple buoyancy heuristic, not a combustion model. The published measurements are in the research views.</p>"##,
+        external = icon("external"), chart = icon("chart"))
+}
+
 /// `Value` text helper for callers that hold raw records.
 pub fn text_of(value: Option<&Value>) -> String { crate::data::text(value) }
