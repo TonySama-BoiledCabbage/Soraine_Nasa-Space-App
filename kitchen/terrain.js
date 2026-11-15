@@ -9,7 +9,7 @@
 // front line). Kitchen placement per planet comes from scenarios.json (terrain.offset).
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { enableMeadowWind } from './meadow.js?v=meadow-20261114';
+import { enableMeadowWind } from './meadow.js?v=flick-20261114';
 
 const TILE = 8;                     // metres per culling tile
 const LOCAL = { minX: -32, maxX: 32, minZ: -25, maxZ: 15 };   // GLB footprint (README: ~64 x 40 m)

@@ -1,15 +1,21 @@
 import * as THREE from 'three';
-import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=meadow-20261114';
-import { buildStars } from './stars.js?v=meadow-20261114';
-import { buildTerrain } from './terrain.js?v=meadow-20261114';
-import { Props } from './props.js?v=meadow-20261114';
-import { WavePass, Wave } from './wave.js?v=meadow-20261114';
-import { Pages } from './pages.js?v=meadow-20261114';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Combustion } from './combustion.js?v=lab-controls-3';
+import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=lab-controls-3';
+import { buildStars } from './stars.js?v=lab-controls-3';
+import { buildTerrain } from './terrain.js?v=lab-controls-3';
+import { Props } from './props.js?v=lab-controls-3';
+import { WavePass, Wave } from './wave.js?v=lab-controls-3';
+import { Pages } from './pages.js?v=lab-controls-3';
 
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 const LITE = new URLSearchParams(location.search).has('lite');
-renderer.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 1.75));
+// Adaptive resolution: start at 1.0, let the governor below move it between 0.6 and the screen's own ratio (max 1.5).
+// Measured on an Intel UHD iGPU: render cost scales almost linearly with pixel count (37 ms at 1.5 -> 18 ms at 1.0).
+const PR_MAX = LITE ? 1 : Math.min(devicePixelRatio, 1.5), PR_MIN = 0.6;
+let pixelRatio = LITE ? 1 : Math.min(1, PR_MAX);
+renderer.setPixelRatio(pixelRatio);
 renderer.shadowMap.enabled = !LITE; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.NoToneMapping; // tone mapping happens in the post pass
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -30,12 +36,86 @@ const sky = buildSky(scene);
 const lights = buildLights(scene);
 const pass = new WavePass(renderer);
 const wave = new Wave(WORLD.flame);
-const props = new Props(scene, camera, canvas, WORLD.flame);
+const props = new Props(scene, camera, canvas, WORLD.flame, kitchen);
+const combustion = new Combustion(scene,camera,canvas,WORLD.flame,props);
+const modelLoader = new GLTFLoader();
+const chamber = new THREE.Group();
+const labShell = new THREE.Group();
+scene.add(labShell);
+labShell.name='Lab shell';
+let oxygenCap=null, oxygenCapRest=0;
+scene.add(chamber);
+const orbital = new THREE.Group();
+orbital.visible=false;
+scene.add(orbital);
+
+// Scan-line handling for whole model groups (same rule as terrain.js): uRole 1 = old state, drawn only outside the
+// scan front; 2 = new state, drawn only inside it; 3 = steady. Lets the orbital cabin appear/disappear with the wave
+// instead of popping in when ISS is picked.
+const orbitalRole = { value: 3 }, shellRole = { value: 3 };
+function clipBySweep(root, roleU) {
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
+      if (!m || m.userData.sweepClip) continue;
+      m.userData.sweepClip = true;
+      const prev = m.onBeforeCompile, prevKey = m.customProgramCacheKey && m.customProgramCacheKey.bind(m);
+      m.onBeforeCompile = (sh, r) => {
+        if (prev) prev.call(m, sh, r);
+        Object.assign(sh.uniforms, SWEEP); sh.uniforms.uRole = roleU;
+        sh.vertexShader = SWEEP_GLSL + '\n' + sh.vertexShader.replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\n vSweepW = (modelMatrix * vec4(transformed,1.)).xyz;');
+        sh.fragmentShader = SWEEP_GLSL + '\n' + SWEEP_FN + '\nuniform float uRole;\n' + sh.fragmentShader.replace('void main() {', `void main() {
+          float swC = sweepMix(vSweepW);
+          if ((uRole < 1.5 && swC > 0.5) || (uRole > 1.5 && uRole < 2.5 && swC < 0.5)) discard;`);
+      };
+      m.customProgramCacheKey = () => (prevKey ? prevKey() : '') + '|sweepclip';
+      m.needsUpdate = true;
+    }
+  });
+}
+const isSpace = (s) => !!s && s.slug === 'iss';
+// Which environment groups exist for the old (a) and new (b) state, and how the scan clips them.
+function setSpaceEnv(a, b) {
+  const inA = isSpace(a), inB = isSpace(b);
+  orbital.visible = (inA || inB) && !chamber.visible;
+  labShell.visible = chamber.visible || orbital.visible;
+  orbitalRole.value = inA && inB ? 3 : inB ? 2 : inA ? 1 : 3;
+  shellRole.value = chamber.visible ? 3 : orbitalRole.value;
+}
+const loadPart = async (name, parent) => {
+  const { scene: model } = await modelLoader.loadAsync('models/landing/' + name + '.glb');
+  parent.add(model);
+  if (name==='orbital-cabin') model.traverse(o=>{
+    if (o.isMesh && o.name.startsWith('Distant_Earth')) {
+      o.material=new THREE.MeshBasicMaterial({vertexColors:true});
+    }
+  });
+  if (name==='oxygen-control') {
+    combustion.control=model;
+    oxygenCap=model.getObjectByName('O2_press_cap');
+    if (oxygenCap) oxygenCapRest=oxygenCap.position.y;
+  }
+  if (name==='oxygen-arm') combustion.mountArm(model);
+  // after any material swaps above (Distant_Earth gets a new MeshBasicMaterial), so the clip lands on the final material
+  if (parent === orbital) clipBySweep(model, orbitalRole);
+  if (parent === labShell) clipBySweep(model, shellRole);
+};
+const landingModels = Promise.allSettled([
+  loadPart('test-chamber', labShell),
+  loadPart('lab-rear', chamber),
+  loadPart('orbital-cabin', orbital),
+  loadPart('range-cabinet', scene),
+  loadPart('oxygen-control', scene),
+  loadPart('oxygen-arm', scene)
+]).then(results => {
+  for (const result of results) if (result.status === 'rejected') console.error(result.reason);
+});
 
 // ---------- camera rigs ----------
 const RIG = {
-  landing: { pos: new THREE.Vector3(WORLD.pan.x + 0.02, WORLD.pan.y + 0.95, WORLD.pan.z + 0.03), look: WORLD.pan.clone(), fov: 38 },
-  cook:    { pos: new THREE.Vector3(0.35, 1.6, 1.75), look: new THREE.Vector3(0.1, 1.33, 0.0), fov: 48 },
+  landing: { pos: WORLD.pan.clone().add(new THREE.Vector3(-.035,1.38,.046)), look: WORLD.pan.clone(), fov: 38 },
+  orbital: { pos: new THREE.Vector3(.03,1.24,2.25), look: new THREE.Vector3(.04,1.46,0), fov: 52 },
+  cook:    { pos: new THREE.Vector3(0.55, 1.40, 2.35), look: WORLD.flame.clone().add(new THREE.Vector3(0,.06,0)), fov: 48 },
   detail:  { pos: new THREE.Vector3(0.42, 1.18, 0.55), look: new THREE.Vector3(0.05, 0.94, 0.08), fov: 34 },
   about:   { pos: new THREE.Vector3(-2.6, 1.5, 3.4), look: new THREE.Vector3(0.6, 0.8, 0.2), fov: 44 }
 };
@@ -80,22 +160,34 @@ function mixScenario(a, b, k) {
 function setTerrain(a, b) {
   SWEEP.uGroundOld.value.setRGB(...a.ground); SWEEP.uGroundNew.value.setRGB(...b.ground);
   terrain.set(a, b);
+  setSpaceEnv(a, b);
+  if (chamber.visible || (isSpace(a) && isSpace(b))) {
+    terrain.plane.visible = false;
+    for (const planet of terrain.planets.values()) planet.group.visible = false;
+  }
 }
 function selectScenario(slug, immediate = false) {
   const s = scenarios.find(x => x.slug === slug); if (!s || (current && s === current && !immediate)) return;
   if (immediate || !current) { current = target = s; blend = 1; Object.assign(flameTarget, s.flame); Object.assign(flameState, s.flame); applyEnv(s, s, 1); setTerrain(s, s); SWEEP.uRadius.value = 1e5; props.setGravity(s.g, s.g, -1); }
   else { if (wave.active) { current = mixScenario(current, target, blend); } target = s; blend = 0; Object.assign(flameTarget, s.flame); flameSwept = false; setTerrain(current, target); wave.fire(); props.fire(current.g, target.g); }
   pages.setScenario(s);
+  if (pages.page==='observe') goTo(isSpace(s) && !chamber.visible ? RIG.orbital : RIG.cook,1.2);
+  combustion.setSpace(s.slug==='iss');
+  setTerrain(current,target);
 }
 wave.onSweep = () => { /* environment crossfade begins when the front reaches the camera */ };
 
 // ---------- pages ----------
 const pages = new Pages({
-  onPage: (p) => { goTo(RIG[p] || RIG.cook, 1.5); pass.uniforms.uDof.value = 0; },
+  onPage: (p) => { goTo(RIG[p] || (isSpace(target) ? RIG.orbital : RIG.cook), 1.5); pass.uniforms.uDof.value = 0; },
   onScenario: (slug) => selectScenario(slug)
 });
 
 document.getElementById('start').addEventListener('click', () => {
+  chamber.visible = false;
+  document.getElementById('combustion-status').hidden=false;
+  terrain.plane.visible = true;
+  if (current) setTerrain(current, target);
   document.getElementById('landing').classList.add('gone');
   goTo(RIG.cook, 2.4);
   setTimeout(() => { document.getElementById('dots').hidden = false; pages.show('observe'); }, 900);
@@ -107,12 +199,27 @@ function resize() {
   const s = renderer.getDrawingBufferSize(new THREE.Vector2()); pass.setSize(s.x, s.y);
 }
 addEventListener('resize', resize); resize();
+// governor: average real frame time over ~1.5 s windows. Down a step when slower than ~45 fps,
+// up a small step only after three windows pinned at vsync (rAF never reports faster than the display).
+const gov = { acc: 0, n: 0, good: 0, ceiling: PR_MAX };   // ceiling: never climb back to a ratio that was too slow
+function govern(rawDt) {
+  if (document.hidden || rawDt > 0.25) return;            // ignore tab switches and stalls
+  gov.acc += rawDt; gov.n++;
+  if (gov.acc < 1.5) return;
+  const avg = gov.acc / gov.n * 1000; gov.acc = 0; gov.n = 0;
+  let next = pixelRatio;
+  if (avg > 22) { gov.ceiling = Math.max(PR_MIN, pixelRatio - 0.05); next = Math.max(PR_MIN, pixelRatio - 0.15); gov.good = 0; }
+  else if (avg < 17.8) { if (++gov.good >= 3 && pixelRatio < gov.ceiling) { next = Math.min(gov.ceiling, pixelRatio + 0.1); gov.good = 0; } }
+  else gov.good = 0;
+  if (Math.abs(next - pixelRatio) > 0.01) { pixelRatio = next; renderer.setPixelRatio(pixelRatio); resize(); }
+}
 
 // ---------- loop ----------
 const clock = new THREE.Clock(); let time = 0;
 const tmpUp = new THREE.Vector3(0, 1, 0);
 function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05); time += dt;
+  const rawDt = clock.getDelta(); govern(rawDt);
+  const dt = Math.min(rawDt, 0.05); time += dt;
   // camera tween
   if (cam.t < 1) {
     cam.t = Math.min(1, cam.t + dt / cam.dur); const k = ease(cam.t);
@@ -134,10 +241,15 @@ function frame() {
   if (!flameSwept && wave.active) flameSwept = true;
   const fk = 1 - Math.exp(-dt * 2.2);
   for (const key in flameState) flameState[key] += (flameTarget[key] - flameState[key]) * fk;
+  const burn=combustion.update(dt);
+  if (oxygenCap) oxygenCap.position.y=oxygenCapRest-(combustion.buttonTravel>0?.004:0);
+  flame.group.visible=burn>.01;
   flame.uniforms.uTime.value = time; flame.uniforms.uBlue.value = flameState.blue; flame.uniforms.uSphere.value = flameState.sphere; flame.uniforms.uFlicker.value = flameState.flicker;
   flame.mesh.scale.set(flameState.width, flameState.height, flameState.width); flame.inner.scale.set(flameState.width * 0.5, flameState.height * 0.65, flameState.width * 0.5);
+  flame.mesh.scale.multiplyScalar(burn);
+  flame.inner.scale.multiplyScalar(burn);
   flame.light.color.setRGB(1, 0.63, 0.25).lerp(new THREE.Color(0.45, 0.6, 1), flameState.blue);
-  flame.light.intensity = (1.6 + 0.6 * Math.sin(time * 17) * flameState.flicker + 0.3 * Math.sin(time * 5.1) * flameState.flicker) * (0.45 + 0.55 * flameState.height);
+  flame.light.intensity = burn*(0.26 + 0.08 * Math.sin(time * 17) * flameState.flicker) * (0.45 + 0.55 * flameState.height);
   // environment crossfade once the front has passed the camera
   if (target && current !== target) {
     const dCam = camera.position.distanceTo(WORLD.flame);
@@ -151,12 +263,16 @@ function frame() {
   terrain.update(time, camera);
   stars.uniforms.uTime.value = time;
   lights.sun.target.position.set(0.3, 0.8, 0.2);
+  if (isSpace(target) && isSpace(current)) {
+    lights.hemi.intensity=.8; lights.fill.intensity=.8;
+  }
   pass.render(scene, camera);
   requestAnimationFrame(frame);
 }
 
-fetch('data/scenarios.json').then(r => r.json()).then(d => {
+Promise.all([fetch('data/scenarios.json').then(r => r.json()), landingModels]).then(([d]) => {
   scenarios = d.scenarios; terrain.preload(scenarios); pages.setScenarios(scenarios); selectScenario('earth', true); frame();
 }).catch(e => { console.error(e); document.body.insertAdjacentHTML('beforeend', `<pre style="position:fixed;left:12px;bottom:12px;color:#fff">${e}</pre>`); });
 
-window.__kitchen = { terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
+window.__kitchen = { combustion, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
+

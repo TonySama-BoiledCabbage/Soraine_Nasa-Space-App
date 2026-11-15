@@ -43,21 +43,8 @@ export function buildKitchen(scene) {
   const root = new THREE.Group(); scene.add(root);
   const H = WORLD.counterH;
 
-  // ground lives in terrain.js (NASA-textured, height-mapped)
-
-
-  // stove block + wooden table in an L
-  root.add(box(1.2, H, 0.9, M.white, 0, H / 2, 0));
-  root.add(box(1.22, 0.04, 0.92, M.dark, 0, H + 0.02, 0));      // hob top
-  root.add(box(1.9, H, 0.9, M.white, 1.6, H / 2, 0));           // cabinet
-  root.add(box(1.95, 0.06, 0.95, M.wood, 1.6, H + 0.03, 0));    // wooden top
-  root.add(box(0.9, H, 1.4, M.white, -1.1, H / 2, 1.1));        // return
-  root.add(box(0.95, 0.06, 1.45, M.wood, -1.1, H + 0.03, 1.1));
-  // plinth shadows
-  root.add(box(1.1, 0.08, 0.8, M.dark, 0, 0.04, 0, false));
-
   // burner
-  const burner = cyl(0.14, 0.14, 0.02, M.steel, WORLD.flame.x, H + 0.045, WORLD.flame.z);
+  const burner = cyl(0.13, 0.14, 0.02, M.pan, WORLD.flame.x, H + 0.045, WORLD.flame.z);
   root.add(burner);
   const trivet = new THREE.Group();
   for (let i = 0; i < 4; i++) {
@@ -72,7 +59,10 @@ export function buildKitchen(scene) {
   const pan = new THREE.Group(); pan.position.copy(WORLD.pan); root.add(pan);
   const panBody = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.14, 0.035, 48, 1, true), M.pan);
   panBody.material = M.pan.clone(); panBody.material.side = THREE.DoubleSide; panBody.position.y = 0.0175; panBody.castShadow = true; panBody.receiveShadow = true; pan.add(panBody);
-  const panFloor = new THREE.Mesh(new THREE.CircleGeometry(0.14, 48), M.pan); panFloor.rotation.x = -Math.PI / 2; panFloor.position.y = 0.002; panFloor.receiveShadow = true; pan.add(panFloor);
+  const panFloor = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.008, 48), M.pan);
+  panFloor.name = 'panBase';
+  panFloor.position.y = 0.004;
+  panFloor.castShadow = true; panFloor.receiveShadow = true; pan.add(panFloor);
   const handle = cyl(0.014, 0.012, 0.28, M.dark, 0, 0.03, 0, 12); handle.rotation.z = Math.PI / 2 - 0.12; handle.position.set(0.3, 0.045, 0); pan.add(handle);
 
   // egg: irregular white (lathe), domed yolk
@@ -87,11 +77,11 @@ export function buildKitchen(scene) {
 // Flame: a cone (buoyant) that morphs toward a sphere (microgravity). Emissive + point light.
 export function buildFlame(scene) {
   const g = new THREE.Group(); g.position.copy(WORLD.flame); scene.add(g);
-  const coneGeo = new THREE.ConeGeometry(0.055, 0.16, 24, 6, true);
+  const coneGeo = new THREE.ConeGeometry(0.085, 0.16, 24, 6, true);
   coneGeo.translate(0, 0.08, 0);
   
   const uniforms = { uTime: { value: 0 }, uBlue: { value: 0 }, uSphere: { value: 0 }, uFlicker: { value: 1 } };
-  const material = new THREE.MeshBasicMaterial({ color: 0xffa23a, transparent: true, opacity: 0.55, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, toneMapped: false });
+  const material = new THREE.MeshBasicMaterial({ color: 0xffa23a, transparent: true, opacity: 0.88, depthWrite: false, side: THREE.DoubleSide, toneMapped: false });
   material.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, uniforms);
     s.vertexShader = `uniform float uTime,uSphere,uFlicker; varying float vH; varying vec3 vP;\n` + s.vertexShader.replace('#include <begin_vertex>', `
@@ -106,7 +96,7 @@ export function buildFlame(scene) {
       transformed.y *= 1.0 + 0.08*sin(uTime*11.)*uFlicker*(1.-uSphere);
       vP = transformed;`);
     s.fragmentShader = `uniform float uBlue,uSphere,uTime; varying float vH; varying vec3 vP;\n` + s.fragmentShader.replace('#include <color_fragment>', `
-      vec3 yellow = mix(vec3(1.0,0.55,0.12), vec3(1.0,0.92,0.55), vH);
+      vec3 yellow = mix(vec3(1.0,0.20,0.012), vec3(1.0,0.66,0.07), vH);
       vec3 blue = mix(vec3(0.25,0.45,1.0), vec3(0.55,0.75,1.0), vH);
       diffuseColor.rgb = mix(yellow, blue, uBlue);
       float edge = 1.0 - smoothstep(0.0, 1.0, vH);
@@ -114,7 +104,7 @@ export function buildFlame(scene) {
   };
   const mesh = new THREE.Mesh(coneGeo, material); g.add(mesh);
   const inner = new THREE.Mesh(coneGeo, material.clone()); inner.scale.set(0.5, 0.65, 0.5); inner.material.onBeforeCompile = material.onBeforeCompile; g.add(inner);
-  const light = new THREE.PointLight(0xffa040, 1.1, 3.0, 2); light.position.y = 0.08; light.castShadow = true; light.shadow.mapSize.set(512, 512); g.add(light);
+  const light = new THREE.PointLight(0xffa040, 1.1, 3.0, 2); light.position.y = 0.08; light.castShadow = false; g.add(light);   // a point-light shadow re-renders the scene 6x per frame (~5 ms on an iGPU)
   return { group: g, mesh, inner, light, uniforms };
 }
 
@@ -182,7 +172,7 @@ export function buildSky(scene) {
 export function buildLights(scene) {
   const hemi = new THREE.HemisphereLight(0xcfe4ff, 0x5a6a3a, 0.55); scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xffffff, 2.6);
-  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
   const sc = sun.shadow.camera; sc.near = 0.5; sc.far = 40; sc.left = -7; sc.right = 7; sc.top = 7; sc.bottom = -7;
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
   scene.add(sun); scene.add(sun.target);

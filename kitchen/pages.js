@@ -25,6 +25,6 @@ export class Pages {
     const tag = (src) => src === 'unverified' ? `<span class="tag unv">unverified</span>` : src === 'schematic' ? `<span class="tag">schematic</span>` : `<span class="tag">${src}</span>`;
     this.card.innerHTML = `<h2>${s.label}</h2><p class="muted">What the flame is doing under ${s.g === 0 ? 'microgravity' : s.g.toFixed(2) + ' m/s²'}.</p>
       <dl>${s.facts.map(f => `<dt>${f.k}${tag(f.src)}</dt><dd>${f.v}</dd>`).join('')}</dl>
-      <p class="muted">Evidence case and material comparison (Mylar G vs Ultem 1000) to be wired in here.</p>`;
+      <p class="muted"><a href="dashboard/?gravity=${s.slug==='iss'?'Microgravity':s.label}" style="color:inherit;text-underline-offset:4px">Explore the research and material comparisons ↗</a></p>`;
   }
 }

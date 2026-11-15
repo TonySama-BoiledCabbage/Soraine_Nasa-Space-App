@@ -10,6 +10,7 @@ FILES = [
     "kitchen/style.css", "kitchen/main.js", "kitchen/scene.js", "kitchen/wave.js", "kitchen/pages.js", "kitchen/props.js", "kitchen/terrain.js", "kitchen/meadow.js", "kitchen/stars.js",
     "vendor/three.module.js", "vendor/LICENSE-three", "vendor/cannon-es.js", "vendor/LICENSE-cannon-es", "vendor/addons/loaders/GLTFLoader.js", "vendor/addons/utils/BufferGeometryUtils.js",
     "data/scenarios.json",
+    "dashboard/index.html", "dashboard/style.css", "dashboard/app.js", "dashboard/data/research.json",
 ]
 GLOBS = ["models/*.glb", "models/planet_surfaces/*.glb"]
 
