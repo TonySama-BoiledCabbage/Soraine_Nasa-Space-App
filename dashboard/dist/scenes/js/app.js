@@ -95,7 +95,32 @@
   function setTop(on) { SoraineScene.topView(on, on ? 'pan' : null); stage.classList.toggle('is-top', !!on); $('go').textContent = on ? C.BEGIN : STOPS[current].go; var b = $('lab-top'); if (b) b.textContent = on ? 'Back to the scene view' : 'Top view of the pan'; }
 
   stage.classList.add('is-top');
-  $('controls-toggle').addEventListener('click', function () { var open = stage.classList.toggle('controls-open'); this.setAttribute('aria-expanded', String(open)); });
+  function controls(open, restoreFocus) {
+    stage.classList.toggle('controls-open', open);
+    $('controls-toggle').setAttribute('aria-expanded', String(open));
+    $('scene-controls').inert = !open;
+    if (!open && restoreFocus) $('controls-toggle').focus({ preventScroll: true });
+  }
+  $('controls-toggle').addEventListener('click', function () { controls(!stage.classList.contains('controls-open'), false); });
+  $('controls-close').addEventListener('click', function () { controls(false, true); });
+  // Let the panel finish moving away before a short animation begins.
+  var replayingAction = false, actionTimer = null;
+  $('scene-controls').addEventListener('click', function (e) {
+    var button = e.target.closest('button[data-scene-action]');
+    if (!button || replayingAction || !stage.classList.contains('controls-open')) return;
+    e.preventDefault(); e.stopImmediatePropagation(); controls(false, true);
+    clearTimeout(actionTimer);
+    actionTimer = setTimeout(function () {
+      actionTimer = null;
+      if (busy || inspecting) return;
+      replayingAction = true;
+      try { button.click(); } finally { replayingAction = false; }
+    }, reduced.matches ? 0 : 200);
+  }, true);
+  $('lab-valve').addEventListener('change', function () { controls(false, true); });
+  canvas.addEventListener('pointerdown', function () { controls(false, false); });
+  document.querySelectorAll('[data-world], [data-page]').forEach(function (button) { button.addEventListener('click', function () { controls(false, false); }); });
+  window.addEventListener('keydown', function (e) { if (e.key === 'Escape') controls(false, stage.classList.contains('controls-open')); });
   $('go').addEventListener('click', function () { if (SoraineScene.isTop()) { setTop(false); return; } goTo(STOPS[current].next); });
   if ($('lab-top')) $('lab-top').addEventListener('click', function () { setTop(!SoraineScene.isTop()); });
   window.addEventListener('keydown', function (e) { if ((e.key === 't' || e.key === 'T') && !inspecting && !/input|textarea/i.test(e.target.tagName)) setTop(!SoraineScene.isTop()); });

@@ -84,7 +84,7 @@
     // Automatic quality: every 60 frames look at the average frame time and step down if the machine is struggling.
     // level 1: normal resolution. level 2: also no panel blur, shadows drawn once. level 3: also no shadows, 0.7 x resolution.
     tick++;
-    if (!still && !HQ && level < 3 && !wave.active && now > 4000) {
+    if (!preparing && !still && !HQ && level < 3 && !wave.active && now > 4000) {
       frames++; acc += dt;
       if (frames === 60) { if (acc / 60 > 0.027) setLevel(level + 1); frames = 0; acc = 0; }
     }
@@ -260,21 +260,47 @@
       var ids = Object.keys(K.scenes), target = new T.WebGLRenderTarget(256, 256);
       var breathe = function () { return new Promise(function (resolve) { requestAnimationFrame(function () { requestAnimationFrame(resolve); }); }); };
       try {
+        if (!rt) initWave(); sizeWave();
+        oldCanvas.width = renderer.domElement.width; oldCanvas.height = renderer.domElement.height;
+        oldTex.userData.sized = true;
+        oldCanvas.getContext('2d').fillRect(0, 0, oldCanvas.width, oldCanvas.height);
+        oldTex.needsUpdate = true; renderer.initTexture(oldTex);
         for (var i = 0; i < ids.length; i++) {
-          progress(Math.round(i / ids.length * 90), 'Preparing ' + (ids[i] === 'orbit' ? 'ISS' : ids[i]) + '…');
+          progress(Math.round(i / ids.length * 88), 'Preparing ' + (ids[i] === 'orbit' ? 'ISS' : ids[i]) + '…');
           await breathe(); ensure(ids[i]);
           await window.SoraineWaitForAssets();
           setState(ids[i]);
           var textures = new Set(); scene.traverse(function (o) { if (!o.material) return; var ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(function (m) { Object.keys(m).forEach(function (k) { if (m[k] && m[k].isTexture) textures.add(m[k]); }); }); });
           textures.forEach(function (t) { renderer.initTexture(t); });
-          renderer.compile(scene, camera);
-          var culled = []; scene.traverse(function (o) { if (o.isMesh) { culled.push([o, o.frustumCulled]); o.frustumCulled = false; } });
-          renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null);
-          culled.forEach(function (x) { x[0].frustumCulled = x[1]; });
+          var renderables = [];
+          scene.traverse(function (o) { if (o.isMesh || o.isPoints || o.isLine) { renderables.push([o, o.frustumCulled, o.visible]); o.frustumCulled = false; o.visible = true; } });
+          lineMat.visible = true;
+          try {
+            renderer.compile(scene, camera);
+            renderer.shadowMap.needsUpdate = true;
+            renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null);
+            // The screen output encoding also has its own material variants.
+            renderer.render(scene, camera);
+            // Warm the full-size depth/scan target and screen shader, not just the small upload target.
+            dof = 1; renderWave(0, performance.now() / 1000); dof = 0;
+          } finally {
+            renderer.setRenderTarget(null); lineMat.visible = false;
+            renderables.forEach(function (x) { x[0].frustumCulled = x[1]; x[0].visible = x[2]; });
+          }
+          progress(Math.round((i + 0.65) / ids.length * 88), 'Preparing close-ups and effects…'); await breathe();
+          // Inspection changes the light configuration, so its shader variants need a real render too.
+          for (var p = 0; p < K.pickable.length; p++) {
+            if (!window.SoraineScene.inspect(K.pickable[p])) continue;
+            try { renderer.compile(scene, camera); renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(scene, camera); }
+            finally { renderer.setRenderTarget(null); window.SoraineScene.release(); }
+          }
         }
-        progress(95, 'Preparing transitions…'); await breathe();
-        if (!rt) initWave(); renderer.compile(qScene, qCam);
+        progress(94, 'Finishing graphics preparation…'); await breathe();
+        // Complete queued GPU uploads behind the loader, never during an interaction.
+        renderer.getContext().finish();
+        if (document.fonts) await document.fonts.ready;
         setState('earth'); top = true; topMode = 'pan'; rig = null; dof = dofGoal = 0;
+        k = 0; frames = 0; acc = 0; view = 'overview';
         camPos.copy(E.burner).add(tmp.set(0, 1.25, 0.03)); camLook.copy(E.burner);
         lastT = performance.now(); draw(lastT); progress(100, 'Ready');
       } finally { renderer.setRenderTarget(null); target.dispose(); preparing = false; }

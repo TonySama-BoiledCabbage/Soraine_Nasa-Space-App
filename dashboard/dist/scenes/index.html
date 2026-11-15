@@ -47,7 +47,9 @@
       <p class="muted">Team Soraine, NASA Space Apps 2026. Gravity data, scan wave and loose-prop physics by Tony. The 3D scenes are stylised, not to scale, and were built in code with AI assistance (see the AI log in the project).</p>
     </article>
 
-    <aside id="scene-controls" class="side" aria-label="Stove readout and controls">
+    <aside id="scene-controls" class="side" aria-label="Stove readout and controls" inert>
+      <header class="controls-heading"><div><span class="controls-eyebrow">GALLEY LAB</span><h2>Try something.</h2></div><button id="controls-close" type="button" aria-label="Close controls">×</button></header>
+      <p class="controls-hint">Choose an action. We’ll clear the view.</p>
       <details id="lab" class="lab">
         <summary>Readout: <span id="lab-world">Earth</span></summary>
         <dl id="lab-facts" class="facts"></dl>
@@ -61,23 +63,23 @@
       <div class="quick">
         <label class="valve" for="lab-valve">Burner valve <output id="lab-valve-out" for="lab-valve">100% open</output></label>
         <input id="lab-valve" type="range" min="0" max="100" step="1" value="100">
-        <div class="lab-row">
-          <button id="lab-ignite" type="button">Flare</button>
-          <button id="lab-drop" type="button">Drop 1 m</button>
-          <span class="fall" title="Fall time from 1 m, no air"><span id="lab-fall">0.45 s</span></span>
+        <h3 class="control-group-title">Flame &amp; gravity</h3>
+        <div class="lab-row action-grid">
+          <button id="lab-ignite" data-scene-action type="button"><span aria-hidden="true">↟</span>Flare</button>
+          <button id="lab-drop" data-scene-action type="button"><span aria-hidden="true">↓</span>Drop 1 m</button>
+          <span class="fall" title="Fall time from 1 m, no air">Fall time: <span id="lab-fall">0.45 s</span></span>
         </div>
-        <div class="lab-row">
-          <button id="lab-top" type="button">Back to the scene view</button>
-          <button id="lab-egg-reset" type="button">New egg</button>
+        <h3 class="control-group-title">At the pan</h3>
+        <div class="lab-row action-grid">
+          <button id="play-flip" data-scene-action type="button" title="Key: F"><span aria-hidden="true">↗</span>Flip the egg</button>
+          <button id="play-salt" data-scene-action type="button" title="Key: S"><span aria-hidden="true">⁙</span>Salt</button>
+          <button id="play-blow" data-scene-action type="button" title="Key: B"><span aria-hidden="true">≈</span>Blow</button>
+          <button id="lab-egg-reset" data-scene-action type="button"><span aria-hidden="true">↺</span>New egg</button>
         </div>
-        <div class="lab-row">
-          <button id="play-flip" type="button" title="Key: F">Flip the egg</button>
-          <button id="play-salt" type="button" title="Key: S">Salt</button>
-          <button id="play-blow" type="button" title="Key: B">Blow</button>
-        </div>
-        <p id="play-out" class="play-out" aria-live="polite"></p>
+        <button id="lab-top" data-scene-action class="camera-action" type="button">Back to the scene view</button>
       </div>
     </aside>
+    <p id="play-out" class="play-out scene-feedback" role="status" aria-live="polite"></p>
 
     <section class="hero">
       <h1 id="title">Flame in Freefall</h1>
