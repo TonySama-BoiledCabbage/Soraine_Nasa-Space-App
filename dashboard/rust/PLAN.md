@@ -23,9 +23,10 @@
   - [x] Specimen card (`specimen.mjs`): 80 cases match byte for byte.
   - [x] Glossary terms and term markup (`glossary.mjs` data half): 24 terms.
   - [x] App helpers, icons, world captions, material picker, oxygen-limit chart, chart panel and the whole **overview** view: all 12 material and gravity combinations match byte for byte, natively and from the WebAssembly build in Chrome.
-  - [ ] Compare, evidence (table, filters, paging) and sources views; record, source and about dialogs (`app.mjs` lines 64 to 207).
-  - [ ] Original-data explorer (`original-data.mjs`).
+  - [x] Compare, evidence (frame, table, paging) and sources (frame, table, paging) views; record, source and about dialogs. Byte for byte for 6 compare states, 36 evidence states, 126 source states, all 59 record dialogs, the source dialogs and the about dialog, natively and from the WebAssembly build in Chrome.
+  - [ ] Original-data explorer (`original-data.mjs`). It updates the page piece by piece instead of returning one string, so port its filtering and paging to `soraine-core` and check the rest by comparing the page itself (next item).
   - [ ] Browser glue in `soraine-web`: state, URL sync, navigation, search routing, events, glossary tooltip, export/download, toast, audio player (`app.mjs` from line 72, `glossary.mjs` `initGlossary`, `audio.mjs`).
+  - How to check the browser glue: serve the JavaScript build and the Rust build side by side, drive both with the same Playwright steps, and compare the `#view` and dialog markup after each step (ignoring the 3D canvases). Until stage 4, the Rust page can load `globe.mjs` and `material-model.mjs` for the two 3D stages.
   - Check for the whole stage: `test/browser.mjs` passes against the Rust build; page text matches the JavaScript build view by view.
 - [ ] **4. 3D in Rust.** WebGL2 from Rust for the planet (shaders from `planet-materials.mjs`), the orbital laboratory and the material specimen, driven by the gesture code from stage 1. The specimen's glass-like material is the hard part. Check: `test/planets.mjs` passes; screenshots of Earth, Moon, Mars and each specimen are compared with the JavaScript build.
 - [ ] **5. The 3D tab.** Port the `soraine-3d` scenes and physics (cannon.js becomes the `rapier3d` crate) into the same renderer as a new `scenes` view, linked both ways with the research views. Check: each scene loads on desktop and at 390px; the flame and objects behave as in `soraine-3d` for all four worlds.

@@ -40,9 +40,16 @@ try {
       csv: research.csv(),
       reading: golden.reading.map(([material, world]) => [material, world, research.readingSummary(material, world)]),
       context: golden.context.map(([material]) => [material, wasm.comparisonContext(material)]),
-      sources: research.sourceOrder(),
+      sourceOrder: research.sourceOrder(),
       links: golden.links.map(({args, base}) => { try { return wasm.researchUrl(args.world, args.material, args.view, args.record, base ?? undefined); } catch (error) { return {error: error.message}; } }),
       views: golden.views.map(view => ({overview: research.overviewHtml(view.material, view.world, view.specimenInstance), chartPanel: research.chartPanelHtml(view.material, view.world, false), chartPanelLarge: research.chartPanelHtml(view.material, view.world, true)})),
+      compares: golden.compares.map(c => research.compareHtml(c.material, c.world)),
+      evidence: golden.evidenceCases.map(c => { const f = c.filter, args = [f.query ?? '', f.world ?? 'All', f.material ?? 'All', f.kind ?? 'All']; return [research.evidenceHtml(...args), research.evidenceResultsHtml(...args, c.page)]; }),
+      sources: golden.sourceCases.map(c => [research.sourceViewHtml(c.query, c.type), research.sourceResultsHtml(c.query, c.type, c.page)]),
+      records: golden.recordDialogs.map(([id]) => research.recordDialogHtml(id)),
+      sourceDialogs: golden.sourceDialogs.map(([id]) => research.sourceDialogHtml(id)),
+      about: research.aboutDialogHtml(),
+      unknownRecord: research.recordDialogHtml('nope') ?? null,
       numbers: golden.numbers.map(([value, digits]) => wasm.formatNumber(value ?? undefined, digits ?? undefined)),
     };
   }, golden);
@@ -53,9 +60,16 @@ try {
   assert.equal(actual.csv, golden.csv);
   assert.deepEqual(actual.reading, golden.reading);
   assert.deepEqual(actual.context, golden.context);
-  assert.deepEqual(actual.sources, golden.sources);
+  assert.deepEqual(actual.sourceOrder, golden.sources);
   assert.deepEqual(actual.links, golden.links.map(link => link.out ?? {error: link.error}));
   assert.deepEqual(actual.numbers, golden.numbers.map(n => n[2]));
   assert.deepEqual(actual.views, golden.views.map(view => ({overview: view.overview, chartPanel: view.chartPanel, chartPanelLarge: view.chartPanelLarge})));
-  console.log(`WebAssembly build matches the JavaScript reference in Chrome: ${actual.rowCount} results, ${actual.filters.length} filters, ${actual.sources.length} sources, ${actual.links.length} links, ${actual.numbers.length} numbers, ${actual.views.length} overview and chart views.`);
+  assert.deepEqual(actual.compares, golden.compares.map(c => c.html));
+  assert.deepEqual(actual.evidence, golden.evidenceCases.map(c => [c.frame, c.results]));
+  assert.deepEqual(actual.sources, golden.sourceCases.map(c => [c.frame, c.results]));
+  assert.deepEqual(actual.records, golden.recordDialogs.map(d => d[1]));
+  assert.deepEqual(actual.sourceDialogs, golden.sourceDialogs.map(d => d[1]));
+  assert.equal(actual.about, golden.aboutDialogs[0].html);
+  assert.equal(actual.unknownRecord, null);
+  console.log(`WebAssembly build matches the JavaScript reference in Chrome: ${actual.rowCount} results, ${actual.filters.length} filters, ${actual.sourceOrder.length} sources, ${actual.links.length} links, ${actual.numbers.length} numbers, ${actual.views.length} overview and chart views, ${actual.compares.length} compare views, ${actual.evidence.length} evidence states, ${actual.sources.length} source states, ${actual.records.length + actual.sourceDialogs.length + 1} dialogs.`);
 } finally { await browser.close(); server.close(); }

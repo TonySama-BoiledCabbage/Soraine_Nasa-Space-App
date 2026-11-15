@@ -59,6 +59,44 @@ impl Research {
         views::chart_panel(&self.rows, material, world, large)
     }
 
+    /// Markup of the compare view.
+    #[wasm_bindgen(js_name = compareHtml)]
+    pub fn compare_html(&self, material: &str, world: &str) -> String { views::compare(&self.rows, material, world) }
+
+    /// Markup of the evidence view's frame (title, filters, empty results panel).
+    #[wasm_bindgen(js_name = evidenceHtml)]
+    pub fn evidence_html(&self, query: &str, world: &str, material: &str, kind: &str) -> String {
+        views::evidence(&self.rows, &Filter { query, world, material, kind })
+    }
+
+    /// Markup of one page of the evidence table. The page is clamped to the last one.
+    #[wasm_bindgen(js_name = evidenceResultsHtml)]
+    pub fn evidence_results_html(&self, query: &str, world: &str, material: &str, kind: &str, page: usize) -> String {
+        views::evidence_results(&self.rows, &Filter { query, world, material, kind }, page).0
+    }
+
+    /// Markup of the source library's frame.
+    #[wasm_bindgen(js_name = sourceViewHtml)]
+    pub fn source_view_html(&self, query: &str, source_type: &str) -> String { views::source_view(&self.bundle, query, source_type) }
+
+    /// Markup of one page of the source table. The page is clamped to the last one.
+    #[wasm_bindgen(js_name = sourceResultsHtml)]
+    pub fn source_results_html(&self, query: &str, source_type: &str, page: usize) -> String {
+        views::source_results(&self.bundle, &self.rows, query, source_type, page).0
+    }
+
+    /// Markup of a measurement's detail dialog; `undefined` for an unknown id.
+    #[wasm_bindgen(js_name = recordDialogHtml)]
+    pub fn record_dialog_html(&self, id: &str) -> Option<String> { views::record_dialog(&self.rows, id) }
+
+    /// Markup of a source's detail dialog; `undefined` for an unknown id.
+    #[wasm_bindgen(js_name = sourceDialogHtml)]
+    pub fn source_dialog_html(&self, id: &str) -> Option<String> { views::source_dialog(&self.bundle, &self.rows, id) }
+
+    /// Markup of the "about this data" dialog.
+    #[wasm_bindgen(js_name = aboutDialogHtml)]
+    pub fn about_dialog_html(&self) -> String { views::about_dialog(&self.bundle) }
+
     /// Source IDs, most-cited first.
     #[wasm_bindgen(js_name = sourceOrder)]
     pub fn source_order(&self) -> Vec<String> {
