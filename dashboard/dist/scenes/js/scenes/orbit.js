@@ -42,8 +42,7 @@
       };
       function useMap(src, aniso) { new T.TextureLoader().load(src, function (tex) { tex.encoding = T.sRGBEncoding; tex.anisotropy = aniso; if (em.map) em.map.dispose(); em.map = tex; em.color.setHex(0xffffff); em.needsUpdate = true; }); }
       if (SP && SP.earth) useMap(SP.earth, 8);                    // the small picture first, then the 4096 x 2048 one once its file has loaded
-      window.SORAINE_SPACE_HD_READY = function () { useMap(window.SORAINE_SPACE_HD.earth, 16); };
-      if (window.SORAINE_SPACE_HD) window.SORAINE_SPACE_HD_READY(); else { var tag = document.createElement('script'); tag.src = 'js/space-hd.js'; document.head.appendChild(tag); }
+      // Keep the prepared local Earth map; no late HD texture replacement.
       var cm = new T.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, roughness: 1, depthWrite: false });
       cm.alphaMap = canvasTex(1024, function (c, s) {              // clouds drawn in code (not weather data): bands, swirls and broken fields
         var im = c.createImageData(s, s), d = im.data, x, y, i = 0, f = K.fbm;

@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<div id="scene-loading" class="scene-loading" role="status" aria-live="polite"><div class="loading-content"><span>SORAINE / FLAME IN FREEFALL</span><h2>Preparing your journey</h2><p id="loading-label">Starting the kitchen…</p><progress id="loading-progress" max="100" value="0" aria-label="Scene preparation progress"></progress><output id="loading-percent">0%</output><p>Preparing all four worlds before you begin.</p><button id="loading-retry" hidden onclick="location.reload()">Try again</button></div></div>
 <main id="stage" class="stage" data-scene="earth">
   <!-- scene: one WebGL canvas -->
   <div id="backdrop" class="backdrop" aria-hidden="true"></div>
@@ -19,7 +20,8 @@
   <div class="veil" aria-hidden="true"></div>
 
   <!-- interface: plain HTML on top -->
-  <div class="ui">
+  <div class="ui" inert>
+<button id="controls-toggle" class="controls-toggle" type="button" aria-expanded="false" aria-controls="scene-controls">Controls</button>
     <a class="team" href="#earth">Soraine</a>
 
     <nav class="worlds" aria-label="Choose a world">
@@ -45,7 +47,7 @@
       <p class="muted">Team Soraine, NASA Space Apps 2026. Gravity data, scan wave and loose-prop physics by Tony. The 3D scenes are stylised, not to scale, and were built in code with AI assistance (see the AI log in the project).</p>
     </article>
 
-    <aside class="side" aria-label="Stove readout and controls">
+    <aside id="scene-controls" class="side" aria-label="Stove readout and controls">
       <details id="lab" class="lab">
         <summary>Readout: <span id="lab-world">Earth</span></summary>
         <dl id="lab-facts" class="facts"></dl>
