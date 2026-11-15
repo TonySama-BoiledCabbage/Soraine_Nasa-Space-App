@@ -20,7 +20,7 @@
 (function () {
   var T = THREE, K = SoraineKit, objects = K.objects, floaters = K.floaters;
   var renderer, scene, camera, state = null, still = false, k = 0, lastT = 0, freeStart = 0;
-  var HQ = /[?&]hq\b/.test(location.search), LITE = /[?&]lite\b/.test(location.search), shadowDirty = 4, ratio = LITE ? 1 : 1.5, frames = 0, slow = 0, level = LITE ? 2 : 0, acc = 0, tick = 0;
+  var HQ = /[?&]hq\b/.test(location.search), LITE = /[?&]lite\b/.test(location.search) || !!window.SORAINE_LITE, noWave = !!window.SORAINE_LOW, shadowDirty = 4, ratio = LITE ? 1 : 1.5, frames = 0, slow = 0, level = LITE ? 2 : 0, acc = 0, tick = 0;
   var preparing = false;
   var groups = {}, built = {}, hooks = [], lineMat, inspectKey, pickRoots = [];
   var view = 'intro', introUntil = 0, focus = null, saved = [], focusCenter = new T.Vector3(), tmp = new T.Vector3();
@@ -127,7 +127,7 @@
 
     if (shadowDirty > 0 || (k > 0.002 && k < 0.998) || (sc.liveShadows && !focus && level < 2 && tick % 2 === 0)) { renderer.shadowMap.needsUpdate = true; shadowDirty--; }   // shadows only redraw when something moved
     dof += ((focus ? 0 : dofGoal) - dof) * (still ? 1 : 1 - Math.exp(-dt * 3));
-    if (wave.active || dof > 0.01) renderWave(dt, t); else renderer.render(scene, camera);
+    if (!noWave && (wave.active || dof > 0.01)) renderWave(dt, t); else renderer.render(scene, camera);
   }
 
   /* Tony's scan wave (kitchen/wave.js in his repository), in the structure he describes: world position from depth ->
@@ -221,6 +221,7 @@
     shadowDirty = 4;
   }
   function prebuild() {
+    if (LITE) return;                                            // phones build a world only when it is opened: less memory, no start-up freeze
     var next = Object.keys(K.scenes).filter(function (id) { return !built[id] && id !== 'orbit'; })[0]; if (!next) return;
     try { ensure(next); } catch (e) { if (window.console) console.error(e); }
     setTimeout(prebuild, 1200);
@@ -241,8 +242,9 @@
 
   window.SoraineScene = {
     init: function (canvas, first) {
-      renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); window.__R = renderer;
+      renderer = new T.WebGLRenderer({ canvas: canvas, antialias: !LITE, alpha: true, powerPreference: 'high-performance' }); window.__R = renderer;
       renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+      if (!renderer.capabilities.isWebGL2 && !(renderer.extensions.has('OES_texture_half_float') && renderer.extensions.has('WEBGL_depth_texture'))) noWave = true;   // old graphics chips
       renderer.shadowMap.enabled = !LITE; renderer.shadowMap.type = T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;   // add ?lite to the address for slow machines: no shadows, lower resolution
       E.renderer = renderer;
       build(first || Object.keys(K.scenes)[0]); setState(first || Object.keys(K.scenes)[0]);
@@ -316,6 +318,7 @@
     isTop: function () { return top; },
     /* Scan transition, step 1: keep a picture of the world as it is now. Call before changing scene. */
     scanCapture: function () {
+      if (noWave) return false;                                   // weak phone or no float/depth textures: the caller falls back to the simple wipe
       try {
         if (!rt) initWave(); sizeWave(); draw(performance.now());
         if (oldCanvas.width !== renderer.domElement.width || oldCanvas.height !== renderer.domElement.height || !oldTex.userData.sized) { oldTex.dispose(); oldCanvas.width = renderer.domElement.width; oldCanvas.height = renderer.domElement.height; oldTex.userData.sized = true; }   // a texture keeps its first size: start a new one when the picture's size changes

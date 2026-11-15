@@ -28,7 +28,7 @@ async function request(url){
 }
 const research = createResearchCache({snapshot,refresh:()=>readPublicBundle({request,project,dataset,snapshot}).catch(error=>{console.warn('Research refresh:',error.message);throw error})});
 const originalData = createResearchCache({snapshot:originalSnapshot,refresh:()=>readOriginalBundle({request,project,dataset,snapshot:originalSnapshot}).catch(error=>{console.warn('Original data refresh:',error.message);throw error})});
-const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
+const types={'.html':'text/html; charset=utf-8','.m4a':'audio/mp4','.mjs':'text/javascript','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
 // Ignore malformed or multipart requests; a valid range outside the file is 416.
 function audioRange(header,size){
   const match=/^bytes=(\d*)-(\d*)$/i.exec((header||'').trim());
@@ -64,7 +64,7 @@ const server=http.createServer(async(req,res)=>{
     let info=await stat(file);
     if(info.isDirectory()){file=resolve(file,'index.html');info=await stat(file);}
     const etag='W/"'+info.size.toString(16)+'-'+Math.trunc(info.mtimeMs).toString(16)+'"';
-    const extension=extname(file).toLowerCase(),audioAsset=['.wav','.ogg','.mp3'].includes(extension);
+    const extension=extname(file).toLowerCase(),audioAsset=['.wav','.ogg','.mp3','.m4a'].includes(extension);
     const stableAsset=audioAsset||/\.(png|jpg|webp|woff2|svg)$/.test(file);
     res.setHeader('Cache-Control',stableAsset?'public, max-age=3600':'public, max-age=0, must-revalidate');
     res.setHeader('ETag',etag);

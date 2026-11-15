@@ -12,10 +12,12 @@ export function createGlobe(host,world){
   if(retry){const button=document.createElement('button');button.type='button';button.textContent='Retry surface';Object.assign(button.style,{display:'block',margin:'12px auto 0',padding:'8px 12px',border:'1px solid #168bff80',color:'#80ceff',background:'#05070d'});button.addEventListener('pointerdown',e=>e.stopPropagation());button.addEventListener('click',e=>{e.stopPropagation();retry()});status.append(button)}
   if(status.parentNode!==host)host.append(status);
  }
- let renderer;try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});}catch(error){host.replaceChildren();showStatus('The 3D view is unavailable in this browser. Research data is still available.','error');throw error}
+ const device=window.SORAINE_DEVICE||{};
+ // Phones with dense screens skip antialiasing (the extra pixels already smooth edges); weak phones draw at the screen's base resolution.
+ let renderer;try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:!(device.low||(device.phone&&(window.devicePixelRatio||1)>=2)),powerPreference:'low-power'});}catch(error){host.replaceChildren();showStatus('The 3D view is unavailable in this browser. Research data is still available.','error');throw error}
  const touchDevice=matchMedia('(pointer: coarse)').matches;
  const compact=touchDevice||matchMedia('(max-width: 760px)').matches;
- const pixelRatio=()=>Math.min(window.devicePixelRatio||1,compact?1.5:2);renderer.setPixelRatio(pixelRatio());renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
+ const pixelRatio=()=>Math.min(window.devicePixelRatio||1,device.low?1:compact?1.5:2);renderer.setPixelRatio(pixelRatio());renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
  let surfaceReady=false,initialized=false;renderer.domElement.style.visibility='hidden';
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(0,.12,5.8);const group=new THREE.Group();group.rotation.z=world==='Microgravity'?0:.15;scene.add(group);
  const loader=new THREE.ImageLoader(),textures=new Map(),worlds=new Map();let disposed=false,active=null,lab=null,sphere=null,selection=0,requestedWorld=null,fade=null;
@@ -24,7 +26,7 @@ export function createGlobe(host,world){
   // A defined black night map avoids invented lights if that optional image fails.
   const placeholder=document.createElement('canvas');placeholder.width=placeholder.height=1;
   const context=placeholder.getContext('2d');context.fillStyle=name==='moon-normal.png'?'#8080ff':'#000';context.fillRect(0,0,1,1);
-  const texture=new THREE.Texture(placeholder);texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);
+  const texture=new THREE.Texture(placeholder);texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),device.low?2:8);
   const small=name.replace(/\.(png|jpg)$/, '-mobile.webp');
   // These NASA-derived maps resolve the displayed globe without a mid-animation
   // multi-megabyte replacement. Keep both decoded maps and GPU textures alive.

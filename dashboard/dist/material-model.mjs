@@ -11,7 +11,8 @@ export function createMaterialModel(host,initialMaterial){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const compact=matchMedia('(pointer:coarse)').matches||matchMedia('(max-width:760px)').matches;
  let scrolling=false,scrollTimer=null,gestures=null;
- const pixelRatio=()=>Math.min(window.devicePixelRatio||1,2);
+ const device=window.SORAINE_DEVICE||{};
+ const pixelRatio=()=>Math.min(window.devicePixelRatio||1,device.low?1:compact?1.5:2);
  let paused=reduced.matches,holdUntil=0,lastRender=0,dirty=true;
  const controller=new AbortController(),geometries=new Set(),materials=new Set(),textures=new Set(),models=new Map();
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.05,30),turntable=new THREE.Group();
@@ -133,7 +134,7 @@ export function createMaterialModel(host,initialMaterial){
  }
 
  try{
-  renderer=new THREE.WebGLRenderer({alpha:false,antialias:true,powerPreference:'low-power'});
+  renderer=new THREE.WebGLRenderer({alpha:false,antialias:!((window.SORAINE_DEVICE||{}).low),powerPreference:'low-power'});
   renderer.setPixelRatio(pixelRatio());renderer.setClearColor(0x05070d);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
   renderer.domElement.setAttribute('aria-hidden','true');

@@ -86,12 +86,12 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 .go { text-shadow: none; }
 
 /* ---- world buttons (top) and the stove readout card (right) ---- */
-.worlds { position: absolute; top: max(var(--pad), env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; gap: 2px; background: rgba(10,10,12,.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 3px; }
+.worlds { position: absolute; top: max(var(--pad), env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; gap: 2px; background: rgba(10,10,12,.5); -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px); -webkit-backdrop-filter: blur(10px); padding: 3px; }
 .worlds button { font: inherit; font-size: 14px; font-weight: 500; letter-spacing: .08em; color: var(--ink); background: transparent; border: 0; padding: 8px 16px; cursor: pointer; min-height: 40px; }
 .worlds button[aria-pressed="true"] { background: var(--ink); color: #000; }
 .worlds button:focus-visible, .lab button:focus-visible, .lab summary:focus-visible, .lab input:focus-visible { outline: 2px solid #5aa8ff; outline-offset: 2px; }
 .lab { position: absolute; top: calc(max(var(--pad), env(safe-area-inset-top)) + 58px); right: max(var(--pad), env(safe-area-inset-right)); width: min(19rem, 78vw); max-height: calc(100vh - 200px); overflow: auto;
-  background: rgba(10,10,12,.56); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 12px 14px; font-size: 14px; line-height: 1.35; }
+  background: rgba(10,10,12,.56); -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px); -webkit-backdrop-filter: blur(12px); padding: 12px 14px; font-size: 14px; line-height: 1.35; }
 .lab summary { cursor: pointer; font-weight: 600; letter-spacing: .04em; list-style-position: inside; }
 .lab[open] summary { margin-bottom: 10px; }
 .facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0 0 8px; }
@@ -110,11 +110,11 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 @media (max-width: 760px) { .worlds { left: auto; right: max(var(--pad), env(safe-area-inset-right)); transform: none; } .worlds button { padding: 8px 10px; } .lab { top: calc(max(var(--pad), env(safe-area-inset-top)) + 52px); max-height: 46vh; } }
 
 /* ---- Tony's page views: observe / detail / about ---- */
-.pages { position: absolute; left: 50%; bottom: max(var(--pad), env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 2px; background: rgba(10,10,12,.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 3px; }
+.pages { position: absolute; left: 50%; bottom: max(var(--pad), env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 2px; background: rgba(10,10,12,.5); -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px); -webkit-backdrop-filter: blur(10px); padding: 3px; }
 .pages button { font: inherit; font-size: 13px; letter-spacing: .08em; color: var(--ink); background: transparent; border: 0; padding: 7px 14px; min-height: 36px; cursor: pointer; }
 .pages button[aria-pressed="true"] { background: var(--ink); color: #000; }
 .pages button:focus-visible { outline: 2px solid #5aa8ff; outline-offset: 2px; }
-.card { position: absolute; left: max(var(--pad), env(safe-area-inset-left)); top: 50%; transform: translateY(-50%); width: min(26rem, 86vw); max-height: 70vh; overflow: auto; background: rgba(10,10,12,.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); padding: 20px 22px; line-height: 1.5; }
+.card { position: absolute; left: max(var(--pad), env(safe-area-inset-left)); top: 50%; transform: translateY(-50%); width: min(26rem, 86vw); max-height: 70vh; overflow: auto; background: rgba(10,10,12,.6); -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px); -webkit-backdrop-filter: blur(14px); padding: 20px 22px; line-height: 1.5; }
 .card h2 { margin: 0 0 8px; font-size: 26px; font-weight: 600; }
 .card p { margin: 0 0 10px; max-width: 60ch; }
 .card .muted { color: var(--dim); font-size: 14px; }
@@ -130,7 +130,7 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 .stage { -webkit-user-select: none; user-select: none; }
 
 /* ---- polish pass: frosted-glass panels in the margins, compact world bar ---- */
-.worlds, .pages, .lab, .quick, .card { background: rgba(18,20,28,.32); backdrop-filter: blur(18px) saturate(1.35); -webkit-backdrop-filter: blur(18px) saturate(1.35); border: 1px solid rgba(255,255,255,.14); text-shadow: 0 1px 6px rgba(0,0,0,.65); }
+.worlds, .pages, .lab, .quick, .card { background: rgba(18,20,28,.32); -webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35); -webkit-backdrop-filter: blur(18px) saturate(1.35); border: 1px solid rgba(255,255,255,.14); text-shadow: 0 1px 6px rgba(0,0,0,.65); }
 .worlds { padding: 2px; gap: 1px; }
 .worlds button { font-size: 11px; letter-spacing: .1em; padding: 4px 10px; min-height: 28px; }
 .worlds button small { display: inline; margin: 0 0 0 6px; font-size: 9.5px; opacity: .7; }
@@ -165,7 +165,7 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 /* ---- clear glass: the scene shows through the panels; readability comes from text shadow, not a dark fill ---- */
 .worlds, .pages, .lab, .quick, .card {
   background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 45%, rgba(255,255,255,.05));
-  backdrop-filter: blur(7px) saturate(1.5) brightness(.8); -webkit-backdrop-filter: blur(7px) saturate(1.5) brightness(.8);
+  -webkit-backdrop-filter:blur(7px) saturate(1.5) brightness(.8);backdrop-filter:blur(7px) saturate(1.5) brightness(.8); -webkit-backdrop-filter: blur(7px) saturate(1.5) brightness(.8);
   border: 1px solid rgba(255,255,255,.2); border-radius: 10px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 4px 18px rgba(0,0,0,.14);
   text-shadow: 0 1px 2px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
@@ -179,14 +179,14 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 .side .lab { padding: 7px 10px; }
 .card { width: min(17rem, 78vw); padding: 12px 14px; }
 .card .muted, .card dt, .lab .small { color: rgba(255,255,255,.8); }
-@media (prefers-reduced-transparency: reduce) { .worlds, .pages, .lab, .quick, .card { background: rgba(18,20,28,.8); backdrop-filter: none; -webkit-backdrop-filter: none; } }
+@media (prefers-reduced-transparency: reduce) { .worlds, .pages, .lab, .quick, .card { background: rgba(18,20,28,.8); -webkit-backdrop-filter:none;backdrop-filter:none; -webkit-backdrop-filter: none; } }
 .lab, .lab *, .quick, .card { --dim: rgba(255,255,255,.86); }
 
 /* automatic quality (js/engine.js): on a struggling machine the panels drop their blur, which is costly over a live 3D canvas */
-.is-light .worlds, .is-light .pages, .is-light .lab, .is-light .quick, .is-light .card { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(14,16,22,.42); }
+.is-light .worlds, .is-light .pages, .is-light .lab, .is-light .quick, .is-light .card { -webkit-backdrop-filter:none;backdrop-filter:none; -webkit-backdrop-filter: none; background: rgba(14,16,22,.42); }
 
 /* Startup preparation and non-overlapping touch controls. */
-.scene-loading { position:fixed; inset:0; z-index:100; display:grid; place-items:center; background:rgba(3,8,18,.72); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); padding:24px; }
+.scene-loading { position:fixed; inset:0; z-index:100; display:grid; place-items:center; background:rgba(3,8,18,.72); -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); padding:24px; }
 .scene-loading[hidden] { display:none; }
 .loading-content { width:min(360px,100%); text-align:center; line-height:1.5; }
 .loading-content span { color:#72caff; font-size:11px; letter-spacing:.15em; }
@@ -202,31 +202,31 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
  .worlds { top:60px; left:14px; right:14px; transform:none; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
  .worlds button { min-height:44px; padding:4px; font-size:12px; letter-spacing:0; }
  .worlds button small { display:block; margin:2px 0 0; font-size:10px; }
- .side { display:none; top:116px; right:14px; left:14px; width:auto; max-height:calc(100dvh - 185px); background:#0a1426ed; border-radius:10px; z-index:5; }
+ .side { display:none; top:116px; right:14px; left:14px; width:auto; max-height:calc(100vh - 185px);max-height:calc(100dvh - 185px); background:#0a1426ed; border-radius:10px; z-index:5; }
  .controls-open .side { display:flex; }
  .controls-open .hero, .controls-open .corner { display:none; }
  .pages { bottom:12px; left:14px; right:14px; transform:none; display:grid; grid-template-columns:repeat(3,1fr); }
  .pages button { min-height:44px; font-size:12px; }
- .hero { position:absolute; bottom:76px; left:16px; right:16px; max-height:calc(100dvh - 204px); overflow:auto; }
+ .hero { position:absolute; bottom:76px; left:16px; right:16px; max-height:calc(100vh - 204px);max-height:calc(100dvh - 204px); overflow:auto; }
  .hero h1 { font-size:24px; }.hero .line { font-size:13px; margin:5px 0 10px; max-width:none; }.hero .go { min-height:44px; }
- .corner { display:none; }.card { left:14px; right:14px; width:auto; bottom:76px; max-height:calc(100dvh - 200px); }
- .info { position:absolute; bottom:76px; left:16px; right:16px; max-height:45dvh; overflow:auto; }.info .line { font-size:14px; }
+ .corner { display:none; }.card { left:14px; right:14px; width:auto; bottom:76px; max-height:calc(100vh - 200px);max-height:calc(100dvh - 200px); }
+ .info { position:absolute; bottom:76px; left:16px; right:16px; max-height:45vh;max-height:45dvh; overflow:auto; }.info .line { font-size:14px; }
  .viewcube { position:absolute; top:64px; right:14px; }.is-inspect .controls-toggle { display:none; }
 }
 
 /* One compact lab drawer, with the animation visible after each action. */
 .controls-toggle { display:block; position:absolute; top:max(var(--pad), env(safe-area-inset-top)); right:max(var(--pad), env(safe-area-inset-right)); min-height:42px; padding:9px 16px; font:500 14px/1.2 "Jost",sans-serif; color:#e8f5ff; background:rgba(7,20,37,.88); border:1px solid #3187bf; border-radius:12px; cursor:pointer; }
 .controls-toggle[aria-expanded=true] { background:#103654; border-color:#56bfff; }
-.side { display:flex; left:auto; top:calc(max(var(--pad), env(safe-area-inset-top)) + 54px); right:max(var(--pad), env(safe-area-inset-right)); width:340px; max-height:calc(100dvh - 160px); padding:20px; gap:12px; z-index:5; border:1px solid rgba(72,177,255,.35); border-radius:18px; background:linear-gradient(145deg,rgba(13,31,52,.97),rgba(4,12,24,.96)); box-shadow:0 18px 50px #0005; text-shadow:none; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#365d7d transparent; opacity:0; visibility:hidden; transform:translateY(-8px) scale(.98); transform-origin:top right; pointer-events:none; transition:opacity 180ms ease,transform 180ms ease,visibility 180ms; }
+.side { display:flex; left:auto; top:calc(max(var(--pad), env(safe-area-inset-top)) + 54px); right:max(var(--pad), env(safe-area-inset-right)); width:340px; max-height:calc(100vh - 160px);max-height:calc(100dvh - 160px); padding:20px; gap:12px; z-index:5; border:1px solid rgba(72,177,255,.35); border-radius:18px; background:linear-gradient(145deg,rgba(13,31,52,.97),rgba(4,12,24,.96)); box-shadow:0 18px 50px #0005; text-shadow:none; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#365d7d transparent; opacity:0; visibility:hidden; transform:translateY(-8px) scale(.98); transform-origin:top right; pointer-events:none; transition:opacity 180ms ease,transform 180ms ease,visibility 180ms; }
 .controls-open .side { display:flex; opacity:1; visibility:visible; transform:none; pointer-events:auto; }
 .controls-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; }
 .controls-eyebrow { color:#50baff; font-size:10px; letter-spacing:.18em; font-weight:600; }
 .controls-heading h2 { margin:4px 0 0; font-size:24px; font-weight:500; letter-spacing:-.02em; }
 #controls-close { width:40px; height:40px; flex-shrink:0; border:1px solid #38536c; border-radius:50%; color:#dcefff; background:#ffffff06; font:24px/1 sans-serif; cursor:pointer; }
 .controls-hint { font-size:13px; line-height:1.5; color:#a9bed3; }
-.side .lab { order:3; padding:12px 0 0; border:0; border-top:1px solid #ffffff1c; border-radius:0; background:none; box-shadow:none; backdrop-filter:none; text-shadow:none; }
+.side .lab { order:3; padding:12px 0 0; border:0; border-top:1px solid #ffffff1c; border-radius:0; background:none; box-shadow:none; -webkit-backdrop-filter:none;backdrop-filter:none; text-shadow:none; }
 .side .lab summary { font-size:13px; color:#b5cce1; }
-.side .quick { padding:0; border:0; background:none; backdrop-filter:none; box-shadow:none; text-shadow:none; }
+.side .quick { padding:0; border:0; background:none; -webkit-backdrop-filter:none;backdrop-filter:none; box-shadow:none; text-shadow:none; }
 .quick .valve { display:flex; justify-content:space-between; gap:12px; font-size:14px; }
 .quick .valve output { color:#62c6ff; font-variant-numeric:tabular-nums; }
 .quick input[type=range] { height:28px; margin:4px 0; accent-color:#2baaff; }
@@ -244,6 +244,6 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
 .is-inspect .controls-toggle,.is-inspect .scene-feedback,.is-about .scene-feedback,.is-detail .scene-feedback { display:none; }
 @media(max-width:900px) {
  .controls-toggle { top:10px; right:14px; }
- .side { top:116px; right:14px; left:14px; width:auto; max-height:calc(100dvh - 185px); padding:16px; }
+ .side { top:116px; right:14px; left:14px; width:auto; max-height:calc(100vh - 185px);max-height:calc(100dvh - 185px); padding:16px; }
 }
 @media(prefers-reduced-motion:reduce) { .side { transition:none; } }

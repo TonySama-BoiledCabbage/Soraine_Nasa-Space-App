@@ -77,7 +77,7 @@ play.addEventListener('click', async () => {
   desiredPlaying = !desiredPlaying;
   if (!desiredPlaying) { audio.pause(); status.textContent = 'Paused.'; render(); return; }
   // Request the audio only after an explicit play gesture, never on page load.
-  if (!audio.getAttribute('src')) audio.src = './assets/audio/soraine-quiet-orbit.wav';
+  if (!audio.getAttribute('src')) audio.src = audio.canPlayType('audio/mp4; codecs="mp4a.40.2"') ? './assets/audio/soraine-quiet-orbit.m4a' : './assets/audio/soraine-quiet-orbit.wav';   // the AAC copy is about a tenth of the download
   if (audio.error) audio.load();
   status.textContent = 'Loading music…';
   render();

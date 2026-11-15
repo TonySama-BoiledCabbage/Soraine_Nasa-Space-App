@@ -113,8 +113,15 @@
   </div>
 </main>
 <noscript><p style="position:fixed;inset:0;display:grid;place-items:center;color:#fff;font-family:sans-serif">Soraine: Flame in Freefall needs JavaScript to draw the kitchen.</p></noscript>
+<script>
+/* Phones start in the light mode (no shadows, base resolution, worlds built one at a time); weak phones also skip the
+   scan-wave pass. Add ?hq to the address to force full quality, ?lite to force light. */
+(function () { var n = navigator, coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches, hq = /[?&]hq\b/.test(location.search);
+  var low = (n.hardwareConcurrency && n.hardwareConcurrency <= 4 && coarse) || (n.deviceMemory && n.deviceMemory <= 3) || (n.connection && n.connection.saveData) || (coarse && !(window.CSS && CSS.supports && CSS.supports('height', '100dvh')));
+  window.SORAINE_LITE = !hq && (coarse || !!low); window.SORAINE_LOW = !hq && !!low; if (window.SORAINE_LOW) document.documentElement.classList.add('is-light'); })();
+</script>
 <script src="js/vendor/three.min.js"></script>
-<script src="js/space-data.js"></script>
+<script>document.write('<script src="js/space-data' + (window.SORAINE_LITE ? '-lite' : '') + '.js"><\/script>');</script>
 <script src="js/kit.js"></script>
 <script src="js/physics-data.js"></script>
 <script src="js/props.js"></script>
