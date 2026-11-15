@@ -267,3 +267,45 @@ fn dialogs_match_javascript() {
         same(about_dialog(&next), &case["html"], format!("about {} {}", case["mode"], case["exportedAt"]));
     }
 }
+
+/// A `State` from the JavaScript key names in a golden case, starting from the defaults.
+fn state_from(changes: &Value) -> soraine_core::app::State {
+    let mut state = soraine_core::app::State::default();
+    let text = |key: &str, slot: &mut String| if let Some(value) = changes.get(key).and_then(Value::as_str) { *slot = value.to_string(); };
+    text("view", &mut state.view); text("world", &mut state.world); text("material", &mut state.material); text("query", &mut state.query);
+    text("filterWorld", &mut state.filter_world); text("filterMaterial", &mut state.filter_material); text("filterKind", &mut state.filter_kind);
+    text("sourceQuery", &mut state.source_query); text("sourceType", &mut state.source_type); text("originalDataset", &mut state.original_dataset); text("originalQuery", &mut state.original_query);
+    if let Some(page) = changes.get("page").and_then(Value::as_u64) { state.page = page as usize; }
+    if let Some(page) = changes.get("sourcePage").and_then(Value::as_u64) { state.source_page = page as usize; }
+    state
+}
+
+#[test]
+fn page_logic_matches_javascript() {
+    use soraine_core::app::*;
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for case in golden["syncUrls"].as_array().unwrap() {
+        assert_eq!(sync_url(&state_from(&case["state"]), s(&case["href"])).as_deref(), Some(s(&case["out"])), "{} from {}", case["state"], case["href"]);
+    }
+    for case in golden["restores"].as_array().unwrap() {
+        let mut state = State::default();
+        let record = restore_url_state(&mut state, s(&case["search"]), s(&case["hash"]), &rows, &bundle);
+        assert_eq!(state.to_json(), case["state"], "{} {}", case["search"], case["hash"]);
+        assert_eq!(record.as_deref(), case["record"].as_str(), "{}", case["search"]);
+    }
+    for case in golden["searches"].as_array().unwrap() {
+        let mut state = state_from(&serde_json::json!({"view": "sources", "world": "Mars", "material": "Mylar G", "page": 3}));
+        let route = route_global_search(&mut state, &rows, s(&case["query"]));
+        let navigated: Vec<&str> = case["navigated"].as_array().unwrap().iter().map(s).collect();
+        let expected = match navigated.as_slice() { [] => Route::Stay, [view] => if *view == "evidence" && route == Route::SearchEvidence { Route::SearchEvidence } else { Route::Go(VIEWS.iter().copied().find(|v| v == view).unwrap()) }, _ => panic!("navigated twice") };
+        assert_eq!(route, expected, "{}", case["query"]);
+        assert_eq!(state.to_json(), case["state"], "{}", case["query"]);
+    }
+    for case in golden["labels"].as_array().unwrap() {
+        let mut next = serde_json::json!({"exportedAt": case["exportedAt"]});
+        if let Some(mode) = case["mode"].as_str() { next["delivery"] = serde_json::json!({"mode": mode}); }
+        assert_eq!(snapshot_label(&next), s(&case["snapshot"]));
+        assert_eq!(connection_label(&next), s(&case["connection"]));
+    }
+}

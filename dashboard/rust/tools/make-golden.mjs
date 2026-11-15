@@ -46,6 +46,25 @@ const aboutDialogs = [[undefined, bundle.exportedAt], ['bigquery', '2026-11-15T0
   return {mode: mode ?? null, exportedAt, html: dialog()};
 });
 app.setData(bundle);
+const defaults = {...app.state, view: 'overview', world: 'Earth', material: 'Ultem 1000', query: '', filterWorld: 'All', filterMaterial: 'All', filterKind: 'All', page: 0, sourceQuery: '', sourceType: 'All', sourcePage: 0, originalDataset: '', originalQuery: ''};
+const reset = (changes = {}) => { for (const key of Object.keys(app.state)) delete app.state[key]; Object.assign(app.state, defaults, changes); };
+const urlStates = [{}, {view: 'compare', world: 'Moon', material: 'Mylar G'}, {view: 'overview', world: 'Microgravity', material: 'Nomex HT90-40'},
+  {view: 'evidence'}, {view: 'evidence', query: 'Ultem & "Moon"', filterWorld: 'Earth-to-Moon model', filterMaterial: 'P 213', filterKind: 'reported_fit_to_experimental_data'},
+  {view: 'experiments'}, {view: 'experiments', originalDataset: 'saffire-ii', originalQuery: 'cotton 100%'}, {view: 'sources'}, {view: 'sources', sourceQuery: 'flame spread', sourceType: 'nasa_ntrs'}];
+const urlBases = ['https://soraine.vercel.app/', 'https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare', 'http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources'];
+const syncUrls = urlStates.flatMap(changes => urlBases.map(href => { reset(changes); globalThis.location.href = href; app.syncURL(); return {state: changes, href, out: globalThis.__replaced}; }));
+const restores = [['', ''], ['?world=MOON&material=Mylar%20G', '#compare'], ['?world=iss', '#overview'], ['?world=venus&material=spoon', '#nope'],
+  ['?world=mars&material=Nomex+HT90-40&q=flame+tip&kind=reported_fit_to_experimental_data', '#evidence'], ['?world=earth-to-moon%20model&material=PMMA&kind=bogus', '#evidence'], ['?material=P%20213&record=E014', '#evidence'],
+  ['?dataset=saffire-ii&q=cotton', '#experiments'], ['?q=saffire&collection=' + encodeURIComponent(bundle.sources[0].source_type), '#sources'], ['?collection=bogus&record=E001', '#sources'], ['?record=E002', '']]
+  .map(([search, hash]) => { reset(); Object.assign(globalThis.location, {search, hash}); const params = app.restoreURLState(); return {search, hash, state: {...app.state}, record: params.get('record')}; });
+const searches = ['', '   ', 'compare Ultem Moon Mars', 'original BASS', 'show original saffire data', 'find raw csv records for cotton', 'Ultem on Moon', 'mylar', 'PET in orbit', 'nomex vs earth', 'acrylic lunar', 'p213',
+  'PMMA mars and moon', 'zero g', '1 g', 'micro-g flames', 'ISS', 'flame spread rate', 'Ultem 1000 versus Mylar G', '  What about Kapton?  ', 'P 213 earth', 'martian', 'NOMEX HT90-40 comparison']
+  .map(query => { reset({view: 'sources', world: 'Mars', material: 'Mylar G', page: 3}); globalThis.__navigated.length = 0; app.routeGlobalSearch(query); return {query, state: {...app.state}, navigated: [...globalThis.__navigated]}; });
+reset();
+const labels = ['2026-11-15T16:17:04.123Z', '2026-01-02T00:00:00.000Z', '2026-02-09T09:05:00Z', '2026-03-31T23:59:59.999Z', '2026-04-01T12:00:00Z', '2026-05-20T01:02:03Z', '2026-06-30T10:10:10Z', '2026-07-04T04:04:04Z', '2026-08-08T08:08:08Z', '2026-09-09T19:09:09Z', '2026-10-10T10:10:10Z', '2026-12-25T22:22:22Z']
+  .flatMap(exportedAt => [undefined, 'bigquery', 'cached-stale'].map(mode => ({exportedAt, mode: mode ?? null,
+    snapshot: (mode === 'bigquery' ? 'Refreshed ' : 'Snapshot ') + new Date(exportedAt).toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC'}) + ' · ' + new Date(exportedAt).toISOString().slice(11, 16) + ' UTC',
+    connection: mode === 'bigquery' ? 'BigQuery connected' : mode === 'cached-stale' ? 'BigQuery cached' : 'Saved snapshot'})));
 const metricNames = [...new Set(rows.map(r => r.metric)), 'ULOI', 'unknown <metric>'].map(metric => [metric, app.metricName(metric)]);
 const specimens = [];
 let specimenCase = 0;
@@ -84,6 +103,10 @@ const golden = {
   evidenceCases,
   sourceCases,
   metricNames,
+  syncUrls,
+  restores,
+  searches,
+  labels,
   recordDialogs,
   sourceDialogs,
   aboutDialogs,

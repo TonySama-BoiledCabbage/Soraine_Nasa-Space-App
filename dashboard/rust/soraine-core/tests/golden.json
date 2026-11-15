@@ -4400,6 +4400,1148 @@
    "unknown &lt;metric&gt;"
   ]
  ],
+ "syncUrls": [
+  {
+   "state": {},
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?world=earth&material=Ultem+1000#overview"
+  },
+  {
+   "state": {},
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&world=earth&material=Ultem+1000#overview"
+  },
+  {
+   "state": {},
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&world=earth&material=Ultem+1000#overview"
+  },
+  {
+   "state": {
+    "view": "compare",
+    "world": "Moon",
+    "material": "Mylar G"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?world=moon&material=Mylar+G#compare"
+  },
+  {
+   "state": {
+    "view": "compare",
+    "world": "Moon",
+    "material": "Mylar G"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&world=moon&material=Mylar+G#compare"
+  },
+  {
+   "state": {
+    "view": "compare",
+    "world": "Moon",
+    "material": "Mylar G"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&world=moon&material=Mylar+G#compare"
+  },
+  {
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Nomex HT90-40"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?world=microgravity&material=Nomex+HT90-40#overview"
+  },
+  {
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Nomex HT90-40"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&world=microgravity&material=Nomex+HT90-40#overview"
+  },
+  {
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Nomex HT90-40"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&world=microgravity&material=Nomex+HT90-40#overview"
+  },
+  {
+   "state": {
+    "view": "evidence"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/#evidence"
+  },
+  {
+   "state": {
+    "view": "evidence"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y#evidence"
+  },
+  {
+   "state": {
+    "view": "evidence"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1#evidence"
+  },
+  {
+   "state": {
+    "view": "evidence",
+    "query": "Ultem & \"Moon\"",
+    "filterWorld": "Earth-to-Moon model",
+    "filterMaterial": "P 213",
+    "filterKind": "reported_fit_to_experimental_data"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?world=earth-to-moon+model&material=P+213&q=Ultem+%26+%22Moon%22&kind=reported_fit_to_experimental_data#evidence"
+  },
+  {
+   "state": {
+    "view": "evidence",
+    "query": "Ultem & \"Moon\"",
+    "filterWorld": "Earth-to-Moon model",
+    "filterMaterial": "P 213",
+    "filterKind": "reported_fit_to_experimental_data"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&world=earth-to-moon+model&material=P+213&q=Ultem+%26+%22Moon%22&kind=reported_fit_to_experimental_data#evidence"
+  },
+  {
+   "state": {
+    "view": "evidence",
+    "query": "Ultem & \"Moon\"",
+    "filterWorld": "Earth-to-Moon model",
+    "filterMaterial": "P 213",
+    "filterKind": "reported_fit_to_experimental_data"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&world=earth-to-moon+model&material=P+213&q=Ultem+%26+%22Moon%22&kind=reported_fit_to_experimental_data#evidence"
+  },
+  {
+   "state": {
+    "view": "experiments"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/#experiments"
+  },
+  {
+   "state": {
+    "view": "experiments"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y#experiments"
+  },
+  {
+   "state": {
+    "view": "experiments"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1#experiments"
+  },
+  {
+   "state": {
+    "view": "experiments",
+    "originalDataset": "saffire-ii",
+    "originalQuery": "cotton 100%"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?dataset=saffire-ii&q=cotton+100%25#experiments"
+  },
+  {
+   "state": {
+    "view": "experiments",
+    "originalDataset": "saffire-ii",
+    "originalQuery": "cotton 100%"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&dataset=saffire-ii&q=cotton+100%25#experiments"
+  },
+  {
+   "state": {
+    "view": "experiments",
+    "originalDataset": "saffire-ii",
+    "originalQuery": "cotton 100%"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&dataset=saffire-ii&q=cotton+100%25#experiments"
+  },
+  {
+   "state": {
+    "view": "sources"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/#sources"
+  },
+  {
+   "state": {
+    "view": "sources"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y#sources"
+  },
+  {
+   "state": {
+    "view": "sources"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1#sources"
+  },
+  {
+   "state": {
+    "view": "sources",
+    "sourceQuery": "flame spread",
+    "sourceType": "nasa_ntrs"
+   },
+   "href": "https://soraine.vercel.app/",
+   "out": "https://soraine.vercel.app/?q=flame+spread&collection=nasa_ntrs#sources"
+  },
+  {
+   "state": {
+    "view": "sources",
+    "sourceQuery": "flame spread",
+    "sourceType": "nasa_ntrs"
+   },
+   "href": "https://soraine.vercel.app/?world=moon&utm=x%20y&record=E014&q=old#compare",
+   "out": "https://soraine.vercel.app/?utm=x+y&q=flame+spread&collection=nasa_ntrs#sources"
+  },
+  {
+   "state": {
+    "view": "sources",
+    "sourceQuery": "flame spread",
+    "sourceType": "nasa_ntrs"
+   },
+   "href": "http://localhost:4335/dashboard/dist/index.html?keep=1&material=Mylar+G&dataset=bass#sources",
+   "out": "http://localhost:4335/dashboard/dist/index.html?keep=1&q=flame+spread&collection=nasa_ntrs#sources"
+  }
+ ],
+ "restores": [
+  {
+   "search": "",
+   "hash": "",
+   "state": {
+    "view": "overview",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?world=MOON&material=Mylar%20G",
+   "hash": "#compare",
+   "state": {
+    "view": "compare",
+    "world": "Moon",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?world=iss",
+   "hash": "#overview",
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?world=venus&material=spoon",
+   "hash": "#nope",
+   "state": {
+    "view": "overview",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?world=mars&material=Nomex+HT90-40&q=flame+tip&kind=reported_fit_to_experimental_data",
+   "hash": "#evidence",
+   "state": {
+    "view": "evidence",
+    "world": "Mars",
+    "material": "Nomex HT90-40",
+    "query": "flame tip",
+    "filterWorld": "Mars",
+    "filterMaterial": "Nomex HT90-40",
+    "filterKind": "reported_fit_to_experimental_data",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?world=earth-to-moon%20model&material=PMMA&kind=bogus",
+   "hash": "#evidence",
+   "state": {
+    "view": "evidence",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "Earth-to-Moon model",
+    "filterMaterial": "PMMA",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?material=P%20213&record=E014",
+   "hash": "#evidence",
+   "state": {
+    "view": "evidence",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "P 213",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": "E014"
+  },
+  {
+   "search": "?dataset=saffire-ii&q=cotton",
+   "hash": "#experiments",
+   "state": {
+    "view": "experiments",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "saffire-ii",
+    "originalQuery": "cotton"
+   },
+   "record": null
+  },
+  {
+   "search": "?q=saffire&collection=challenge",
+   "hash": "#sources",
+   "state": {
+    "view": "sources",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "saffire",
+    "sourceType": "challenge",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": null
+  },
+  {
+   "search": "?collection=bogus&record=E001",
+   "hash": "#sources",
+   "state": {
+    "view": "sources",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": "E001"
+  },
+  {
+   "search": "?record=E002",
+   "hash": "",
+   "state": {
+    "view": "overview",
+    "world": "Earth",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "record": "E002"
+  }
+ ],
+ "searches": [
+  {
+   "query": "",
+   "state": {
+    "view": "sources",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": []
+  },
+  {
+   "query": "   ",
+   "state": {
+    "view": "sources",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": []
+  },
+  {
+   "query": "compare Ultem Moon Mars",
+   "state": {
+    "view": "compare",
+    "world": "Moon",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "compare"
+   ]
+  },
+  {
+   "query": "original BASS",
+   "state": {
+    "view": "experiments",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "bass-ii",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "experiments"
+   ]
+  },
+  {
+   "query": "show original saffire data",
+   "state": {
+    "view": "experiments",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "saffire-ii",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "experiments"
+   ]
+  },
+  {
+   "query": "find raw csv records for cotton",
+   "state": {
+    "view": "experiments",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": "for cotton"
+   },
+   "navigated": [
+    "experiments"
+   ]
+  },
+  {
+   "query": "Ultem on Moon",
+   "state": {
+    "view": "overview",
+    "world": "Moon",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "mylar",
+   "state": {
+    "view": "overview",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "PET in orbit",
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "nomex vs earth",
+   "state": {
+    "view": "compare",
+    "world": "Earth",
+    "material": "Nomex HT90-40",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "compare"
+   ]
+  },
+  {
+   "query": "acrylic lunar",
+   "state": {
+    "view": "evidence",
+    "world": "Moon",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "Moon",
+    "filterMaterial": "PMMA",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "p213",
+   "state": {
+    "view": "evidence",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "P 213",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "PMMA mars and moon",
+   "state": {
+    "view": "evidence",
+    "world": "Moon",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "PMMA",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "zero g",
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "1 g",
+   "state": {
+    "view": "overview",
+    "world": "Earth",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "micro-g flames",
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "ISS",
+   "state": {
+    "view": "overview",
+    "world": "Microgravity",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "flame spread rate",
+   "state": {
+    "view": "evidence",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "flame spread rate",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "Ultem 1000 versus Mylar G",
+   "state": {
+    "view": "compare",
+    "world": "Mars",
+    "material": "Ultem 1000",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "compare"
+   ]
+  },
+  {
+   "query": "  What about Kapton?  ",
+   "state": {
+    "view": "evidence",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "What about Kapton?",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "P 213 earth",
+   "state": {
+    "view": "evidence",
+    "world": "Earth",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "Earth",
+    "filterMaterial": "P 213",
+    "filterKind": "All",
+    "page": 0,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "evidence"
+   ]
+  },
+  {
+   "query": "martian",
+   "state": {
+    "view": "overview",
+    "world": "Mars",
+    "material": "Mylar G",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "overview"
+   ]
+  },
+  {
+   "query": "NOMEX HT90-40 comparison",
+   "state": {
+    "view": "compare",
+    "world": "Mars",
+    "material": "Nomex HT90-40",
+    "query": "",
+    "filterWorld": "All",
+    "filterMaterial": "All",
+    "filterKind": "All",
+    "page": 3,
+    "sourceQuery": "",
+    "sourceType": "All",
+    "sourcePage": 0,
+    "originalDataset": "",
+    "originalQuery": ""
+   },
+   "navigated": [
+    "compare"
+   ]
+  }
+ ],
+ "labels": [
+  {
+   "exportedAt": "2026-11-15T16:17:04.123Z",
+   "mode": null,
+   "snapshot": "Snapshot 15 Nov 2026 · 16:17 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-11-15T16:17:04.123Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 15 Nov 2026 · 16:17 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-11-15T16:17:04.123Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 15 Nov 2026 · 16:17 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-01-02T00:00:00.000Z",
+   "mode": null,
+   "snapshot": "Snapshot 02 Jan 2026 · 00:00 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-01-02T00:00:00.000Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 02 Jan 2026 · 00:00 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-01-02T00:00:00.000Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 02 Jan 2026 · 00:00 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-02-09T09:05:00Z",
+   "mode": null,
+   "snapshot": "Snapshot 09 Feb 2026 · 09:05 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-02-09T09:05:00Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 09 Feb 2026 · 09:05 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-02-09T09:05:00Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 09 Feb 2026 · 09:05 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-03-31T23:59:59.999Z",
+   "mode": null,
+   "snapshot": "Snapshot 31 Mar 2026 · 23:59 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-03-31T23:59:59.999Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 31 Mar 2026 · 23:59 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-03-31T23:59:59.999Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 31 Mar 2026 · 23:59 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-04-01T12:00:00Z",
+   "mode": null,
+   "snapshot": "Snapshot 01 Apr 2026 · 12:00 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-04-01T12:00:00Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 01 Apr 2026 · 12:00 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-04-01T12:00:00Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 01 Apr 2026 · 12:00 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-05-20T01:02:03Z",
+   "mode": null,
+   "snapshot": "Snapshot 20 May 2026 · 01:02 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-05-20T01:02:03Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 20 May 2026 · 01:02 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-05-20T01:02:03Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 20 May 2026 · 01:02 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-06-30T10:10:10Z",
+   "mode": null,
+   "snapshot": "Snapshot 30 Jun 2026 · 10:10 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-06-30T10:10:10Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 30 Jun 2026 · 10:10 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-06-30T10:10:10Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 30 Jun 2026 · 10:10 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-07-04T04:04:04Z",
+   "mode": null,
+   "snapshot": "Snapshot 04 Jul 2026 · 04:04 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-07-04T04:04:04Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 04 Jul 2026 · 04:04 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-07-04T04:04:04Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 04 Jul 2026 · 04:04 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-08-08T08:08:08Z",
+   "mode": null,
+   "snapshot": "Snapshot 08 Aug 2026 · 08:08 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-08-08T08:08:08Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 08 Aug 2026 · 08:08 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-08-08T08:08:08Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 08 Aug 2026 · 08:08 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-09-09T19:09:09Z",
+   "mode": null,
+   "snapshot": "Snapshot 09 Sept 2026 · 19:09 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-09-09T19:09:09Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 09 Sept 2026 · 19:09 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-09-09T19:09:09Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 09 Sept 2026 · 19:09 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-10-10T10:10:10Z",
+   "mode": null,
+   "snapshot": "Snapshot 10 Oct 2026 · 10:10 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-10-10T10:10:10Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 10 Oct 2026 · 10:10 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-10-10T10:10:10Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 10 Oct 2026 · 10:10 UTC",
+   "connection": "BigQuery cached"
+  },
+  {
+   "exportedAt": "2026-12-25T22:22:22Z",
+   "mode": null,
+   "snapshot": "Snapshot 25 Dec 2026 · 22:22 UTC",
+   "connection": "Saved snapshot"
+  },
+  {
+   "exportedAt": "2026-12-25T22:22:22Z",
+   "mode": "bigquery",
+   "snapshot": "Refreshed 25 Dec 2026 · 22:22 UTC",
+   "connection": "BigQuery connected"
+  },
+  {
+   "exportedAt": "2026-12-25T22:22:22Z",
+   "mode": "cached-stale",
+   "snapshot": "Snapshot 25 Dec 2026 · 22:22 UTC",
+   "connection": "BigQuery cached"
+  }
+ ],
  "recordDialogs": [
   [
    "E001",
