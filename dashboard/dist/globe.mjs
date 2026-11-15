@@ -1,6 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import {makePlanet} from './planet-materials.mjs';
 import {makeMicrogravityScene} from './microgravity-scene.mjs';
+import {attachOrbitGestures} from './touch-orbit.mjs';
 export function createGlobe(host,world){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const status=document.createElement('div');status.dataset.globeStatus='';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
@@ -14,7 +15,7 @@ export function createGlobe(host,world){
  let renderer;try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});}catch(error){host.replaceChildren();showStatus('The 3D view is unavailable in this browser. Research data is still available.','error');throw error}
  const touchDevice=matchMedia('(pointer: coarse)').matches;
  const compact=touchDevice||matchMedia('(max-width: 760px)').matches;
- renderer.setPixelRatio(Math.min(devicePixelRatio,compact?1:1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
+ const pixelRatio=()=>Math.min(window.devicePixelRatio||1,2);renderer.setPixelRatio(pixelRatio());renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
  let surfaceReady=world==='Microgravity',initialized=false;renderer.domElement.style.visibility=surfaceReady?'visible':'hidden';
  if(!surfaceReady)showStatus(`Loading ${world} surface…`);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(0,.12,5.8);const group=new THREE.Group();group.rotation.z=world==='Microgravity'?0:.15;scene.add(group);
@@ -24,7 +25,7 @@ export function createGlobe(host,world){
   // A defined black night map avoids invented lights if that optional image fails.
   const placeholder=document.createElement('canvas');placeholder.width=placeholder.height=1;
   const context=placeholder.getContext('2d');context.fillStyle=name==='moon-normal.png'?'#8080ff':'#000';context.fillRect(0,0,1,1);
-  const texture=new THREE.Texture(placeholder);texture.needsUpdate=true;texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),compact?4:8);textures.push(texture);
+  const texture=new THREE.Texture(placeholder);texture.needsUpdate=true;texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);textures.push(texture);
   const small=name.replace(/\.(png|jpg)$/, '-mobile.webp');
   const preview=name==='earth.png'||name==='earth-night.png';
   const first=compact||preview?small:name;
@@ -87,7 +88,7 @@ export function createGlobe(host,world){
  let seed=789;const rand=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);const positions=[];for(let i=0;i<380;i++){positions.push((rand()-.5)*18,(rand()-.5)*14,-4-rand()*7)}const starsGeo=new THREE.BufferGeometry();starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xcddfff,size:.018,transparent:true,opacity:.65})));
  let paused=reduced.matches,frame=null,previous=0,drag=false,lastX=0,lastY=0,visible=true,pointer=null,zoomDistance=5.8,targetDistance=5.8,resumeAt=0,dirty=false,scrolling=false,scrollTimer=null;
  function fitCamera(){camera.position.z=zoomDistance*Math.max(1,1/camera.aspect)}
- function resize(){if(disposed)return;const w=host.clientWidth,h=host.clientHeight;if(w<1||h<1)return;camera.aspect=w/h;fitCamera();camera.updateProjectionMatrix();renderer.setSize(w,h,false);draw()}
+ function resize(){if(disposed)return;const w=host.clientWidth,h=host.clientHeight;if(w<1||h<1)return;camera.aspect=w/h;fitCamera();camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio());renderer.setSize(w,h,false);draw()}
  function draw(){if(disposed||!initialized||!surfaceReady||!visible||scrolling||document.hidden)return;renderer.render(scene,camera);dirty=false}
  function requestDraw(){dirty=true;schedule()}
  const isZooming=()=>Math.abs(targetDistance-zoomDistance)>.001;
@@ -113,12 +114,16 @@ export function createGlobe(host,world){
  window.addEventListener('scroll',onScroll,{passive:true});
  const intersection=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)schedule();else stop()});intersection.observe(host);
  const observer=new ResizeObserver(resize);observer.observe(host);
- // Horizontal touch drags rotate; vertical gestures remain native page scrolling.
- const down=e=>{if(!e.isPrimary||e.button!==0)return;pointer=e.pointerId;drag=e.pointerType!=='touch';lastX=e.clientX;lastY=e.clientY;if(drag)host.setPointerCapture(e.pointerId)};
- const move=e=>{if(e.pointerId!==pointer)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;if(!drag){if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;if(Math.abs(dy)>=Math.abs(dx)){pointer=null;return}drag=true;host.setPointerCapture(e.pointerId)}group.rotation.y+=dx*.007;if(e.pointerType!=='touch')group.rotation.x=THREE.MathUtils.clamp(group.rotation.x+dy*.004,-.7,.7);lastX=e.clientX;lastY=e.clientY;requestDraw()};
- const up=e=>{if(e.pointerId!==pointer)return;if(host.hasPointerCapture(e.pointerId))host.releasePointerCapture(e.pointerId);pointer=null;drag=false;resumeAt=performance.now()+1400};
- host.addEventListener('pointerdown',down);host.addEventListener('pointermove',move);host.addEventListener('pointerup',up);host.addEventListener('pointercancel',up);host.addEventListener('lostpointercapture',up);
+ // One finger (or the mouse) rotates and glides to a stop; two fingers pinch to zoom.
+ // The stage no longer scrolls the page (touch-action: none); the lanes beside it do.
+ const gestures=attachOrbitGestures(host,{
+  reducedMotion:()=>reduced.matches,
+  start(){drag=true},
+  rotate(dx,dy,type){const touch=type!=='mouse';group.rotation.y+=dx*(touch?.0105:.007);group.rotation.x=THREE.MathUtils.clamp(group.rotation.x+dy*(touch?.006:.004),-.7,.7);requestDraw()},
+  zoom(ratio){targetDistance=THREE.MathUtils.clamp(targetDistance+ratio*4,4.3,7.8);moveCamera()},
+  end(){drag=false;resumeAt=performance.now()+1400}
+ });
  function moveCamera(){if(reduced.matches){zoomDistance=targetDistance;fitCamera();draw()}else schedule()}
  const onMotion=()=>{paused=reduced.matches;stop();moveCamera();draw();host.dispatchEvent(new CustomEvent('rotationchange',{detail:paused}))};reduced.addEventListener('change',onMotion);initialized=true;if(surfaceReady){host.dataset.globeState='ready';host.setAttribute('aria-busy','false')}resize();schedule();
- return {get paused(){return paused},set paused(value){paused=!!value;stop();schedule();draw()},zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,4.3,7.8);moveCamera()},reset(){group.rotation.set(0,0,lab?0:.15);lab?.reset();targetDistance=5.8;moveCamera();draw()},dispose(){disposed=true;stop();clearTimeout(scrollTimer);window.removeEventListener('scroll',onScroll);observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);scene.traverse(obj=>{obj.geometry?.dispose();if(obj.material)obj.material.dispose()});textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss()}};
+ return {get paused(){return paused},set paused(value){paused=!!value;stop();schedule();draw()},zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,4.3,7.8);moveCamera()},reset(){gestures.stop();group.rotation.set(0,0,lab?0:.15);lab?.reset();targetDistance=5.8;moveCamera();draw()},dispose(){disposed=true;stop();clearTimeout(scrollTimer);window.removeEventListener('scroll',onScroll);observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);gestures.dispose();scene.traverse(obj=>{obj.geometry?.dispose();if(obj.material)obj.material.dispose()});textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss()}};
 }

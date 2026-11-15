@@ -51,6 +51,8 @@ The reusable data functions are in `dist/data.mjs`: `joinResearch`, `filterRows`
 | Planet rendering and shaders | `dist/globe.mjs`, `dist/planet-materials.mjs` |
 | Orbital laboratory illustration | `dist/microgravity-scene.mjs` |
 | 3D material rendering and controls | `dist/material-model.mjs` |
+| Touch, mouse and pinch gestures for both 3D stages | `dist/touch-orbit.mjs` |
+| Phone layout, dividers, type weights and touch targets (loaded last) | `dist/mobile-polish.css` |
 | Specimen layout, SVG fallback and oxygen markers | `dist/specimen.mjs`, `dist/specimen.css` |
 | Scientific term definitions | `dist/glossary.mjs`, `dist/glossary.css` |
 | Original NASA CSV explorer | `dist/original-data.mjs`, `dist/original-data.css` |

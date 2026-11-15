@@ -1,4 +1,5 @@
 import * as THREE from './vendor/three.module.js';
+import {attachOrbitGestures} from './touch-orbit.mjs';
 
 const NAMES=new Set(['Ultem 1000','Mylar G','Nomex HT90-40']);
 
@@ -9,7 +10,8 @@ export function createMaterialModel(host,initialMaterial){
  let renderer,environment,resizeObserver,intersectionObserver,frame=null,resumeTimer=null,disposed=false,visible=true;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const compact=matchMedia('(pointer:coarse)').matches||matchMedia('(max-width:760px)').matches;
- let scrolling=false,scrollTimer=null;
+ let scrolling=false,scrollTimer=null,gestures=null;
+ const pixelRatio=()=>Math.min(window.devicePixelRatio||1,2);
  let paused=reduced.matches,holdUntil=0,lastRender=0,dirty=true;
  const controller=new AbortController(),geometries=new Set(),materials=new Set(),textures=new Set(),models=new Map();
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.05,30),turntable=new THREE.Group();
@@ -41,8 +43,8 @@ export function createMaterialModel(host,initialMaterial){
  function inspect(){holdUntil=performance.now()+2200;requestDraw();}
  function setPaused(value){paused=Boolean(value);stop();if(!paused)holdUntil=0;requestDraw();host.dispatchEvent(new CustomEvent('materialrotationchange',{detail:paused}));}
  function fit(){camera.position.set(0,.08,distance*Math.max(1,1.25/camera.aspect));camera.lookAt(0,0,0);camera.updateProjectionMatrix();}
- function resize(){if(disposed)return;const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;camera.aspect=width/height;fit();renderer.setSize(width,height,false);requestDraw();}
- function reset(manual=true){turntable.rotation.set(-.43,-.48,-.18);distance=targetDistance=3.85;fit();if(manual)inspect();else requestDraw();}
+ function resize(){if(disposed)return;const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;camera.aspect=width/height;fit();renderer.setPixelRatio(pixelRatio());renderer.setSize(width,height);requestDraw();}
+ function reset(manual=true){gestures?.stop();turntable.rotation.set(-.43,-.48,-.18);distance=targetDistance=3.85;fit();if(manual)inspect();else requestDraw();}
  function zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,2.65,6.5);inspect();}
 
  function dispose(){
@@ -103,7 +105,7 @@ export function createMaterialModel(host,initialMaterial){
   }
   ctx.putImageData(color,0,0);normalContext.putImageData(normal,0,0);
   const map=texture(new THREE.CanvasTexture(canvas)),normalMap=texture(new THREE.CanvasTexture(normalCanvas));map.colorSpace=THREE.SRGBColorSpace;
-  for(const item of [map,normalMap]){item.wrapS=item.wrapT=THREE.RepeatWrapping;item.repeat.set(3,1);item.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());}
+  for(const item of [map,normalMap]){item.wrapS=item.wrapT=THREE.RepeatWrapping;item.repeat.set(3,1);item.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());}
   return {map,normalMap};
  }
 
@@ -132,7 +134,7 @@ export function createMaterialModel(host,initialMaterial){
 
  try{
   renderer=new THREE.WebGLRenderer({alpha:false,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,compact?1:1.5));renderer.setClearColor(0x05070d);
+  renderer.setPixelRatio(pixelRatio());renderer.setClearColor(0x05070d);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
   renderer.domElement.setAttribute('aria-hidden','true');
   scene.add(turntable);scene.add(new THREE.HemisphereLight(0xf4f7ff,0x293348,1.15));
@@ -156,14 +158,15 @@ export function createMaterialModel(host,initialMaterial){
   // Retain the supplied SVG fallback if setup or the first GPU render throws.
   host.replaceChildren(renderer.domElement);
 
-  listen(host,'pointerdown',event=>{if(!event.isPrimary||event.button!==0)return;pointer=event.pointerId;dragging=event.pointerType!=='touch';lastX=event.clientX;lastY=event.clientY;stop();if(dragging)host.setPointerCapture(pointer);});
-  listen(host,'pointermove',event=>{
-   if(event.pointerId!==pointer)return;const dx=event.clientX-lastX,dy=event.clientY-lastY;
-   if(!dragging){if(Math.max(Math.abs(dx),Math.abs(dy))<7)return;if(Math.abs(dy)>=Math.abs(dx)){pointer=null;inspect();return;}dragging=true;host.setPointerCapture(pointer);}
-   turntable.rotation.y+=dx*.009;turntable.rotation.x=THREE.MathUtils.clamp(turntable.rotation.x+dy*.007,-1.25,1.25);lastX=event.clientX;lastY=event.clientY;requestDraw();
+  // One finger (or the mouse) rotates and glides to a stop; two fingers pinch to zoom.
+  gestures=attachOrbitGestures(host,{
+   signal:controller.signal,
+   reducedMotion:()=>reduced.matches,
+   start(){dragging=true;stop()},
+   rotate(dx,dy,type){const touch=type!=='mouse';turntable.rotation.y+=dx*(touch?.0115:.009);turntable.rotation.x=THREE.MathUtils.clamp(turntable.rotation.x+dy*(touch?.009:.007),-1.25,1.25);requestDraw()},
+   zoom:ratio=>zoom(ratio*4),
+   end(){dragging=false;inspect()}
   });
-  const release=event=>{if(event.pointerId!==pointer)return;const released=pointer;pointer=null;dragging=false;if(host.hasPointerCapture(released))host.releasePointerCapture(released);inspect();};
-  for(const event of ['pointerup','pointercancel','lostpointercapture'])listen(host,event,release);
   listen(host,'keydown',event=>{
    if(event.ctrlKey||event.metaKey||event.altKey)return;
    if(event.key==='ArrowLeft')turntable.rotation.y-=.16;
