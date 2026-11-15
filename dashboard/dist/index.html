@@ -14,13 +14,15 @@
   <link rel="stylesheet" href="./original-data.css?v=1">
   <link rel="stylesheet" href="./research-flow.css?v=1">
   <link rel="stylesheet" href="./layout-polish.css?v=1">
+  <link rel="stylesheet" href="./mobile-polish.css?v=1">
+  <link rel="stylesheet" href="./scenes.css?v=1">
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to research</a>
   <header class="topbar">
     <a class="brand" href="#overview" data-view="overview" aria-label="Soraine overview"><img src="./assets/mark.svg" alt="" width="37" height="37"><span>SORAINE<small>FLAME IN FREEFALL</small></span></a>
     <nav class="main-nav" aria-label="Research views">
-      <button data-view="overview" class="active">Overview</button><button data-view="experiments">Original data</button><button data-view="compare">Compare</button><button data-view="evidence">Evidence</button><button data-view="sources">Sources</button>
+      <button data-view="overview" class="active">Overview</button><button data-view="experiments">Original data</button><button data-view="compare">Compare</button><button data-view="evidence">Evidence</button><button data-view="sources">Sources</button><button data-view="scenes">3D scenes</button>
     </nav>
     <div class="header-actions"><span class="connection"><i></i> BigQuery snapshot</span>
       <div class="sound-player" id="sound-player">
@@ -44,7 +46,11 @@
   <dialog id="detail-dialog" aria-labelledby="detail-title"><button class="dialog-close icon-btn" aria-label="Close details">×</button><div id="detail-content"></div></dialog>
   <div id="toast" role="status"></div>
   <audio id="ambient-audio" loop preload="none"></audio>
-  <script type="module" src="./app.mjs?v=observatory-7"></script>
+  <script type="module">
+    // The page runs from the Rust build (WebAssembly). If that cannot load, the JavaScript build takes over.
+    import('./pkg/soraine_web.js').then(async wasm => { await wasm.default(); return wasm; })
+      .then(wasm => wasm.startPage(), error => { console.warn('Rust build unavailable; using the JavaScript build.', error); return import('./app.mjs'); });
+  </script>
   <script type="module" src="./audio.mjs?v=1"></script>
 </body>
 </html>
