@@ -1,6 +1,8 @@
 //! Browser entry point. For now it exposes the research logic in
 //! `soraine-core` to the page; the views and the 3D stages are added here in
 //! later stages (see PLAN.md).
+mod page;
+
 use serde_json::Value;
 use soraine_core::data::{self, Filter, Row};
 use soraine_core::scene_link::{self, Link};
@@ -126,3 +128,7 @@ pub fn research_url(world: Option<String>, material: Option<String>, view: Optio
     };
     scene_link::research_url(&link, base.as_deref().unwrap_or(scene_link::RESEARCH_SITE)).map_err(|e| JsError::new(&e.to_string()))
 }
+
+/// Start the dashboard on the current page. The page's bootstrap script calls this once.
+#[wasm_bindgen(js_name = startPage)]
+pub fn start_page() { page::start(); }

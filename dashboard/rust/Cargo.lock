@@ -988,9 +988,12 @@ dependencies = [
 name = "soraine-web"
 version = "0.1.0"
 dependencies = [
+ "js-sys",
  "serde_json",
  "soraine-core",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]
