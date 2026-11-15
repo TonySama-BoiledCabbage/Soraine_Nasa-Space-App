@@ -17,7 +17,7 @@ The database is an independent copy of the original eight tables and three views
 
 The three accounts Hogan approved can edit this dataset and run queries. They can also develop Cloud Run services, view builds/logs, and deploy with the dedicated runtime identity. Project ownership and billing administration remain with Hogan. GitHub access is separate; Tony manages collaborator permissions and merging in the team repository.
 
-The public research backend reads `sources`, `experiments`, `measurements`, and `evidence`, with explicit column lists. A separate original-data endpoint reads the narrowly selected `public_experiment_rows` table containing BASS-II and Saffire-II source CSV records. Both endpoints cache complete exports for five minutes per instance. The service uses its Cloud Run identity, with no downloaded service-account keys. Complete raw tables, file manifests and download logs stay in BigQuery. Catalogue totals come from the dated fallback export.
+The public research backend reads `sources`, `experiments`, `measurements`, and `evidence`, with explicit column lists. A separate original-data endpoint reads `public_experiment_rows`: 381 source CSV rows across BASS, BASS-II, Saffire I/II/III and SAME-R. Both endpoints cache complete exports for five minutes per instance. The service uses its Cloud Run identity, with no downloaded service-account keys. Complete raw tables, file manifests and download logs stay in BigQuery. Catalogue totals come from the dated fallback export. See [the dashboard update](REFACTOR-NOTES.md) for source coverage, interface changes and checks.
 
 ## Connect a Moon or Mars scene
 

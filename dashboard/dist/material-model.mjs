@@ -8,6 +8,8 @@ export function createMaterialModel(host,initialMaterial){
  const fallbackNodes=[...host.childNodes];
  let renderer,environment,resizeObserver,intersectionObserver,frame=null,resumeTimer=null,disposed=false,visible=true;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const compact=matchMedia('(pointer:coarse)').matches||matchMedia('(max-width:760px)').matches;
+ let scrolling=false,scrollTimer=null;
  let paused=reduced.matches,holdUntil=0,lastRender=0,dirty=true;
  const controller=new AbortController(),geometries=new Set(),materials=new Set(),textures=new Set(),models=new Map();
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.05,30),turntable=new THREE.Group();
@@ -18,15 +20,15 @@ export function createMaterialModel(host,initialMaterial){
  const zooming=()=>Math.abs(targetDistance-distance)>.002;
  const rotating=now=>!paused&&!dragging&&pointer===null&&now>=holdUntil;
  function schedule(){
-  if(disposed||!visible||document.hidden)return;
+  if(disposed||!visible||scrolling||document.hidden)return;
   const now=performance.now();
   if(frame===null&&(dirty||zooming()||rotating(now)))frame=requestAnimationFrame(draw);
   else if(frame===null&&!paused&&!dragging&&pointer===null&&holdUntil>now&&resumeTimer===null)resumeTimer=setTimeout(()=>{resumeTimer=null;schedule();},holdUntil-now+8);
  }
  function draw(now){
-  frame=null;if(disposed||!visible||document.hidden)return;
+  frame=null;if(disposed||!visible||scrolling||document.hidden)return;
   // A single shared loop renders at most 30 fps unless a direct input needs a frame.
-  if(dirty||now-lastRender>=1000/30){
+  if(dirty||now-lastRender>=1000/(zooming()?60:30)){
    const dt=lastRender?Math.min((now-lastRender)/1000,.08):1/30;lastRender=now;
    if(rotating(now))turntable.rotation.y+=dt*.08;
    if(zooming()){distance=reduced.matches?targetDistance:THREE.MathUtils.lerp(distance,targetDistance,1-Math.exp(-dt*13));if(Math.abs(targetDistance-distance)<=.002)distance=targetDistance;fit();}
@@ -44,7 +46,7 @@ export function createMaterialModel(host,initialMaterial){
  function zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,2.65,6.5);inspect();}
 
  function dispose(){
-  if(disposed)return;disposed=true;stop();controller.abort();resizeObserver?.disconnect();intersectionObserver?.disconnect();
+  if(disposed)return;disposed=true;stop();clearTimeout(scrollTimer);controller.abort();resizeObserver?.disconnect();intersectionObserver?.disconnect();
   geometries.forEach(item=>item.dispose());materials.forEach(item=>item.dispose());textures.forEach(item=>item.dispose());environment?.dispose();
   if(renderer){const canvas=renderer.domElement;renderer.dispose();renderer.forceContextLoss();if(canvas.parentNode===host)canvas.remove();}
  }
@@ -130,7 +132,7 @@ export function createMaterialModel(host,initialMaterial){
 
  try{
   renderer=new THREE.WebGLRenderer({alpha:false,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,matchMedia('(pointer:coarse)').matches?1.25:1.5));renderer.setClearColor(0x05070d);
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,compact?1:1.5));renderer.setClearColor(0x05070d);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
   renderer.domElement.setAttribute('aria-hidden','true');
   scene.add(turntable);scene.add(new THREE.HemisphereLight(0xf4f7ff,0x293348,1.15));
@@ -175,6 +177,7 @@ export function createMaterialModel(host,initialMaterial){
   });
   listen(reduced,'change',()=>{if(reduced.matches){distance=targetDistance;fit();}setPaused(reduced.matches);});
   listen(document,'visibilitychange',()=>{if(document.hidden)stop();else requestDraw();});
+  listen(window,'scroll',()=>{if(!compact)return;scrolling=true;stop();clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{scrolling=false;requestDraw()},160);},{passive:true});
   resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);
   intersectionObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)requestDraw();else stop();});intersectionObserver.observe(host);
   schedule();

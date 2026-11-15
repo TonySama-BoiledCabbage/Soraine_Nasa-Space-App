@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="./glossary.css?v=1">
   <link rel="stylesheet" href="./specimen.css?v=1">
   <link rel="stylesheet" href="./original-data.css?v=1">
-  <link rel="stylesheet" href="./command-deck.css?v=1">
+  <link rel="stylesheet" href="./research-flow.css?v=1">
+  <link rel="stylesheet" href="./layout-polish.css?v=1">
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to research</a>
@@ -35,14 +36,15 @@
       <button class="icon-btn" id="about-btn" aria-label="About this data and credits" title="About this data"><span data-icon="info"></span></button><button class="export-btn" id="export-all"><span data-icon="download"></span><span>Export data</span></button></div>
   </header>
   <main id="workspace" tabindex="-1">
-    <div class="workspace-heading"><div><div class="eyebrow">SORAINE OBSERVATORY <span>/</span> NASA SPACE APPS 2026</div><h1>Fire safety,<br> <em>beyond Earth.</em></h1></div><div class="workspace-intro"><p>Understand combustion in a different gravity.<br> Start with the evidence.</p><label class="global-search"><span data-icon="search"></span><input id="global-search" placeholder="Try “Ultem on Moon”" aria-label="Find a material, world or source"><kbd>/</kbd></label></div></div>
+    <div class="workspace-heading"><div><div class="eyebrow">SORAINE OBSERVATORY <span>/</span> NASA SPACE APPS 2026</div><h1>Fire safety, <em>beyond Earth.</em></h1></div><div class="workspace-intro"><p>Choose a material. Follow the evidence.</p><label class="global-search"><span data-icon="search"></span><input id="global-search" placeholder="Try “Ultem on Moon”" aria-label="Find a material, world or source"><kbd>/</kbd></label></div></div>
+    <nav class="research-shortcuts" aria-label="Research starting points"><span>Start with a question</span><button data-research-question="compare Ultem Moon Mars" aria-label="Compare Ultem on Moon and Mars">Moon vs Mars <span aria-hidden="true">↗</span></button><button data-research-question="original BASS" aria-label="Explore the original BASS-II records">BASS-II records <span aria-hidden="true">↗</span></button><button data-browse-materials="true">Which materials have data? <span aria-hidden="true">↗</span></button></nav>
     <div id="view" aria-live="polite"><div class="loading-state"><span class="loading-orbit"></span>Loading the research archive…</div></div>
     <footer><span><i class="status-dot"></i> TEAM SORAINE <span class="footer-divider">/</span> NASA combustion evidence</span><span id="snapshot-date">Reading snapshot…</span><button id="credits-btn">Data & credits <span aria-hidden="true">↗</span></button></footer>
   </main>
   <dialog id="detail-dialog" aria-labelledby="detail-title"><button class="dialog-close icon-btn" aria-label="Close details">×</button><div id="detail-content"></div></dialog>
   <div id="toast" role="status"></div>
   <audio id="ambient-audio" loop preload="none"></audio>
-  <script type="module" src="./app.mjs?v=observatory-6"></script>
+  <script type="module" src="./app.mjs?v=observatory-7"></script>
   <script type="module" src="./audio.mjs?v=1"></script>
 </body>
 </html>

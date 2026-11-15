@@ -108,3 +108,13 @@ Live browser checks confirmed the Moon model, planet zoom controls, Ultem-to-Myl
 At Hogan's request, Codex combined the research-navigator handoff branch with the current dashboard branch. The shared scene JSON, adapter, types, examples, contributor archive and earlier Jarvis prototype now accompany the live dashboard in one pull request. Original research files and contributor attribution were preserved. The repository and contribution indexes identify the current dashboard separately from the earlier prototype, and the scene-link helper now opens `https://soraine.vercel.app/`.
 
 Validation: 27 dashboard checks and 5 navigator checks passed. The shared information validator covered all 15 objects across four scenes and 22 selectable cases, including reference integrity and separation of cabin settings from measured results. Diff checks passed. No teammate scene, physics or model files changed during consolidation.
+
+## 2026-11-15: Readable research views and original NASA records
+
+At Hogan's request, Codex refactored the dashboard header, spacing, typography and translucent blue surfaces. Overview focuses on the chosen planet and material; Compare contains a compact oxygen-limit chart with source-linked endpoints; Evidence and Sources retain the published research. Sources sort by extracted result count. Original data uses an explicit relevance order rather than treating run-log size as measurement coverage. Scientific values, citations, routing and model geometry remain unchanged.
+
+Added four original NASA PSI CSVs, their source URLs and SHA-256 checksums. An additive BigQuery transaction verified existing rows and inserted 237 new rows. The six-file collection contains 381 source rows, including run identifiers and pre-test references, not 381 independent trials. The deployed Cloud Run API returns the six files from BigQuery and matches the local bundle exactly.
+
+Mobile rendering uses smaller drawing buffers, coalesces planet drag updates and pauses model rendering during scrolling. Layout checks covered all five views at 320, 390, 768 and 1280 pixels without horizontal overflow. Important original-data values render at 16 px and research table text at 15 px or larger. All 31 automated tests and module syntax checks passed. Real-device touch behavior and frame rate still need checking on Hogan's phone; viewport checks alone do not prove those.
+
+No teammate scene or physics code, model assets or pending merge was changed.

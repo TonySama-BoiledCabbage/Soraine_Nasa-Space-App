@@ -1,6 +1,1609 @@
 {
-  "exportedAt": "2026-11-15T04:21:02.4654902Z",
+  "exportedAt": "2026-11-15T14:57:02.631787+00:00",
   "datasets": [
+    {
+      "id": "bass",
+      "title": "BASS",
+      "sourceId": "CSV-67a3768509ed061032c125fb",
+      "sourceUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-26/download?file=67a3768509ed061032c125fb&version=1",
+      "sha256": "ccfc3c54d948b64a1c5d2596a63c7c8019e51df0c91a1d62f039f48fa28c300f",
+      "columns": [
+        "Date",
+        "GMT",
+        "As Run Test #",
+        "Test #",
+        "Sample #",
+        "Fuel Sample Material"
+      ],
+      "rows": [
+        {
+          "id": "CSV-67a3768509ed061032c125fb:2",
+          "csvRecordNumber": 2,
+          "cells": [
+            "3/30/2012",
+            "90",
+            "1",
+            "1",
+            "4",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:3",
+          "csvRecordNumber": 3,
+          "cells": [
+            "3/30/2012",
+            "90",
+            "2",
+            "42",
+            "24",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:4",
+          "csvRecordNumber": 4,
+          "cells": [
+            "3/30/2012",
+            "90",
+            "3",
+            "18",
+            "19",
+            "PMMA sphere 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:5",
+          "csvRecordNumber": 5,
+          "cells": [
+            "4/5/2012",
+            "96",
+            "4",
+            "7",
+            "10",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:6",
+          "csvRecordNumber": 6,
+          "cells": [
+            "4/5/2012",
+            "96",
+            "5",
+            "8",
+            "11",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:7",
+          "csvRecordNumber": 7,
+          "cells": [
+            "4/9/2012",
+            "100",
+            "6",
+            "43",
+            "24",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:8",
+          "csvRecordNumber": 8,
+          "cells": [
+            "4/9/2012",
+            "100",
+            "7",
+            "44",
+            "24",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:9",
+          "csvRecordNumber": 9,
+          "cells": [
+            "4/9/2012",
+            "100",
+            "8",
+            "45",
+            "24",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:10",
+          "csvRecordNumber": 10,
+          "cells": [
+            "5/2/2012",
+            "123",
+            "9",
+            "19",
+            "19",
+            "PMMA sphere 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:11",
+          "csvRecordNumber": 11,
+          "cells": [
+            "5/2/2012",
+            "123",
+            "10",
+            "20",
+            "19",
+            "PMMA sphere 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:12",
+          "csvRecordNumber": 12,
+          "cells": [
+            "5/2/2012",
+            "123",
+            "11",
+            "21",
+            "19",
+            "PMMA sphere 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:13",
+          "csvRecordNumber": 13,
+          "cells": [
+            "5/10/2012",
+            "131",
+            "12",
+            "4",
+            "12",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:14",
+          "csvRecordNumber": 14,
+          "cells": [
+            "5/10/2012",
+            "131",
+            "13",
+            "10",
+            "2",
+            "SIBAL 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:15",
+          "csvRecordNumber": 15,
+          "cells": [
+            "5/10/2012",
+            "131",
+            "14",
+            "12",
+            "27",
+            "Nomex blend 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:16",
+          "csvRecordNumber": 16,
+          "cells": [
+            "5/11/2012",
+            "132",
+            "15",
+            "54",
+            "21",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:17",
+          "csvRecordNumber": 17,
+          "cells": [
+            "5/11/2012",
+            "132",
+            "16",
+            "55",
+            "21",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:18",
+          "csvRecordNumber": 18,
+          "cells": [
+            "5/11/2012",
+            "132",
+            "17",
+            "56",
+            "21",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:19",
+          "csvRecordNumber": 19,
+          "cells": [
+            "5/11/2012",
+            "132",
+            "18",
+            "57",
+            "21",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:20",
+          "csvRecordNumber": 20,
+          "cells": [
+            "5/11/2012",
+            "132",
+            "19",
+            "110",
+            "21",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:21",
+          "csvRecordNumber": 21,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "20",
+            "30",
+            "15",
+            "PMMA 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:22",
+          "csvRecordNumber": 22,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "21",
+            "31",
+            "15",
+            "PMMA 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:23",
+          "csvRecordNumber": 23,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "22",
+            "32",
+            "15",
+            "PMMA 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:24",
+          "csvRecordNumber": 24,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "23",
+            "33",
+            "15",
+            "PMMA 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:25",
+          "csvRecordNumber": 25,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "24",
+            "12-R",
+            "27",
+            "Nomex blend 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:26",
+          "csvRecordNumber": 26,
+          "cells": [
+            "6/5/2012",
+            "157",
+            "24",
+            "12-R2",
+            "27",
+            "Nomex blend 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:27",
+          "csvRecordNumber": 27,
+          "cells": [
+            "6/11/2012",
+            "163",
+            "25",
+            "46",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:28",
+          "csvRecordNumber": 28,
+          "cells": [
+            "6/11/2012",
+            "163",
+            "26",
+            "47",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:29",
+          "csvRecordNumber": 29,
+          "cells": [
+            "6/11/2012",
+            "163",
+            "27",
+            "48",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:30",
+          "csvRecordNumber": 30,
+          "cells": [
+            "6/11/2012",
+            "163",
+            "28",
+            "49",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:31",
+          "csvRecordNumber": 31,
+          "cells": [
+            "6/14/2012",
+            "166",
+            "29",
+            "22",
+            "18",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:32",
+          "csvRecordNumber": 32,
+          "cells": [
+            "6/14/2012",
+            "166",
+            "30",
+            "23",
+            "18",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:33",
+          "csvRecordNumber": 33,
+          "cells": [
+            "6/14/2012",
+            "166",
+            "31",
+            "24",
+            "18",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:34",
+          "csvRecordNumber": 34,
+          "cells": [
+            "6/14/2012",
+            "166",
+            "32",
+            "25",
+            "18",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:35",
+          "csvRecordNumber": 35,
+          "cells": [
+            "6/18/2012",
+            "170",
+            "33",
+            "58",
+            "25",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:36",
+          "csvRecordNumber": 36,
+          "cells": [
+            "6/18/2012",
+            "170",
+            "34",
+            "59",
+            "25",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:37",
+          "csvRecordNumber": 37,
+          "cells": [
+            "6/18/2012",
+            "170",
+            "35",
+            "60",
+            "25",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:38",
+          "csvRecordNumber": 38,
+          "cells": [
+            "6/18/2012",
+            "170",
+            "36",
+            "61",
+            "25",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:39",
+          "csvRecordNumber": 39,
+          "cells": [
+            "6/28/2012",
+            "180",
+            "37",
+            "5",
+            "9",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:40",
+          "csvRecordNumber": 40,
+          "cells": [
+            "6/28/2012",
+            "180",
+            "38",
+            "14",
+            "29",
+            "Nomex III Natural"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:41",
+          "csvRecordNumber": 41,
+          "cells": [
+            "6/28/2012",
+            "180",
+            "39",
+            "66",
+            "33",
+            "PMMA slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:42",
+          "csvRecordNumber": 42,
+          "cells": [
+            "6/28/2012",
+            "180",
+            "40",
+            "67",
+            "33",
+            "PMMA slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:43",
+          "csvRecordNumber": 43,
+          "cells": [
+            "6/29/2012",
+            "181",
+            "41",
+            "34",
+            "16",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:44",
+          "csvRecordNumber": 44,
+          "cells": [
+            "6/29/`12",
+            "181",
+            "42",
+            "35",
+            "16",
+            "1 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:45",
+          "csvRecordNumber": 45,
+          "cells": [
+            "6/29/2012",
+            "181",
+            "43",
+            "16",
+            "31",
+            "ultem sheet"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:46",
+          "csvRecordNumber": 46,
+          "cells": [
+            "6/29/2012",
+            "181",
+            "44",
+            "5b",
+            "9",
+            "SIBAL 2 cm   opposed flow "
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:47",
+          "csvRecordNumber": 47,
+          "cells": [
+            "7/3/2012",
+            "185",
+            "45",
+            "6",
+            "8",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:48",
+          "csvRecordNumber": 48,
+          "cells": [
+            "7/3/2012",
+            "185",
+            "46",
+            "82",
+            "35",
+            "candle"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:49",
+          "csvRecordNumber": 49,
+          "cells": [
+            "7/3/2012",
+            "185",
+            "47",
+            "82a",
+            "35",
+            "candle"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:50",
+          "csvRecordNumber": 50,
+          "cells": [
+            "7/3/2012",
+            "185",
+            "48",
+            "82b",
+            "35",
+            "candle"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:51",
+          "csvRecordNumber": 51,
+          "cells": [
+            "7/3/2012",
+            "185",
+            "49",
+            "68",
+            "33",
+            "pmma slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:52",
+          "csvRecordNumber": 52,
+          "cells": [
+            "7/12/2012",
+            "194",
+            "50",
+            "69",
+            "33",
+            "pmma slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:53",
+          "csvRecordNumber": 53,
+          "cells": [
+            "7/12/2012",
+            "194",
+            "51",
+            "111",
+            "21",
+            "2 cm sphere   wake ign"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:54",
+          "csvRecordNumber": 54,
+          "cells": [
+            "7/12/2012",
+            "194",
+            "52",
+            "112",
+            "21",
+            "2 cm sphere   wake ign"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:55",
+          "csvRecordNumber": 55,
+          "cells": [
+            "7/12/2012",
+            "194",
+            "53",
+            "113",
+            "21",
+            "2 cm sphere   wake ign"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:56",
+          "csvRecordNumber": 56,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "54",
+            "2",
+            "5",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:57",
+          "csvRecordNumber": 57,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "55",
+            "3",
+            "6",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:58",
+          "csvRecordNumber": 58,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "56",
+            "15",
+            "30",
+            "nomex natural III"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:59",
+          "csvRecordNumber": 59,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "57",
+            "13",
+            "28",
+            "Nomex blend 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:60",
+          "csvRecordNumber": 60,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "58",
+            "17",
+            "32",
+            "ultem sheet"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:61",
+          "csvRecordNumber": 61,
+          "cells": [
+            "7/19/2012",
+            "201",
+            "59",
+            "114",
+            "25",
+            "pmma sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:62",
+          "csvRecordNumber": 62,
+          "cells": [
+            "7/23/2012",
+            "205",
+            "60",
+            "62",
+            "23",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:63",
+          "csvRecordNumber": 63,
+          "cells": [
+            "7/23/2012",
+            "205",
+            "61",
+            "63",
+            "23",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:64",
+          "csvRecordNumber": 64,
+          "cells": [
+            "7/23/2012",
+            "205",
+            "62",
+            "64",
+            "23",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:65",
+          "csvRecordNumber": 65,
+          "cells": [
+            "7/23/2012",
+            "205",
+            "63",
+            "65",
+            "23",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:66",
+          "csvRecordNumber": 66,
+          "cells": [
+            "7/23/2012",
+            "205",
+            "64",
+            "118",
+            "23",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:67",
+          "csvRecordNumber": 67,
+          "cells": [
+            "8/3/2012",
+            "216",
+            "",
+            "",
+            "",
+            "SOOT Cleaning"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:68",
+          "csvRecordNumber": 68,
+          "cells": [
+            "8/9/2012",
+            "222",
+            "65",
+            "11",
+            "3",
+            "SIBAL 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:69",
+          "csvRecordNumber": 69,
+          "cells": [
+            "8/9/2012",
+            "222",
+            "66",
+            "9",
+            "7",
+            "SIBAL 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:70",
+          "csvRecordNumber": 70,
+          "cells": [
+            "8/9/2012",
+            "222",
+            "67",
+            "102",
+            "22",
+            "PMMA sphere 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:71",
+          "csvRecordNumber": 71,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "68",
+            "83a",
+            "36",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:72",
+          "csvRecordNumber": 72,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "69",
+            "83b",
+            "36",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:73",
+          "csvRecordNumber": 73,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "70",
+            "83c",
+            "36",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:74",
+          "csvRecordNumber": 74,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "71",
+            "84a",
+            "37",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:75",
+          "csvRecordNumber": 75,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "72",
+            "84b",
+            "37",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:76",
+          "csvRecordNumber": 76,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "73",
+            "86a",
+            "38",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:77",
+          "csvRecordNumber": 77,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "74",
+            "86b",
+            "38",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:78",
+          "csvRecordNumber": 78,
+          "cells": [
+            "8/16/2012",
+            "229",
+            "75",
+            "86c",
+            "38",
+            "Japan Wax Candle   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:79",
+          "csvRecordNumber": 79,
+          "cells": [
+            "8/21/2012",
+            "234",
+            "76",
+            "70",
+            "34",
+            "PMMA slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:80",
+          "csvRecordNumber": 80,
+          "cells": [
+            "8/21/2012",
+            "234",
+            "77",
+            "71",
+            "34",
+            "PMMA slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:81",
+          "csvRecordNumber": 81,
+          "cells": [
+            "8/21/2012",
+            "234",
+            "78",
+            "74",
+            "41",
+            "paraffin wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:82",
+          "csvRecordNumber": 82,
+          "cells": [
+            "8/21/2012",
+            "234",
+            "79",
+            "75",
+            "41",
+            "parrafin wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:83",
+          "csvRecordNumber": 83,
+          "cells": [
+            "4/5/2013",
+            "95",
+            "80",
+            "98",
+            "24",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:84",
+          "csvRecordNumber": 84,
+          "cells": [
+            "4/5/2013",
+            "95",
+            "81",
+            "99",
+            "24",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:85",
+          "csvRecordNumber": 85,
+          "cells": [
+            "4/9/2013",
+            "99",
+            "82",
+            "114",
+            "25",
+            "PMMA 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:86",
+          "csvRecordNumber": 86,
+          "cells": [
+            "4/9/2013",
+            "99",
+            "83",
+            "115",
+            "25",
+            "pmma 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:87",
+          "csvRecordNumber": 87,
+          "cells": [
+            "4/9/2013",
+            "99",
+            "84",
+            "116",
+            "25",
+            "pmma 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:88",
+          "csvRecordNumber": 88,
+          "cells": [
+            "4/9/2013",
+            "99",
+            "85",
+            "117",
+            "25",
+            "pmma 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:89",
+          "csvRecordNumber": 89,
+          "cells": [
+            "4/9/2013",
+            "99",
+            "85",
+            "117a",
+            "25",
+            "pmma 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:90",
+          "csvRecordNumber": 90,
+          "cells": [
+            "4/12/2013",
+            "102",
+            "86",
+            "100",
+            "24",
+            "pmma 2 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:91",
+          "csvRecordNumber": 91,
+          "cells": [
+            "4/12/2013",
+            "102",
+            "87",
+            "85",
+            "43",
+            "candle    paraffin   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:92",
+          "csvRecordNumber": 92,
+          "cells": [
+            "4/12/2013",
+            "102",
+            "88",
+            "93",
+            "43",
+            "candle    paraffin   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:93",
+          "csvRecordNumber": 93,
+          "cells": [
+            "4/16/2013",
+            "106",
+            "89",
+            "26",
+            "17",
+            "pmma 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:94",
+          "csvRecordNumber": 94,
+          "cells": [
+            "4/16/2013",
+            "106",
+            "90",
+            "27",
+            "17",
+            "pmma 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:95",
+          "csvRecordNumber": 95,
+          "cells": [
+            "4/16/2013",
+            "106",
+            "91",
+            "28",
+            "17",
+            "pmma 1 cm"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:96",
+          "csvRecordNumber": 96,
+          "cells": [
+            "4/23/2013",
+            "113",
+            "89",
+            "87",
+            "40",
+            "candle   Japan wax"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:97",
+          "csvRecordNumber": 97,
+          "cells": [
+            "4/23/2013",
+            "113",
+            "90",
+            "103",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:98",
+          "csvRecordNumber": 98,
+          "cells": [
+            "4/23/2013",
+            "113",
+            "91",
+            "104",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:99",
+          "csvRecordNumber": 99,
+          "cells": [
+            "4/23/2013",
+            "113",
+            "92",
+            "105",
+            "22",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:100",
+          "csvRecordNumber": 100,
+          "cells": [
+            "4/26/2013",
+            "113",
+            "93",
+            "38",
+            "20",
+            "1 cm sphere   wake"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:101",
+          "csvRecordNumber": 101,
+          "cells": [
+            "4/26/2013",
+            "116",
+            "94",
+            "39",
+            "20",
+            "1 cm wake sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:102",
+          "csvRecordNumber": 102,
+          "cells": [
+            "4/26/2013",
+            "116",
+            "95",
+            "40",
+            "20",
+            "1 cm wake sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:103",
+          "csvRecordNumber": 103,
+          "cells": [
+            "4/26/2013",
+            "116",
+            "96",
+            "72",
+            "34",
+            "pmma slab opposed"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:104",
+          "csvRecordNumber": 104,
+          "cells": [
+            "4/26/2013",
+            "116",
+            "97",
+            "73",
+            "34",
+            "pmma slab   oppsed"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:105",
+          "csvRecordNumber": 105,
+          "cells": [
+            "4/29/2013",
+            "119",
+            "98",
+            "118",
+            "23",
+            "2 cm pmma sphere "
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:106",
+          "csvRecordNumber": 106,
+          "cells": [
+            "4/29/2013",
+            "119",
+            "99",
+            "119",
+            "23",
+            "2 cm pmma sphere "
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:107",
+          "csvRecordNumber": 107,
+          "cells": [
+            "5/2/2013",
+            "122",
+            "100",
+            "89",
+            "44",
+            "parrafin wax candle"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:108",
+          "csvRecordNumber": 108,
+          "cells": [
+            "5/2/2013",
+            "122",
+            "101",
+            "95",
+            "44",
+            "paraffin wax candle"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:109",
+          "csvRecordNumber": 109,
+          "cells": [
+            "5/2/2013",
+            "122",
+            "102",
+            "92",
+            "40",
+            "candle   Japan wax"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:110",
+          "csvRecordNumber": 110,
+          "cells": [
+            "5/2/2013",
+            "122",
+            "103",
+            "78",
+            "42",
+            "paraffin wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:111",
+          "csvRecordNumber": 111,
+          "cells": [
+            "5/15/2103",
+            "135",
+            "104",
+            "50",
+            "26",
+            "2 cm pmma sphere "
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:112",
+          "csvRecordNumber": 112,
+          "cells": [
+            "5/15/2013",
+            "135",
+            "105",
+            "51",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:113",
+          "csvRecordNumber": 113,
+          "cells": [
+            "5/15/2013",
+            "135",
+            "106",
+            "52",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:114",
+          "csvRecordNumber": 114,
+          "cells": [
+            "5/15/2013",
+            "135",
+            "107",
+            "53",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:115",
+          "csvRecordNumber": 115,
+          "cells": [
+            "5/17/2013",
+            "137",
+            "108",
+            "106",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:116",
+          "csvRecordNumber": 116,
+          "cells": [
+            "5/17/2013",
+            "137",
+            "109",
+            "107",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:117",
+          "csvRecordNumber": 117,
+          "cells": [
+            "5/17/2013",
+            "137",
+            "110",
+            "108",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:118",
+          "csvRecordNumber": 118,
+          "cells": [
+            "6/1/2013",
+            "137",
+            "111",
+            "109",
+            "26",
+            "2 cm sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:119",
+          "csvRecordNumber": 119,
+          "cells": [
+            "6/1/2013",
+            "150",
+            "112",
+            "79",
+            "42",
+            "flat wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:120",
+          "csvRecordNumber": 120,
+          "cells": [
+            "6/1/2013",
+            "150",
+            "113",
+            "80",
+            "42",
+            "flat wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:121",
+          "csvRecordNumber": 121,
+          "cells": [
+            "6/1/2013",
+            "150",
+            "114",
+            "75",
+            "41",
+            "flat wax slab"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:122",
+          "csvRecordNumber": 122,
+          "cells": [
+            "6/1/2013",
+            "150",
+            "115",
+            "53",
+            "26",
+            "pmma sphere"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-67a3768509ed061032c125fb:123",
+          "csvRecordNumber": 123,
+          "cells": [
+            "6/1/2013",
+            "150",
+            "116",
+            "53a",
+            "26",
+            "pmma sphere"
+          ],
+          "rowKind": "source_record"
+        }
+      ]
+    },
     {
       "id": "bass-ii",
       "title": "BASS-II",
@@ -3126,6 +4729,110 @@
       ]
     },
     {
+      "id": "saffire-i",
+      "title": "Saffire-I",
+      "sourceId": "CSV-6792c46eb7b6ff8e65037f3e",
+      "sourceUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-98/download?file=6792c46eb7b6ff8e65037f3e&version=1",
+      "sha256": "c01f29c62455f0a3b512290ab85e5687ecded326733189f002f580368402308d",
+      "columns": [
+        "Sample Number ",
+        "Material",
+        "Sample Thickness (cm)",
+        "Sample Length (cm)",
+        "Sample Width (cm)",
+        "Air Flow (cm/s)",
+        "Percent O2",
+        "Ignition Power (W)",
+        "Ignition Time (s)",
+        "Burn Time (s)",
+        "Flow Direction ",
+        "Camera 1",
+        "Camera 2"
+      ],
+      "rows": [
+        {
+          "id": "CSV-6792c46eb7b6ff8e65037f3e:2",
+          "csvRecordNumber": 2,
+          "cells": [
+            "S1",
+            "SIBAL Fabric",
+            "0.37",
+            "40.6",
+            "94",
+            "20",
+            "21.5 - 21.7",
+            "182",
+            "8",
+            "420",
+            "Concurrent",
+            "S1C1",
+            "S1C2"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-6792c46eb7b6ff8e65037f3e:3",
+          "csvRecordNumber": 3,
+          "cells": [
+            "S2",
+            "SIBAL Fabric",
+            "0.37",
+            "40.6",
+            "94",
+            "20",
+            "~ 21.5",
+            "182",
+            "8",
+            "70",
+            "Opposed",
+            "S2C1",
+            "S2C2"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-6792c46eb7b6ff8e65037f3e:4",
+          "csvRecordNumber": 4,
+          "cells": [
+            "F1C1/F1C2",
+            "Pre-test flow visulation data for sample 1",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "rowKind": "pretest_reference"
+        },
+        {
+          "id": "CSV-6792c46eb7b6ff8e65037f3e:5",
+          "csvRecordNumber": 5,
+          "cells": [
+            "F2C1/F2C2",
+            "Pre-test flow visulation data for sample 2",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "rowKind": "pretest_reference"
+        }
+      ]
+    },
+    {
       "id": "saffire-ii",
       "title": "Saffire-II",
       "sourceId": "CSV-e7a94940d9d2f3c035985141",
@@ -3510,6 +5217,1932 @@
             ""
           ],
           "rowKind": "source_note"
+        }
+      ]
+    },
+    {
+      "id": "saffire-iii",
+      "title": "Saffire-III",
+      "sourceId": "CSV-6792d422b7b6ff8e650381da",
+      "sourceUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-100/download?file=6792d422b7b6ff8e650381da&version=1",
+      "sha256": "4d3c717ec20dd0247db670b2784a9fd7d746788bc54a936f80693e48eb8cd117",
+      "columns": [
+        "Sample Number ",
+        "Material",
+        "Sample Thickness",
+        "Sample Length",
+        "Sample Width",
+        "Air Flow ",
+        "Direction",
+        "Camera 1",
+        "Camera 2"
+      ],
+      "rows": [
+        {
+          "id": "CSV-6792d422b7b6ff8e650381da:2",
+          "csvRecordNumber": 2,
+          "cells": [
+            "S1",
+            "SIBAL Fabric",
+            ".33 cm",
+            "94 cm",
+            "40.6 cm",
+            "30 cm/s",
+            "Concurrent ",
+            "S1C1",
+            "S1C2"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-6792d422b7b6ff8e650381da:3",
+          "csvRecordNumber": 3,
+          "cells": [
+            "S2",
+            "SIBAL Fabric",
+            ".33 cm",
+            "94 cm",
+            "40.6 cm",
+            "30 cm/s",
+            "Opposed",
+            "S2C1",
+            "S2C2"
+          ],
+          "rowKind": "source_record"
+        }
+      ]
+    },
+    {
+      "id": "same-r",
+      "title": "SAME-R",
+      "sourceId": "CSV-679a9e2209ed061032c0cd23",
+      "sourceUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-101/download?file=679a9e2209ed061032c0cd23&version=1",
+      "sha256": "87164b7dc9168a4273c159f7a9f23699afbd06ad97b77974377e79b9bf8a3bef",
+      "columns": [
+        "Sample Type",
+        "SAME Test #",
+        "Description",
+        "Date",
+        "Inlet velocity (cm/s)",
+        "Rt/R0",
+        "Duration (sec)",
+        "Primary aging time (sec)",
+        "Primary mixing time (sec)",
+        "Net aging time (sec)"
+      ],
+      "rows": [
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:2",
+          "csvRecordNumber": 2,
+          "cells": [
+            "Kapton",
+            "51",
+            "B.L. new formula",
+            "21-Jul",
+            "8.1",
+            "1.38",
+            "60",
+            "11",
+            "8",
+            "38"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:3",
+          "csvRecordNumber": 3,
+          "cells": [
+            "Kapton",
+            "51a",
+            "B.L. new formula",
+            "22-Jul",
+            "8.1",
+            "1.38",
+            "60",
+            "",
+            "",
+            "261"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:4",
+          "csvRecordNumber": 4,
+          "cells": [
+            "Kapton",
+            "61",
+            "Baseline Aging",
+            "2-Aug",
+            "8.1",
+            "1.38",
+            "60",
+            "11",
+            "8",
+            "38"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:5",
+          "csvRecordNumber": 5,
+          "cells": [
+            "Kapton",
+            "61a",
+            "aged",
+            "2-Aug",
+            "8.1",
+            "1.38",
+            "",
+            "",
+            "",
+            "807"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:6",
+          "csvRecordNumber": 6,
+          "cells": [
+            "Kapton",
+            "62",
+            "High Temp aging",
+            "2-Aug",
+            "8.1",
+            "1.48",
+            "60",
+            "11",
+            "8",
+            "39"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:7",
+          "csvRecordNumber": 7,
+          "cells": [
+            "Kapton",
+            "62a",
+            "aged",
+            "2-Aug",
+            "8.1",
+            "1.48",
+            "",
+            "",
+            "",
+            "808"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:8",
+          "csvRecordNumber": 8,
+          "cells": [
+            "Kapton",
+            "70",
+            "High temp aged STS det",
+            "24-Aug",
+            "8.1",
+            "1.48",
+            "60",
+            "720",
+            "8",
+            "747"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:9",
+          "csvRecordNumber": 9,
+          "cells": [
+            "Kapton",
+            "73",
+            "Baseline Aging",
+            "26-Aug",
+            "8.1",
+            "1.38",
+            "60",
+            "11",
+            "8",
+            "33"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:10",
+          "csvRecordNumber": 10,
+          "cells": [
+            "Kapton",
+            "73a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.38",
+            "",
+            "",
+            "",
+            "560"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:11",
+          "csvRecordNumber": 11,
+          "cells": [
+            "Kapton",
+            "75",
+            "Mid Temp aging (no Ptrak)",
+            "26-Aug",
+            "8.1",
+            "1.43",
+            "60",
+            "11",
+            "8",
+            "32"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:12",
+          "csvRecordNumber": 12,
+          "cells": [
+            "Kapton",
+            "75a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.43",
+            "",
+            "",
+            "",
+            "563"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:13",
+          "csvRecordNumber": 13,
+          "cells": [
+            "Kapton",
+            "77",
+            "High Temp aging",
+            "26-Aug",
+            "8.1",
+            "1.48",
+            "60",
+            "11",
+            "8",
+            "31"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:14",
+          "csvRecordNumber": 14,
+          "cells": [
+            "Kapton",
+            "77a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.48",
+            "",
+            "",
+            "",
+            "559"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:15",
+          "csvRecordNumber": 15,
+          "cells": [
+            "Kapton",
+            "85",
+            "Mid Temp aging run. Repeat 75",
+            "30-Aug",
+            "8.1",
+            "1.43",
+            "60",
+            "11",
+            "8",
+            "33"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:16",
+          "csvRecordNumber": 16,
+          "cells": [
+            "Kapton",
+            "85a",
+            "aged",
+            "30-Aug",
+            "8.1",
+            "1.43",
+            "",
+            "",
+            "",
+            "563"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:17",
+          "csvRecordNumber": 17,
+          "cells": [
+            "Kapton",
+            "90",
+            "Mid Temp aging reburn 85",
+            "30-Aug",
+            "8.1",
+            "1.43",
+            "60",
+            "11",
+            "8",
+            "38"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:18",
+          "csvRecordNumber": 18,
+          "cells": [
+            "Kapton",
+            "90a",
+            "aged",
+            "30-Aug",
+            "8.1",
+            "1.43",
+            "",
+            "",
+            "",
+            "569"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:19",
+          "csvRecordNumber": 19,
+          "cells": [
+            "Kapton",
+            "92",
+            "Baseline STS det",
+            "7-Sep",
+            "8.1",
+            "1.38",
+            "60",
+            "11",
+            "8",
+            "35"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:20",
+          "csvRecordNumber": 20,
+          "cells": [
+            "Kapton",
+            "93",
+            "Mid Temp aging run 75 repeat",
+            "7-Sep",
+            "8.1",
+            "1.43",
+            "60",
+            "11",
+            "8",
+            "36"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:21",
+          "csvRecordNumber": 21,
+          "cells": [
+            "Kapton",
+            "93a",
+            "aged",
+            "7-Sep",
+            "8.1",
+            "1.43",
+            "",
+            "",
+            "",
+            "568"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:22",
+          "csvRecordNumber": 22,
+          "cells": [
+            "Kapton",
+            "94",
+            "Mid Temp aging run mid high",
+            "7-Sep",
+            "8.1",
+            "1.45",
+            "60",
+            "11",
+            "8",
+            "42"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:23",
+          "csvRecordNumber": 23,
+          "cells": [
+            "Kapton",
+            "94a",
+            "aged",
+            "7-Sep",
+            "8.1",
+            "1.45",
+            "",
+            "",
+            "",
+            "567"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:24",
+          "csvRecordNumber": 24,
+          "cells": [
+            "Kapton",
+            "101",
+            "No flow run w/ aging",
+            "8-Sep",
+            "0",
+            "1.48",
+            "60",
+            "11",
+            "8",
+            "29"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:25",
+          "csvRecordNumber": 25,
+          "cells": [
+            "Kapton",
+            "101a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.48",
+            "",
+            "",
+            "",
+            "561"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:26",
+          "csvRecordNumber": 26,
+          "cells": [
+            "Kapton",
+            "102",
+            "No flow run w/ aging",
+            "8-Sep",
+            "0",
+            "1.48",
+            "120",
+            "11",
+            "8",
+            "28"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:27",
+          "csvRecordNumber": 27,
+          "cells": [
+            "Kapton",
+            "102a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.48",
+            "",
+            "",
+            "",
+            "563"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:28",
+          "csvRecordNumber": 28,
+          "cells": [
+            "Kapton",
+            "108",
+            "Low flow run w/aging",
+            "9-Sep",
+            "1",
+            "1.48",
+            "60",
+            "11",
+            "8",
+            "30"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:29",
+          "csvRecordNumber": 29,
+          "cells": [
+            "Kapton",
+            "108a",
+            "aged",
+            "9-Sep",
+            "1",
+            "1.48",
+            "",
+            "",
+            "",
+            "560"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:30",
+          "csvRecordNumber": 30,
+          "cells": [
+            "Kapton",
+            "114",
+            "low flow run w STS no Ptrak",
+            "9-Sep",
+            "2",
+            "1.43",
+            "60",
+            "11",
+            "8",
+            "28"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:31",
+          "csvRecordNumber": 31,
+          "cells": [
+            "Silicone",
+            "48",
+            "Low Temp",
+            "16-Jul",
+            "8",
+            "1.304",
+            "60",
+            "11",
+            "8",
+            "62"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:32",
+          "csvRecordNumber": 32,
+          "cells": [
+            "Silicone",
+            "53",
+            "HighTemp",
+            "22-Jul",
+            "8.1",
+            "1.35",
+            "60",
+            "1",
+            "8",
+            "52"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:33",
+          "csvRecordNumber": 33,
+          "cells": [
+            "Silicone",
+            "59",
+            "baseline aged",
+            "30-Jul",
+            "8.1",
+            "1.327",
+            "60",
+            "11",
+            "8",
+            "24"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:34",
+          "csvRecordNumber": 34,
+          "cells": [
+            "Silicone",
+            "59a",
+            "aged",
+            "30-Jul",
+            "8.1",
+            "1.327",
+            "",
+            "",
+            "",
+            "856"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:35",
+          "csvRecordNumber": 35,
+          "cells": [
+            "Silicone",
+            "60",
+            "Htemp ageing",
+            "30-Jul",
+            "8.1",
+            "1.35",
+            "60",
+            "11",
+            "8",
+            "49"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:36",
+          "csvRecordNumber": 36,
+          "cells": [
+            "Silicone",
+            "60a",
+            "aged",
+            "30-Jul",
+            "8.1",
+            "1.35",
+            "",
+            "",
+            "",
+            "856"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:37",
+          "csvRecordNumber": 37,
+          "cells": [
+            "Silicone",
+            "65",
+            "Baseline long aging",
+            "23-Aug",
+            "8.1",
+            "1.327",
+            "60",
+            "11",
+            "8",
+            "50"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:38",
+          "csvRecordNumber": 38,
+          "cells": [
+            "Silicone",
+            "65a",
+            "aged",
+            "23-Aug",
+            "8.1",
+            "1.327",
+            "",
+            "",
+            "",
+            "1923"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:39",
+          "csvRecordNumber": 39,
+          "cells": [
+            "Silicone",
+            "66",
+            "High T aging",
+            "23-Aug",
+            "8.1",
+            "1.36",
+            "60",
+            "11",
+            "8",
+            "42"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:40",
+          "csvRecordNumber": 40,
+          "cells": [
+            "Silicone",
+            "66a",
+            "aged",
+            "23-Aug",
+            "8.1",
+            "1.36",
+            "",
+            "",
+            "",
+            "837"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:41",
+          "csvRecordNumber": 41,
+          "cells": [
+            "Silicone",
+            "67",
+            "High temp aged",
+            "24-Aug",
+            "8.1",
+            "1.35",
+            "60",
+            "720",
+            "8",
+            "751"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:42",
+          "csvRecordNumber": 42,
+          "cells": [
+            "Silicone",
+            "72",
+            "Baseline STS det",
+            "25-Aug",
+            "8.1",
+            "1.327",
+            "60",
+            "11",
+            "8",
+            "42"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:43",
+          "csvRecordNumber": 43,
+          "cells": [
+            "Silicone",
+            "86",
+            "Mid temp aging",
+            "30-Aug",
+            "8.1",
+            "1.345",
+            "60",
+            "11",
+            "8",
+            "50"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:44",
+          "csvRecordNumber": 44,
+          "cells": [
+            "Silicone",
+            "86a",
+            "aged",
+            "30-Aug",
+            "8.1",
+            "1.345",
+            "",
+            "",
+            "",
+            "628"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:45",
+          "csvRecordNumber": 45,
+          "cells": [
+            "Silicone",
+            "91",
+            "Baseline STS det",
+            "7-Sep",
+            "8.1",
+            "1.327",
+            "60",
+            "11",
+            "8",
+            "46"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:46",
+          "csvRecordNumber": 46,
+          "cells": [
+            "Silicone",
+            "99",
+            "No flow run w/aging",
+            "8-Sep",
+            "0",
+            "1.35",
+            "60",
+            "11",
+            "8",
+            "48"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:47",
+          "csvRecordNumber": 47,
+          "cells": [
+            "Silicone",
+            "99a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.35",
+            "",
+            "",
+            "",
+            "627"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:48",
+          "csvRecordNumber": 48,
+          "cells": [
+            "Silicone",
+            "103",
+            "low flow run w/ aging",
+            "9-Sep",
+            "1",
+            "1.35",
+            "60",
+            "11",
+            "8",
+            "48"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:49",
+          "csvRecordNumber": 49,
+          "cells": [
+            "Silicone",
+            "103a",
+            "aged",
+            "9-Sep",
+            "1",
+            "1.35",
+            "",
+            "",
+            "",
+            "619"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:50",
+          "csvRecordNumber": 50,
+          "cells": [
+            "Silicone",
+            "104",
+            "No flow run w/ aging",
+            "9-Sep",
+            "0",
+            "1.35",
+            "60",
+            "11",
+            "8",
+            "51"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:51",
+          "csvRecordNumber": 51,
+          "cells": [
+            "Silicone",
+            "104a",
+            "aged",
+            "9-Sep",
+            "0",
+            "1.35",
+            "",
+            "",
+            "",
+            "636"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:52",
+          "csvRecordNumber": 52,
+          "cells": [
+            "Silicone",
+            "109",
+            "low flow run w STS",
+            "9-Sep",
+            "2",
+            "1.35",
+            "60",
+            "11",
+            "8",
+            "28"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:53",
+          "csvRecordNumber": 53,
+          "cells": [
+            "Lampwick",
+            "49",
+            "B.L. High RT/R0",
+            "19-Jul",
+            "8",
+            "1.251",
+            "60",
+            "11",
+            "8",
+            "51"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:54",
+          "csvRecordNumber": 54,
+          "cells": [
+            "Lampwick",
+            "54",
+            "Baseline",
+            "29-Jul",
+            "8.1",
+            "1.245",
+            "60",
+            "11",
+            "8",
+            "57"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:55",
+          "csvRecordNumber": 55,
+          "cells": [
+            "Lampwick",
+            "55",
+            "High RT/R0 test aging",
+            "29-Jul",
+            "8.1",
+            "1.245",
+            "60",
+            "11",
+            "8",
+            "47"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:56",
+          "csvRecordNumber": 56,
+          "cells": [
+            "Lampwick",
+            "55a",
+            "aged",
+            "29-Jul",
+            "8.1",
+            "1.245",
+            "",
+            "",
+            "",
+            "218"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:57",
+          "csvRecordNumber": 57,
+          "cells": [
+            "Lampwick",
+            "57",
+            "High RT/R0 reburn sample",
+            "29-Jul",
+            "8.1",
+            "1.253",
+            "60",
+            "11",
+            "8",
+            "n/a"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:58",
+          "csvRecordNumber": 58,
+          "cells": [
+            "Lampwick",
+            "68",
+            "High temp aged STS det",
+            "24-Aug",
+            "8.1",
+            "1.28",
+            "60",
+            "720",
+            "8",
+            "747"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:59",
+          "csvRecordNumber": 59,
+          "cells": [
+            "Lampwick",
+            "78",
+            "Baseline aging",
+            "26-Aug",
+            "8.1",
+            "1.245",
+            "60",
+            "11",
+            "8",
+            "37"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:60",
+          "csvRecordNumber": 60,
+          "cells": [
+            "Lampwick",
+            "78a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.245",
+            "",
+            "",
+            "",
+            "581"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:61",
+          "csvRecordNumber": 61,
+          "cells": [
+            "Lampwick",
+            "80",
+            "High temp aging",
+            "26-Aug",
+            "8.1",
+            "1.28",
+            "60",
+            "11",
+            "8",
+            "40"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:62",
+          "csvRecordNumber": 62,
+          "cells": [
+            "Lampwick",
+            "80a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.28",
+            "",
+            "",
+            "",
+            "580"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:63",
+          "csvRecordNumber": 63,
+          "cells": [
+            "Lampwick",
+            "82",
+            "Mid temp aging",
+            "26-Aug",
+            "8.1",
+            "1.265",
+            "60",
+            "11",
+            "8",
+            "39"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:64",
+          "csvRecordNumber": 64,
+          "cells": [
+            "Lampwick",
+            "82a",
+            "aged",
+            "27-Aug",
+            "8.1",
+            "1.265",
+            "",
+            "",
+            "",
+            "579"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:65",
+          "csvRecordNumber": 65,
+          "cells": [
+            "Lampwick",
+            "88",
+            "Baseline STS det",
+            "30-Aug",
+            "8.1",
+            "1.245",
+            "60",
+            "11",
+            "8",
+            "n/a"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:66",
+          "csvRecordNumber": 66,
+          "cells": [
+            "Lampwick",
+            "96",
+            "No flow run w/aging",
+            "7-Sep",
+            "0",
+            "1.245",
+            "60",
+            "11",
+            "8",
+            "34"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:67",
+          "csvRecordNumber": 67,
+          "cells": [
+            "Lampwick",
+            "96a",
+            "aged",
+            "7-Sep",
+            "0",
+            "1.245",
+            "",
+            "",
+            "",
+            "582"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:68",
+          "csvRecordNumber": 68,
+          "cells": [
+            "Lampwick",
+            "98",
+            "No flow run w/aging",
+            "8-Sep",
+            "0",
+            "1.28",
+            "60",
+            "11",
+            "8",
+            "37"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:69",
+          "csvRecordNumber": 69,
+          "cells": [
+            "Lampwick",
+            "98a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.28",
+            "",
+            "",
+            "",
+            "585"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:70",
+          "csvRecordNumber": 70,
+          "cells": [
+            "Lampwick",
+            "106",
+            "No flow run w/aging",
+            "9-Sep",
+            "0",
+            "1.28",
+            "60",
+            "11",
+            "8",
+            "30"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:71",
+          "csvRecordNumber": 71,
+          "cells": [
+            "Lampwick",
+            "106a",
+            "aged",
+            "9-Sep",
+            "0",
+            "1.28",
+            "",
+            "",
+            "",
+            "558"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:72",
+          "csvRecordNumber": 72,
+          "cells": [
+            "Lampwick",
+            "110",
+            "low flow run w/STS",
+            "9-Sep",
+            "2",
+            "1.28",
+            "60",
+            "11",
+            "8",
+            "21"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:73",
+          "csvRecordNumber": 73,
+          "cells": [
+            "Teflon",
+            "50",
+            "B.L. High RT/R0",
+            "20-Jul",
+            "8.1",
+            "1.452",
+            "60",
+            "11",
+            "8",
+            "33"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:74",
+          "csvRecordNumber": 74,
+          "cells": [
+            "Teflon",
+            "56",
+            "Baseline",
+            "29-Jul",
+            "8.1",
+            "1.445",
+            "60",
+            "11",
+            "8",
+            "41"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:75",
+          "csvRecordNumber": 75,
+          "cells": [
+            "Teflon",
+            "57",
+            "High RT/R0 reburn sample",
+            "29-Jul",
+            "8.1",
+            "1.253",
+            "60",
+            "11",
+            "8",
+            "n/a"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:76",
+          "csvRecordNumber": 76,
+          "cells": [
+            "Teflon",
+            "58",
+            "Baseline aging",
+            "30-Jul",
+            "8.1",
+            "1.445",
+            "60",
+            "11",
+            "8",
+            "34"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:77",
+          "csvRecordNumber": 77,
+          "cells": [
+            "Teflon",
+            "58a",
+            "aged",
+            "30-Jul",
+            "8.1",
+            "1.445",
+            "",
+            "",
+            "",
+            "805"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:78",
+          "csvRecordNumber": 78,
+          "cells": [
+            "Teflon",
+            "69",
+            "High temp aged STS det",
+            "24-Aug",
+            "8.1",
+            "1.45",
+            "60",
+            "720",
+            "8",
+            "745"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:79",
+          "csvRecordNumber": 79,
+          "cells": [
+            "Teflon",
+            "79",
+            "Baseline aging",
+            "26-Aug",
+            "8.1",
+            "1.445",
+            "60",
+            "11",
+            "8",
+            "33"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:80",
+          "csvRecordNumber": 80,
+          "cells": [
+            "Teflon",
+            "79a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.445",
+            "",
+            "",
+            "",
+            "560"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:81",
+          "csvRecordNumber": 81,
+          "cells": [
+            "Teflon",
+            "81",
+            "High temp aging",
+            "26-Aug",
+            "8.1",
+            "1.45",
+            "60",
+            "11",
+            "8",
+            "30"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:82",
+          "csvRecordNumber": 82,
+          "cells": [
+            "Teflon",
+            "81a",
+            "aged",
+            "27-Aug",
+            "8.1",
+            "1.45",
+            "",
+            "",
+            "",
+            "559"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:83",
+          "csvRecordNumber": 83,
+          "cells": [
+            "Teflon",
+            "83",
+            "Mid temp aging",
+            "26-Aug",
+            "8.1",
+            "1.448",
+            "60",
+            "11",
+            "8",
+            "30"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:84",
+          "csvRecordNumber": 84,
+          "cells": [
+            "Teflon",
+            "83a",
+            "aged",
+            "27-Aug",
+            "8.1",
+            "1.448",
+            "",
+            "",
+            "",
+            "557"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:85",
+          "csvRecordNumber": 85,
+          "cells": [
+            "Teflon",
+            "89",
+            "Baseline STS det",
+            "30-Aug",
+            "8.1",
+            "1.445",
+            "60",
+            "11",
+            "8",
+            "31"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:86",
+          "csvRecordNumber": 86,
+          "cells": [
+            "Teflon",
+            "100",
+            "No flow run w/ aging",
+            "8-Sep",
+            "0",
+            "1.45",
+            "60",
+            "11",
+            "8",
+            "29"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:87",
+          "csvRecordNumber": 87,
+          "cells": [
+            "Teflon",
+            "100a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.45",
+            "",
+            "",
+            "",
+            "560"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:88",
+          "csvRecordNumber": 88,
+          "cells": [
+            "Teflon",
+            "105",
+            "No flow run w/ aging",
+            "9-Sep",
+            "0",
+            "1.45",
+            "60",
+            "11",
+            "8",
+            "24"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:89",
+          "csvRecordNumber": 89,
+          "cells": [
+            "Teflon",
+            "105a",
+            "aged",
+            "9-Sep",
+            "0",
+            "1.45",
+            "",
+            "",
+            "",
+            "559"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:90",
+          "csvRecordNumber": 90,
+          "cells": [
+            "Teflon",
+            "111",
+            "low flow run w/ STS",
+            "9-Sep",
+            "2",
+            "1.45",
+            "60",
+            "11",
+            "8",
+            "43"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:91",
+          "csvRecordNumber": 91,
+          "cells": [
+            "Pyrell",
+            "52",
+            "Baseline",
+            "22-Jul",
+            "8.1",
+            "1.22",
+            "60",
+            "11",
+            "8",
+            "n/a"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:92",
+          "csvRecordNumber": 92,
+          "cells": [
+            "Pyrell",
+            "63",
+            "Baseline Aging",
+            "23-Aug",
+            "8.1",
+            "1.22",
+            "60",
+            "11",
+            "8",
+            "56"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:93",
+          "csvRecordNumber": 93,
+          "cells": [
+            "Pyrell",
+            "63a",
+            "aged",
+            "23-Aug",
+            "8.1",
+            "1.22",
+            "",
+            "",
+            "",
+            "840"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:94",
+          "csvRecordNumber": 94,
+          "cells": [
+            "Pyrell",
+            "64",
+            "High Temp aging",
+            "23-Aug",
+            "8.1",
+            "1.23",
+            "60",
+            "11",
+            "8",
+            "47"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:95",
+          "csvRecordNumber": 95,
+          "cells": [
+            "Pyrell",
+            "64a",
+            "aged",
+            "23-Aug",
+            "8.1",
+            "1.23",
+            "",
+            "",
+            "",
+            "842"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:96",
+          "csvRecordNumber": 96,
+          "cells": [
+            "Pyrell",
+            "71",
+            "High temp aged STS det",
+            "24-Aug",
+            "8.1",
+            "1.23",
+            "60",
+            "720",
+            "8",
+            "750"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:97",
+          "csvRecordNumber": 97,
+          "cells": [
+            "Pyrell",
+            "74",
+            "Baseline Aging",
+            "26-Aug",
+            "8.1",
+            "1.22",
+            "60",
+            "11",
+            "8",
+            "48"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:98",
+          "csvRecordNumber": 98,
+          "cells": [
+            "Pyrell",
+            "74a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.22",
+            "",
+            "",
+            "",
+            "623"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:99",
+          "csvRecordNumber": 99,
+          "cells": [
+            "Pyrell",
+            "76",
+            "High Temp aging",
+            "26-Aug",
+            "8.1",
+            "1.23",
+            "60",
+            "11",
+            "8",
+            "51"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:100",
+          "csvRecordNumber": 100,
+          "cells": [
+            "Pyrell",
+            "76a",
+            "aged",
+            "26-Aug",
+            "8.1",
+            "1.23",
+            "",
+            "",
+            "",
+            "625"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:101",
+          "csvRecordNumber": 101,
+          "cells": [
+            "Pyrell",
+            "84",
+            "Mid Temp aging retry",
+            "30-Aug",
+            "8.1",
+            "1.225",
+            "60",
+            "11",
+            "8",
+            "53"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:102",
+          "csvRecordNumber": 102,
+          "cells": [
+            "Pyrell",
+            "84a",
+            "aged",
+            "30-Aug",
+            "8.1",
+            "1.225",
+            "",
+            "",
+            "",
+            "632"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:103",
+          "csvRecordNumber": 103,
+          "cells": [
+            "Pyrell",
+            "87",
+            "Baseline STS det",
+            "30-Aug",
+            "8.1",
+            "1.22",
+            "60",
+            "11",
+            "8",
+            "45"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:104",
+          "csvRecordNumber": 104,
+          "cells": [
+            "Pyrell",
+            "95",
+            "No flow run w/ aging",
+            "7-Sep",
+            "0",
+            "1.22",
+            "60",
+            "11",
+            "8",
+            "38"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:105",
+          "csvRecordNumber": 105,
+          "cells": [
+            "Pyrell",
+            "95a",
+            "aged",
+            "7-Sep",
+            "0",
+            "1.22",
+            "",
+            "",
+            "",
+            "n/a"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:106",
+          "csvRecordNumber": 106,
+          "cells": [
+            "Pyrell",
+            "97",
+            "No flow run w/aging",
+            "8-Sep",
+            "0",
+            "1.23",
+            "60",
+            "11",
+            "8",
+            "48"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:107",
+          "csvRecordNumber": 107,
+          "cells": [
+            "Pyrell",
+            "97a",
+            "aged",
+            "8-Sep",
+            "0",
+            "1.23",
+            "",
+            "",
+            "",
+            "624"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:108",
+          "csvRecordNumber": 108,
+          "cells": [
+            "Pyrell",
+            "107",
+            "Low flow run w/aging",
+            "9-Sep",
+            "1",
+            "1.23",
+            "60",
+            "11",
+            "8",
+            "32"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:109",
+          "csvRecordNumber": 109,
+          "cells": [
+            "Pyrell",
+            "107a",
+            "aged",
+            "9-Sep",
+            "1",
+            "1.23",
+            "",
+            "",
+            "",
+            "559"
+          ],
+          "rowKind": "source_record"
+        },
+        {
+          "id": "CSV-679a9e2209ed061032c0cd23:110",
+          "csvRecordNumber": 110,
+          "cells": [
+            "Pyrell",
+            "113",
+            "low flow run w STS",
+            "9-Sep",
+            "2",
+            "1.23",
+            "60",
+            "11",
+            "8",
+            "31"
+          ],
+          "rowKind": "source_record"
         }
       ]
     }

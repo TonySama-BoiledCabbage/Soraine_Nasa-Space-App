@@ -1,3 +1,9 @@
+-- Legacy bootstrap for the original two files. The expanded collection uses
+-- import-nasa-csv.py and extend-original-data.sql. Never overwrite added files.
+ASSERT NOT EXISTS (
+  SELECT 1 FROM `project-89aca125-c9a5-4fdd-bb0.flame_in_freefall_2026.public_experiment_rows`
+  WHERE dataset_id NOT IN ('bass-ii', 'saffire-ii')
+) AS 'Expanded source collection exists; use the additive import workflow';
 -- Public copies of two verified NASA CSVs. Run only after reviewing this table's
 -- output; grant the runtime identity access to this table, not to raw_records/files.
 -- Rows, notes, headers and units are preserved. No paths or download logs publish.

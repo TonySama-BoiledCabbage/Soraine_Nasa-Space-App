@@ -7,8 +7,12 @@ export const ORIGINAL_PUBLIC_FIELDS = Object.freeze({
   csv_record_number: 'INTEGER', row_kind: 'STRING'
 });
 const DATASETS = Object.freeze({
+  'bass': {title: 'BASS', source: 'CSV-67a3768509ed061032c125fb', investigation: 'PSI-26'},
   'bass-ii': {title: 'BASS-II', source: 'CSV-fa0a9a6e384c7e455825173a', investigation: 'PSI-25'},
-  'saffire-ii': {title: 'Saffire-II', source: 'CSV-e7a94940d9d2f3c035985141', investigation: 'PSI-99'}
+  'saffire-i': {title: 'Saffire-I', source: 'CSV-6792c46eb7b6ff8e65037f3e', investigation: 'PSI-98'},
+  'saffire-ii': {title: 'Saffire-II', source: 'CSV-e7a94940d9d2f3c035985141', investigation: 'PSI-99'},
+  'saffire-iii': {title: 'Saffire-III', source: 'CSV-6792d422b7b6ff8e650381da', investigation: 'PSI-100'},
+  'same-r': {title: 'SAME-R', source: 'CSV-679a9e2209ed061032c0cd23', investigation: 'PSI-101'}
 });
 const ROW_KINDS = new Set(['source_record', 'test_record', 'source_note', 'pretest_reference']);
 const MAX_ROWS = 5000;

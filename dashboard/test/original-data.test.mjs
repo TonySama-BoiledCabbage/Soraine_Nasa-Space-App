@@ -44,13 +44,19 @@ test('serves every original CSV string and public provenance across paginated RE
   const result = await readOriginalBundle({...configuration, request});
   assert.deepEqual(result.datasets, snapshot.datasets);
   assert.ok(Number.isFinite(Date.parse(result.exportedAt)));
-  assert.equal(result.datasets[0].rows.length, 129);
-  assert.equal(result.datasets[1].rows.length, 15);
-  assert.equal(result.datasets[0].rows[1].cells[12], '1.6');
-  assert.equal(result.datasets[1].rows.filter(row => row.rowKind === 'source_note').length, 4);
-  assert.equal(result.datasets[1].rows.filter(row => row.rowKind === 'pretest_reference').length, 2);
+  const data = Object.fromEntries(result.datasets.map(item => [item.id, item]));
+  assert.deepEqual(Object.fromEntries(result.datasets.map(item => [item.id, item.rows.length])),
+    {'bass':122, 'bass-ii':129, 'saffire-i':4, 'saffire-ii':15, 'saffire-iii':2, 'same-r':109});
+  assert.equal(data['bass-ii'].rows[1].cells[12], '1.6');
+  assert.equal(data['saffire-ii'].rows.filter(row => row.rowKind === 'source_note').length, 4);
+  assert.equal(data['saffire-ii'].rows.filter(row => row.rowKind === 'pretest_reference').length, 2);
+  assert.equal(data['saffire-i'].rows[1].cells[6], '~ 21.5');
+  assert.equal(data['saffire-i'].rows[0].cells[9], '420');
+  assert.equal(data['saffire-i'].rows.filter(row => row.rowKind === 'pretest_reference').length, 2);
+  assert.equal(data['same-r'].rows[1].cells[7], '');
+  assert.equal(data['same-r'].rows[24].cells[4], '0');
   assert.ok(!JSON.stringify(result).includes('local_path'));
-  assert.equal(urls.filter(url => url.includes('/data?')).length, 3);
+  assert.equal(urls.filter(url => url.includes('/data?')).length, Math.ceil(records.length / 70));
 });
 
 test('rejects a refresh changed while paging, rather than returning a mixed snapshot', async () => {
@@ -80,7 +86,7 @@ test('does not publish private paths inserted into cells', async () => {
   await assert.rejects(readOriginalBundle({...configuration, ...mockRequest(privateRow)}), /CSV row is invalid/);
 });
 
-test('requires both datasets and stops repeated pagination tokens', async () => {
+test('requires the selected datasets and stops repeated pagination tokens', async () => {
   await assert.rejects(readOriginalBundle({...configuration, ...mockRequest(records.filter(row => row.dataset_id === 'bass-ii'))}), /incomplete/);
   await assert.rejects(readOriginalBundle({...configuration, ...mockRequest(records, {repeatedPage: true})}), /pagination repeated/);
 });

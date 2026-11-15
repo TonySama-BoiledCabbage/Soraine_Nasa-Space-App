@@ -25,16 +25,16 @@ test('public assets support conditional reads and HEAD without exposing server f
  const mutation=await fetch(base+'/api/research',{method:'POST'});assert.equal(mutation.status,405);
  assert.equal(mutation.headers.get('allow'),'GET, HEAD');
 
- await t.test('original NASA endpoint serves both complete CSVs without operational fields',async()=>{
+ await t.test('original NASA endpoint serves all six selected CSVs without operational fields',async()=>{
    const response=await fetch(base+'/api/original-data');
    assert.equal(response.status,200);
    assert.equal(response.headers.get('content-type'),'application/json');
    assert.equal(response.headers.get('cache-control'),'public, max-age=30');
    const data=await response.json();
-   assert.deepEqual(data.datasets.map(d=>[d.id,d.rows.length]),[['bass-ii',129],['saffire-ii',15]]);
+   assert.deepEqual(data.datasets.map(d=>[d.id,d.rows.length]),[['bass',122],['bass-ii',129],['saffire-i',4],['saffire-ii',15],['saffire-iii',2],['same-r',109]]);
    assert.ok(data.datasets.every(d=>d.rows.every(row=>row.cells.length===d.columns.length)));
-   assert.equal(data.datasets[0].rows[1].cells[12],'1.6');
-   assert.equal(data.datasets[1].rows.filter(row=>row.rowKind==='source_note').length,4);
+   assert.equal(data.datasets.find(d=>d.id==='bass-ii').rows[1].cells[12],'1.6');
+   assert.equal(data.datasets.find(d=>d.id==='saffire-ii').rows.filter(row=>row.rowKind==='source_note').length,4);
    assert.ok(!/local_path|source_file|download_events|object_key/.test(JSON.stringify(data)));
    const head=await fetch(base+'/api/original-data',{method:'HEAD'});
    assert.equal(head.status,200);assert.equal(await head.text(),'');

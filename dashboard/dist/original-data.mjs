@@ -1,4 +1,13 @@
+import {originalFilesByRelevance} from './discovery.mjs';
 const PAGE_SIZE = 20;
+const datasetNotes = {
+  'bass': 'A run log linking dates, test numbers, samples and fuel materials. This file does not report oxygen limits or flame-spread rates.',
+  'bass-ii': 'Source test records with material, sample geometry and recorded test conditions. Read the original headings and notes before comparing runs.',
+  'same-r': 'Smoke-test conditions: sample type, inlet velocity, duration and aging times. These are not detector sensitivity or fire-risk scores.',
+  'saffire-i': 'SIBAL sample dimensions, airflow, oxygen settings, ignition power and recorded burn times. Two additional rows identify pre-test flow recordings.',
+  'saffire-ii': 'Material-test records plus source notes and pre-test references. Notes are retained alongside the test rows.',
+  'saffire-iii': 'Two SIBAL test configurations with dimensions, airflow direction and camera references. This table does not report burn times or oxygen limits.'
+};
 const mounts = new WeakMap();
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -15,7 +24,7 @@ const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7
 
 export function originalDataHTML() {
   return `<section class="originals" data-original-data aria-labelledby="originals-title">
-    <header class="originals-heading"><div><p class="originals-eyebrow">THE EXPERIMENT ARCHIVE</p><h2 id="originals-title">Original NASA records.</h2></div><p>Read the source files one record at a time. Values and notes stay as NASA supplied them.</p></header>
+    <header class="originals-heading"><div><p class="originals-eyebrow">THE EXPERIMENT ARCHIVE</p><h2 id="originals-title">Original NASA records.</h2></div><p>Selected NASA experiment files, copied into BigQuery with their original values and notes. This is a focused collection, not the entire PSI archive.</p></header>
     <div class="originals-loading" role="status"><span aria-hidden="true"></span>Opening the experiment files…</div>
   </section>`;
 }
@@ -87,7 +96,7 @@ export async function mountOriginalData(host, { datasetId = '', query = '', onSt
   }
 
   function originalDataHTMLHeader() {
-    return '<header class="originals-heading"><div><p class="originals-eyebrow">THE EXPERIMENT ARCHIVE</p><h2 id="originals-title">Original NASA records.</h2></div><p>Read the source files one record at a time. Values and notes stay as NASA supplied them.</p></header>';
+    return '<header class="originals-heading"><div><p class="originals-eyebrow">THE EXPERIMENT ARCHIVE</p><h2 id="originals-title">Original NASA records.</h2></div><p>Selected NASA experiment files, copied into BigQuery with their original values and notes. This is a focused collection, not the entire PSI archive.</p></header>';
   }
 
   let state;
@@ -102,7 +111,7 @@ export async function mountOriginalData(host, { datasetId = '', query = '', onSt
   }
 
   function renderExplorer(bundle, fallback) {
-    datasets = bundle.datasets;
+    datasets = originalFilesByRelevance(bundle.datasets);
     if (!datasets.length) {
       root.innerHTML = `${originalDataHTMLHeader()}<div class="originals-empty"><h3>No experiment files are available yet.</h3><p>The source archive will appear here when its files are available.</p></div>`;
       return;
@@ -128,7 +137,8 @@ export async function mountOriginalData(host, { datasetId = '', query = '', onSt
         <button type="button" class="originals-table-toggle" data-original-action="table" aria-pressed="false">Raw table</button>
       </div>
       <div class="originals-dataset-heading"><div><h3 data-original-title></h3><p data-original-count></p></div><div data-original-source></div></div>
-      <p class="originals-explanation">CSV rows can contain test records, notes or other source information. A row count is not a count of experiments.</p>
+      <p class="originals-explanation">Measurement-rich files first, then smoke-test conditions, configurations and run logs. Source row order is unchanged. A row count is not a count of experiments.</p>
+      <p class="originals-explanation" data-original-purpose></p>
       <div class="originals-results-bar"><p data-original-status role="status" aria-live="polite"></p><span data-original-mode>RECORD EXPLORER</span></div>
       <div data-original-browser></div>
       <div class="originals-pagination"><button type="button" data-original-action="previous" aria-label="Previous 20 CSV rows">← Previous</button><span data-original-page></span><button type="button" data-original-action="next" aria-label="Next 20 CSV rows">Next →</button></div>
@@ -154,6 +164,7 @@ export async function mountOriginalData(host, { datasetId = '', query = '', onSt
   function renderDataset(bundle = archiveBundle) {
     archiveBundle = bundle;
     const dataset = datasets[state.dataset];
+    root.querySelector('[data-original-purpose]').textContent = datasetNotes[dataset.id] || '';
     nodes.title.textContent = dataset.title || dataset.id || 'Experiment file';
     nodes.count.textContent = `${formatCount(dataset.rows.length)} CSV rows · ${formatCount(dataset.columns.length)} source columns`;
     const url = sourceUrl(dataset.sourceUrl);
