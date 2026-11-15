@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["soraine-core", "soraine-web"]
+members = ["soraine-core", "soraine-web", "soraine-server"]
 
 [workspace.package]
 edition = "2021"
