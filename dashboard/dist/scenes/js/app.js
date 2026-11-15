@@ -86,7 +86,8 @@
     try {
       SoraineScene.setStill(reduced.matches); SoraineScene.init(canvas, 'earth');
       stage.classList.add('is-on'); show('earth'); setTop(true);
-      await SoraineScene.prepareAll(progress); show('earth'); setTop(true);
+      if (window.SORAINE_LITE) progress(100, 'Ready');           // phones: do not pre-build and warm every world (too much memory); each is built when opened
+      else { await SoraineScene.prepareAll(progress); show('earth'); setTop(true); }
       $('scene-loading').hidden = true; document.querySelector('.ui').inert = false; busy = false;
     } catch (e) { ok = false; progress($('loading-progress').value, 'Could not finish preparing: ' + e.message); $('loading-retry').hidden = false; }
   }, 0); });

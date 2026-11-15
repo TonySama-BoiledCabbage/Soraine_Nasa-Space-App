@@ -15,5 +15,5 @@
   .scene-actions { width: 100%; }
   .scene-actions .export-btn { flex: 1 1 0; justify-content: center; min-height: 44px; }
   /* Tall enough to use, short enough that the page still scrolls past it. */
-  .scene-stage { height: clamp(440px, calc(100dvh - 210px), 720px); border-radius: 12px; }
+  .scene-stage { height: clamp(440px, calc(100vh - 210px), 720px);height: clamp(440px, calc(100dvh - 210px), 720px); border-radius: 12px; }
 }

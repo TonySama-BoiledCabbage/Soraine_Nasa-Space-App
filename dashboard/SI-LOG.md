@@ -142,3 +142,16 @@ At Hogan's request, Codex replaced the scene's small control list with a blue la
 Startup now also renders particles, outlines, full-resolution depth/transition buffers, screen-output shader variants and object inspection lighting behind the loading overlay. GPU uploads finish before interaction is enabled. This moves first-use work into preparation; ongoing frame rate still depends on the device and scene workload. Scientific values and simulation rules were not changed.
 
 A blue Soraine QR code links to https://soraine.vercel.app/. The final branded PNG decoded correctly at 1100, 440 and 330 pixels wide using OpenCV. PNG and SVG are in dist/assets/brand. Validation: 31 Node tests and JavaScript syntax checks passed. Chromium checks confirmed the flip handler ran once after the drawer reached zero opacity, with no horizontal overflow at 390 and 320 pixels. At 320 x 568, the drawer stays above the bottom navigation and scrolls to its remaining controls.
+
+## 2026-11-15: Older-phone support
+
+At Ethan's request ("run on any phone from the last 10 years"), super intelligence (Claude) made the static site tolerate older phone browsers and weaker hardware. No research data, values or wording changed, and the Rust build was not rebuilt.
+
+- `dist/compat.js` (loaded first) adds `Object.hasOwn`, `Array.prototype.at` and a `<dialog>` stand-in for browsers without `showModal` (iOS before 15.4), and marks weak devices with `<html data-device="low">`. `dist/compat.css` styles the stand-in and turns off live blur and long animations on those devices.
+- Every `dvh`/`svh` height now has a `vh` fallback before it, and every `backdrop-filter` has its `-webkit-` form (needed by Safari before 18).
+- Dashboard 3D views: weak phones draw at the screen's base resolution without antialiasing; other phones keep the 1.5x cap.
+- `dist/vendor/three.module.js` is now minified (1.27 MB to 0.67 MB before compression; same r160 code and licence header).
+- The soundtrack has an AAC copy (0.86 MB instead of 5.1 MB); the WAV remains as the fallback. `server/index.mjs` serves `.m4a` as `audio/mp4`.
+- 3D scenes: phones start in the existing light mode (no shadows, base resolution) and build each world when it is opened instead of preparing all four at start; weak phones and chips without float/depth textures skip the scan-wave pass and use the simple wipe. `?hq` forces full quality.
+
+Validation: 31 Node tests and syntax checks passed. Chromium with a 360 x 640 touch viewport loaded the dashboard and the scenes page without script errors, both normally and with `Object.hasOwn`, `<dialog>.showModal` and `dvh` support removed to imitate an older browser; the details panel opened and closed in both. First-load transfer on the dashboard fell from 3.64 MB to 3.03 MB uncompressed. Not tested on a physical phone or in Safari. Browsers older than about iOS 15 / Chrome 109 are not covered: they cannot run the site's JavaScript modules as written.
