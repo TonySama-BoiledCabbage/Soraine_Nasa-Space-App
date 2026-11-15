@@ -1,6 +1,6 @@
 # Soraine Combustion Observatory
 
-[Open the public dashboard](https://soraine-dashboard-334840303039.us-central1.run.app) · [Team handoff](TEAM-HANDOFF.md) · [Image credits](ASSET-CREDITS.md)
+[Open the public dashboard](https://soraine.vercel.app) · [Team handoff](TEAM-HANDOFF.md) · [Image credits](ASSET-CREDITS.md)
 
 A JavaScript / Three.js research interface for Flame in Freefall. It combines NASA planetary imagery, material comparisons across four gravity contexts, searchable measurements and sources, and CSV/JSON exports. Open sections, thin dividers and material icons connect the research to Soraine's visual world. The [design guide](DESIGN.md) documents the shared direction.
 
@@ -40,11 +40,13 @@ The [team handoff](TEAM-HANDOFF.md) gives module locations, scene URL parameters
 
 ## Vercel deployment
 
-Import the repository into a separate Vercel project and set **Root Directory** to `dashboard`. The included `vercel.json` uses the **Other** framework preset, no install or build command, and `dist` as the output directory. The repository-root configuration belongs to the separate scene site.
+The dashboard is live at [soraine.vercel.app](https://soraine.vercel.app) on Vercel's free Hobby plan. The separate dashboard project tracks `codex/mission-control-cloud` as its production branch. Commit `28b1c15` was deployed on November 15, 2026.
+
+The project's **Root Directory** is `dashboard`. The included `vercel.json` uses the **Other** framework preset, no install or build command, and `dist` as the output directory. The repository-root configuration belongs to the separate scene site.
 
 Vercel serves the public dashboard assets and forwards `/api/research` and `/api/original-data` to the existing Cloud Run service. Keep Cloud Run running: it owns the runtime identity that reads BigQuery. No Google credentials or environment variables are needed in Vercel. Scene links continue to work through query parameters and hash navigation.
 
-After deployment, check both API routes for a connected BigQuery response, verify the Moon/Mars material links and models, and open the production URL without signing in. Server source, tests and deployment documentation are outside the published `dist` directory.
+Anonymous HTTP checks confirmed that the homepage, JavaScript modules and lunar texture load successfully. Both API routes returned live BigQuery responses: 59 measurements, 45 experiment contexts and 307 sources, plus 129 BASS-II and 15 Saffire-II original CSV rows. JavaScript and image responses use the correct content types. `/server/index.mjs` and `/package.json` return 404; server source, tests and deployment documentation are outside the published `dist` directory.
 
 ## Credits
 

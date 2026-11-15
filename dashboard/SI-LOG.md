@@ -93,8 +93,12 @@ Planet zoom now eases toward a bounded target at up to 60 frames per second. Rep
 
 Validation: all 27 automated checks passed. Browser instrumentation confirmed continuous rotation in both viewers, 34 distinct planet-camera distances during one zoom, no overshoot, accumulated zoom limits, zoom while paused, retained material pause state, two retained canvases and reduced-motion controls. Material lifecycle checks covered drag cooldown, offscreen and hidden states, preference changes and disposal.
 
-## 2026-11-15: Vercel deployment configuration
+## 2026-11-15: Public Vercel deployment
 
 At Hogan's request, Codex added a separate dashboard deployment configuration for Vercel. It publishes only `dashboard/dist` and forwards the two public data routes to the existing Cloud Run service. The original repository-root scene configuration remains intact. Google credentials stay in Google Cloud, and the research values, models and visual design are unchanged.
 
-Validation: the configuration parses as JSON, the public entry point exists, and both upstream API endpoints return connected BigQuery responses. The research endpoint returns 59 measurements. The Vercel deployment requires account setup before its public URL and routing can be checked.
+Published [soraine.vercel.app](https://soraine.vercel.app) on Vercel's free Hobby plan from commit `28b1c15`. The project uses `dashboard` as its root, `dist` as its public output and `codex/mission-control-cloud` as its production branch. Cloud Run continues to serve the public research API and read BigQuery.
+
+Validation: anonymous HTTP requests returned 200 for the homepage, JavaScript modules and lunar texture, with the expected content types. Both public API routes returned live BigQuery responses. The research response contains 59 measurements, 45 experiment contexts and 307 sources; the original-data response contains 129 BASS-II and 15 Saffire-II CSV rows. `/server/index.mjs` and `/package.json` returned 404. The initial generated alias redirects to the clean production URL.
+
+Live browser checks confirmed the Moon model, planet zoom controls, Ultem-to-Mylar selection and the original NASA record explorer. The published interface reports BigQuery connected. Saved a deployment screenshot in `dashboard/qa/published-vercel.jpg`.
