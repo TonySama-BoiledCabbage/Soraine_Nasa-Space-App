@@ -38,6 +38,14 @@ The initial cloud deployment is verified separately. The GitHub deployment workf
 
 The [team handoff](TEAM-HANDOFF.md) gives module locations, scene URL parameters, cloud links and access details. Teammates can work on scene rendering separately and link into a selected dashboard context.
 
+## Vercel deployment
+
+Import the repository into a separate Vercel project and set **Root Directory** to `dashboard`. The included `vercel.json` uses the **Other** framework preset, no install or build command, and `dist` as the output directory. The repository-root configuration belongs to the separate scene site.
+
+Vercel serves the public dashboard assets and forwards `/api/research` and `/api/original-data` to the existing Cloud Run service. Keep Cloud Run running: it owns the runtime identity that reads BigQuery. No Google credentials or environment variables are needed in Vercel. Scene links continue to work through query parameters and hash navigation.
+
+After deployment, check both API routes for a connected BigQuery response, verify the Moon/Mars material links and models, and open the production URL without signing in. Server source, tests and deployment documentation are outside the published `dist` directory.
+
 ## Credits
 
 The music button in the header opens the optional original soundtrack, **Quiet Orbit**, with play/pause, mute and volume controls. It does not autoplay or download audio on initial page load. Playback continues while navigating research views. The original score and synthesizer are reproducible with `scripts/compose-observatory.py` (Python and NumPy); provenance is in `dist/assets/audio/README.md`.
