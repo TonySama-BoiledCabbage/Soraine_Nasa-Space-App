@@ -5,9 +5,11 @@ import {pipeline} from 'node:stream/promises';
 import {resolve, extname, sep, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createResearchCache, readPublicBundle} from './research.mjs';
+import {readOriginalBundle} from './original-data.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
 const snapshot = JSON.parse((await readFile(resolve(root,'data/research.json'),'utf8')).replace(/^\uFEFF/,''));
+const originalSnapshot = JSON.parse((await readFile(resolve(root,'data/original-data.json'),'utf8')).replace(/^\uFEFF/,''));
 const project = process.env.BQ_PROJECT || 'project-89aca125-c9a5-4fdd-bb0';
 const dataset = process.env.BQ_DATASET || 'flame_in_freefall_2026';
 let credential, credentialExpires=0;
@@ -25,6 +27,7 @@ async function request(url){
   return response.json();
 }
 const research = createResearchCache({snapshot,refresh:()=>readPublicBundle({request,project,dataset,snapshot}).catch(error=>{console.warn('Research refresh:',error.message);throw error})});
+const originalData = createResearchCache({snapshot:originalSnapshot,refresh:()=>readOriginalBundle({request,project,dataset,snapshot:originalSnapshot}).catch(error=>{console.warn('Original data refresh:',error.message);throw error})});
 const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
 // Ignore malformed or multipart requests; a valid range outside the file is 416.
 function audioRange(header,size){
@@ -51,6 +54,9 @@ const server=http.createServer(async(req,res)=>{
     if(pathname==='/healthz'){res.writeHead(200,{'Content-Type':'application/json'}).end(req.method==='HEAD'?undefined:'{"status":"ok"}');return;}
     if(pathname==='/api/research'){
       const data=await research();res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'public, max-age=30'});res.end(req.method==='HEAD'?undefined:JSON.stringify(data));return;
+    }
+    if(pathname==='/api/original-data'){
+      const data=await originalData();res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'public, max-age=30'});res.end(req.method==='HEAD'?undefined:JSON.stringify(data));return;
     }
     // Restrict serving to public assets, never repository, cloud config or source.
     let file=resolve(root,'.'+pathname);

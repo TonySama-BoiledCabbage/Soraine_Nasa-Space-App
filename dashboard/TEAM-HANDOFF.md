@@ -15,7 +15,7 @@ The database is an independent copy of the original eight tables and three views
 
 The three accounts Hogan approved can edit this dataset and run queries. They can also develop Cloud Run services, view builds/logs, and deploy with the dedicated runtime identity. Project ownership and billing administration remain with Hogan. GitHub access is separate; Tony manages collaborator permissions and merging in the team repository.
 
-The public backend reads only `sources`, `experiments`, `measurements`, and `evidence`, with explicit column lists. It caches complete exports for five minutes per instance. It uses its Cloud Run identity, with no downloaded service-account keys. Raw records, file manifests and download logs stay in BigQuery. Catalogue totals come from the dated fallback export.
+The public research backend reads `sources`, `experiments`, `measurements`, and `evidence`, with explicit column lists. A separate original-data endpoint reads the narrowly selected `public_experiment_rows` table containing BASS-II and Saffire-II source CSV records. Both endpoints cache complete exports for five minutes per instance. The service uses its Cloud Run identity, with no downloaded service-account keys. Complete raw tables, file manifests and download logs stay in BigQuery. Catalogue totals come from the dated fallback export.
 
 ## Connect a Moon or Mars scene
 
@@ -28,7 +28,7 @@ import {researchUrl} from './dashboard/dist/scene-link.mjs';
 window.open(researchUrl({
   world: 'moon', // earth, moon, mars, iss, microgravity
   material: 'Ultem 1000', // Ultem 1000, Mylar G, Nomex HT90-40
-  view: 'compare' // overview, compare, evidence, sources
+  view: 'compare' // overview, compare, experiments, evidence, sources
 }), '_blank', 'noopener');
 ```
 
@@ -47,9 +47,17 @@ The reusable data functions are in `dist/data.mjs`: `joinResearch`, `filterRows`
 | Research layout, navigation and details | `dist/app.mjs`, `dist/observatory.css`, `dist/observatory-responsive.css`, `dist/index.html` |
 | Scene links and brand rules | `dist/scene-link.mjs`, `DESIGN.md` |
 | Planet rendering and shaders | `dist/globe.mjs`, `dist/planet-materials.mjs` |
+| Orbital laboratory illustration | `dist/microgravity-scene.mjs` |
+| 3D material rendering and controls | `dist/material-model.mjs` |
+| Specimen layout, SVG fallback and oxygen markers | `dist/specimen.mjs`, `dist/specimen.css` |
+| Scientific term definitions | `dist/glossary.mjs`, `dist/glossary.css` |
+| Original NASA CSV explorer | `dist/original-data.mjs`, `dist/original-data.css` |
 | Research filtering and comparison | `dist/data.mjs` |
 | Public data contract, caching and API | `server/research.mjs`, `server/index.mjs` |
+| Original CSV contract and publication | `server/original-data.mjs`, `scripts/publish-original-data.sql` |
 | Deployment | `Dockerfile`, `.github/workflows/dashboard-deploy.yml` |
+
+`createMaterialModel(host, material)` provides `setMaterial`, `zoom`, `reset` and `dispose`. The overview retains this renderer while changing materials and disposes it on exit. It renders on demand and supports pointer, touch and keyboard controls. `specimen.mjs` supplies the SVG fallback and the separate oxygen-limit display. The procedural forms and physical shading illustrate Ultem, Mylar and Nomex; they do not calculate fire behaviour or represent measured optical properties. Keep this visual module independent of scene physics and source values.
 
 Run `node server/index.mjs` and open `http://localhost:4335`. Local development uses the bundled snapshot. Run `node --test test/*.test.mjs` before a PR. Browser checks live in `test/browser.mjs` and use Playwright with an isolated Chrome profile.
 

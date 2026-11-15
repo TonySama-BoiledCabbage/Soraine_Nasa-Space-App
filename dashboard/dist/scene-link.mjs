@@ -3,7 +3,7 @@ import {MATERIALS} from './data.mjs';
 
 export const RESEARCH_SITE='https://soraine-dashboard-334840303039.us-central1.run.app/';
 const worlds={earth:'earth',moon:'moon',lunar:'moon',mars:'mars',martian:'mars',iss:'microgravity',microgravity:'microgravity'};
-const views=['overview','compare','evidence','sources'];
+const views=['overview','experiments','compare','evidence','sources'];
 
 export function researchUrl({world='earth',material='Ultem 1000',view='compare',record}={},base=RESEARCH_SITE){
  const url=new URL(base);

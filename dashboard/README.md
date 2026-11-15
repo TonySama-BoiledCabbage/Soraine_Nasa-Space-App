@@ -4,6 +4,8 @@
 
 A JavaScript / Three.js research interface for Flame in Freefall. It combines NASA planetary imagery, material comparisons across four gravity contexts, searchable measurements and sources, and CSV/JSON exports. Open sections, thin dividers and material icons connect the research to Soraine's visual world. The [design guide](DESIGN.md) documents the shared direction.
 
+Ultem, Mylar and Nomex have rotatable 3D specimens with original procedural geometry and physical shading. Drag or use the arrow keys to inspect a sample; zoom and reset controls work with touch or keyboard. The material renderer draws only when its view changes, and an SVG illustration remains available if WebGL setup fails. These are illustrative sample forms, not measured optical properties or predictions of burning.
+
 ## Run and test
 
 Run `node server/index.mjs` from this directory, then open http://localhost:4335. No dependencies or build step are needed. Local development uses the bundled research export.
@@ -12,9 +14,13 @@ Run `node --test test/*.test.mjs` for the research contracts and backend tests. 
 
 ## Data
 
-The backend reads `project-89aca125-c9a5-4fdd-bb0.flame_in_freefall_2026`, the team's independent database copy. The copy contains eight tables and three views. The original dataset is preserved in its original project.
+The backend reads `project-89aca125-c9a5-4fdd-bb0.flame_in_freefall_2026`, the team's independent database copy. It contains the original eight copied tables and three views, plus the dedicated public source-record table described below. The original dataset is preserved in its original project.
 
 The public API exposes selected columns from four tables: 59 measurement records, 45 experiment contexts, 307 sources and 25 supporting evidence statements at initial publication. It reads BigQuery through the Cloud Run runtime identity and caches complete results for five minutes per instance. The browser loads this data on opening or refreshing the page. It does not send a query for every click.
+
+The **Original data** view reads a separate `/api/original-data` endpoint. It exposes 129 BASS-II CSV rows and 15 Saffire-II CSV rows from the dedicated `public_experiment_rows` table. Source headers, strings, blanks, approximations and notes are preserved. All 144 rows and both headers were compared cell-for-cell with freshly downloaded NASA files, and both file hashes matched. Fifteen Saffire-II rows include nine sample records, two pre-test references and four notes, so CSV row counts must not be presented as independent trial counts.
+
+Each original file links to NASA's download and carries its SHA-256 hash and original CSV record numbers. The runtime can read the sanitized public table; it cannot read the complete raw-record or file-catalogue tables. `scripts/publish-original-data.sql` documents the exact selection. The original-data view loads only when opened and has its own cache and dated fallback.
 
 If a refresh fails, the backend serves its last complete result, or the included dated snapshot on a cold start. The interface distinguishes a connected BigQuery response, a stale cache and a saved snapshot. File-catalogue totals retain their original export date. No credentials, account identities, local paths, raw manifests or download logs enter the public API.
 
@@ -24,7 +30,7 @@ Results preserve source IDs, PDF pages, exact values, units, uncertainty and lim
 
 ## Team development and deployment
 
-The Node server serves `dist/` and `/api/research`. The Docker image contains only those public assets and the server. Cloud Run uses zero minimum instances and a two-instance maximum.
+The Node server serves `dist/`, `/api/research` and `/api/original-data`. The Docker image contains only those public assets and the server. Cloud Run uses zero minimum instances and a two-instance maximum.
 
 Dashboard changes merged into the team repository's `main` branch are configured to run checks, build a container and deploy through `.github/workflows/dashboard-deploy.yml`. Authentication uses Workload Identity Federation restricted to the team's exact repository ID, owner ID, branch and workflow path. No long-lived Google keys are stored in GitHub.
 

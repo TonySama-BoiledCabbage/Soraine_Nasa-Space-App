@@ -21,3 +21,10 @@ test('scene links reject unsupported materials, contexts and unsafe schemes',()=
  for(const args of [{world:'venus'},{material:'spoon'},{view:'admin'},{record:'<script>'}])assert.throws(()=>researchUrl(args));
  assert.throws(()=>researchUrl({},'javascript:alert(1)'));
 });
+
+test('scene links can open original experimental records without changing context',()=>{
+ const url=new URL(researchUrl({world:'moon',material:'Ultem 1000',view:'experiments'}));
+ assert.equal(url.hash,'#experiments');
+ assert.equal(url.searchParams.get('world'),'moon');
+ assert.equal(url.searchParams.get('material'),'Ultem 1000');
+});
