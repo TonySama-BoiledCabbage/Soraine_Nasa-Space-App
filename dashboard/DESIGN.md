@@ -18,7 +18,7 @@ The research interface is one part of Soraine. Moon and Mars scenes can open a r
 
 ## Motion and devices
 
-Transitions use opacity and translation. Do not add full-screen blur or continuous layout animation. The planet pauses when hidden or outside the viewport. Reduced-motion preferences disable automatic rotation and decorative transitions. Material selection preserves the existing renderer and camera.
+Transitions use opacity and translation. Do not add full-screen blur or continuous layout animation. The planet pauses when hidden or outside the viewport. Reduced-motion preferences disable automatic rotation and decorative transitions. Material selection preserves the existing renderer and camera. The camera automatically fits the planet to the available canvas aspect ratio, including narrow desktop panels.
 
 Small screens use a bottom research navigation, stacked sections, larger controls and labelled evidence rows. Horizontal drags rotate the planet; vertical swipes scroll. Small screens load smaller WebP maps; desktop retains the detailed NASA assets. Normal-map vectors are renormalized after resizing.
 
