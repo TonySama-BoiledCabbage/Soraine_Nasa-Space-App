@@ -212,3 +212,37 @@ fn material_panel_and_chart_match_javascript() {
         }
     }
 }
+
+#[test]
+fn compare_evidence_and_source_views_match_javascript() {
+    use soraine_core::views::*;
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    let same = |actual: String, expected: &Value, what: String| assert!(actual == s(expected), "{what}: {}", first_difference(&actual, s(expected)));
+    for case in golden["metricNames"].as_array().unwrap() { assert_eq!(metric_name(s(&case[0])), s(&case[1])); }
+    for case in golden["options"].as_array().unwrap() { assert_eq!(option(s(&case[0]), s(&case[1]), s(&case[2])), s(&case[3])); }
+    for case in golden["compares"].as_array().unwrap() {
+        same(compare(&rows, s(&case["material"]), s(&case["world"])), &case["html"], format!("compare {} {}", case["material"], case["world"]));
+    }
+    let cases = golden["evidenceCases"].as_array().unwrap();
+    assert!(cases.len() >= 36);
+    for case in cases {
+        let f = &case["filter"];
+        let pick = |key: &str, default: &'static str| f.get(key).and_then(Value::as_str).unwrap_or(default).to_string();
+        let (query, world, material, kind) = (pick("query", ""), pick("world", "All"), pick("material", "All"), pick("kind", "All"));
+        let filter = Filter { query: &query, world: &world, material: &material, kind: &kind };
+        same(evidence(&rows, &filter), &case["frame"], format!("evidence frame {f}"));
+        let (html, page) = evidence_results(&rows, &filter, case["page"].as_u64().unwrap() as usize);
+        same(html, &case["results"], format!("evidence rows {f} page {}", case["page"]));
+        assert_eq!(page as u64, case["shownPage"].as_u64().unwrap());
+    }
+    let cases = golden["sourceCases"].as_array().unwrap();
+    assert!(cases.len() >= 36);
+    for case in cases {
+        let (query, kind) = (s(&case["query"]), s(&case["type"]));
+        same(source_view(&bundle, query, kind), &case["frame"], format!("source frame {query:?} {kind}"));
+        let (html, page) = source_results(&bundle, &rows, query, kind, case["page"].as_u64().unwrap() as usize);
+        same(html, &case["results"], format!("source rows {query:?} {kind} page {}", case["page"]));
+        assert_eq!(page as u64, case["shownPage"].as_u64().unwrap());
+    }
+}

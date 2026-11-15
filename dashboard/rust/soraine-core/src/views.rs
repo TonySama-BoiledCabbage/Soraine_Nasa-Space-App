@@ -145,5 +145,124 @@ pub fn overview(rows: &[Row], material: &str, world: &str, specimen_instance: u3
         reading = esc(&crate::reading::reading_summary(rows, material, world)), record = esc(&record))
 }
 
+/// Display name for a measurement's metric.
+pub fn metric_name(metric: &str) -> String {
+    if metric == "reported_delta_O2_vs_1g" { return term("oxygenDelta", "Δ oxygen vs. Earth", false); }
+    if crate::glossary::definition(metric).is_some() { return term(metric, metric, false); }
+    match metric {
+        "flame_base_speed_fit" => "Flame-base speed (fit)".to_string(),
+        "flame_tip_speed_fit" => "Flame-tip speed (fit)".to_string(),
+        "flame_base_speed_reported" => "Flame-base speed".to_string(),
+        "lunar_compensation_delta_at_assumed_35_cm_s" => "Lunar compensation at 35 cm/s".to_string(),
+        "O2_vs_flow_best_fit_slope" => "O₂–flow slope (best fit)".to_string(),
+        "O2_vs_flow_95pct_conservative_slope" => "O₂–flow slope (conservative)".to_string(),
+        other => esc(other),
+    }
+}
+
+/// The compare view: one material across the four gravity environments.
+pub fn compare(rows: &[Row], material: &str, world: &str) -> String {
+    let selected = crate::data::get_limits(rows, material, "Moon").uloi;
+    let experiment = |key: &str| selected.and_then(|r| r.experiment_field(key));
+    format!(r##"<div class="view-title-row"><div><div class="eyebrow">MATERIAL COMPARISON</div><h2>One material. Four environments.</h2><p>Follow the published oxygen limits across gravity, with the original test conditions kept in view.</p></div><button class="export-btn" id="export-comparison">{download}Export comparison</button></div><div class="compare-layout"><div class="left-stack">{panel}<section class="panel note-panel"><div class="note-title">{info}Compare with context</div><p>{conditions}<br>{kpa} {kpa_term} ({psia} {psia_term})</p><p>These are terrestrial experiments that reproduce gravity conditions. They are not fires measured on the lunar or Martian surface.</p></section></div><div class="compare-main">{chart}<div class="science-note"><h3>What this comparison can tell us</h3><p class="comparison-takeaway">{takeaway}</p><p>{context} Nomex was tested at 101.3 kPa; the polymer films at 70.3 kPa. This is not a ranking of the safest material.</p><p>{same} The starred low-gravity values describe flame survival or extinction during short drop tests; the Earth values use different burn criteria. Read them alongside the methods, not as interchangeable safety thresholds. No curve or predicted intermediate-gravity value is inferred here.</p><a href="{url}" target="_blank" rel="noopener noreferrer">Olson & Ferkul · 2012 · Table I, PDF page 6 ↗</a></div></div></div>"##,
+        download = icon("download"), panel = material_panel(rows, material), info = icon("info"),
+        conditions = sample_text(&crate::data::text(experiment("conditions"))),
+        kpa = number(experiment("pressure_kpa"), 1), kpa_term = term("kPa", "kPa absolute", false),
+        psia = number(experiment("pressure_psia"), 1), psia_term = term("psia", "psia", false),
+        chart = chart_panel(rows, material, world, true),
+        takeaway = esc(&crate::reading::reading_summary(rows, material, "Moon")), context = esc(crate::reading::comparison_context(material)),
+        same = if material == "Mylar G" { "Mylar G is compared with the related but distinct Melinex 515 film in the Earth reference." } else { "The same material has different reported oxygen limits in different gravity conditions." },
+        url = crate::data::safe_url(&crate::data::text(selected.and_then(|r| r.source_field("url")))))
+}
+
+pub fn option(value: &str, label: &str, current: &str) -> String {
+    format!(r#"<option value="{}" {}>{}</option>"#, esc(value), if value == current { "selected" } else { "" }, esc(label))
+}
+
+/// Values in first-seen order, as `[...new Set(values)]` gives.
+fn distinct(values: impl Iterator<Item = String>) -> Vec<String> {
+    let mut seen: Vec<String> = Vec::new();
+    for value in values { if !seen.contains(&value) { seen.push(value); } }
+    seen
+}
+
+const PAGE_SIZE: usize = 10;
+
+/// `<button … disabled>` when `off`, matching the template's spacing.
+fn disabled(off: bool) -> &'static str { if off { "disabled" } else { "" } }
+
+fn pagination(page: usize, pages: usize, total: usize, noun: &str, attribute: &str, label: &str) -> String {
+    format!(r#"<div class="pagination"><span>{}–{} of {total} {noun}</span><div><button {attribute}="-1" {} aria-label="Previous {label} page">←</button><span>{} / {pages}</span><button {attribute}="1" {} aria-label="Next {label} page">→</button></div></div>"#,
+        page * PAGE_SIZE + 1, ((page + 1) * PAGE_SIZE).min(total), disabled(page == 0), page + 1, disabled(page == pages - 1))
+}
+
+/// The evidence view's frame: title, filters and an empty results panel.
+pub fn evidence(rows: &[Row], filter: &crate::data::Filter) -> String {
+    let worlds: String = ["All"].into_iter().chain(crate::data::WORLDS).chain(["Earth-to-Moon model"])
+        .map(|v| option(v, if v == "All" { "All environments" } else { v }, filter.world)).collect();
+    let materials: String = ["All".to_string()].into_iter().chain(distinct(rows.iter().map(|r| crate::data::text(r.experiment_field("material")))))
+        .map(|v| option(&v, if v == "All" { "All materials" } else { &v }, filter.material)).collect();
+    let kinds: String = crate::data::EVIDENCE_TYPES.iter().map(|v| option(v, &crate::data::kind_of(v).name, filter.kind)).collect();
+    format!(r##"<div class="view-title-row"><div><div class="eyebrow">THE RESEARCH, IN DETAIL</div><h2>Published findings</h2><p>Results extracted from research papers, with the reported method and source page. For source-file rows, open Original data.</p></div><button class="export-btn" id="export-filtered">{download}Export filtered CSV</button></div><div class="filterbar"><label>{search}<input id="record-search" value="{query}" placeholder="Material, metric, source…" aria-label="Search evidence"></label><label>Gravity<select id="world-filter" aria-label="Filter gravity">{worlds}</select></label><label>Material<select id="material-filter" aria-label="Filter material">{materials}</select></label><label>Type<select id="kind-filter" aria-label="Filter evidence type">{all}{kinds}</select></label><button class="clear-filter" id="clear-filters">Reset filters</button></div><section class="panel"><div id="evidence-results"></div></section><p class="browser-legend">Reported results include aggregates, fitted summaries and model-derived values. Row counts are not counts of independent raw trials.</p>"##,
+        download = icon("download"), search = icon("search"), query = esc(filter.query), all = option("All", "All evidence", filter.kind))
+}
+
+/// The evidence table for one page of matches. Returns the markup and the page actually shown.
+pub fn evidence_results(rows: &[Row], filter: &crate::data::Filter, page: usize) -> (String, usize) {
+    let matches = crate::data::filter_rows(rows, filter);
+    let pages = matches.len().div_ceil(PAGE_SIZE).max(1);
+    let page = page.min(pages - 1);
+    if matches.is_empty() { return (r#"<div class="empty"><strong>No matching results</strong>Try another material or reset the filters.</div>"#.to_string(), page); }
+    let body: String = matches.iter().skip(page * PAGE_SIZE).take(PAGE_SIZE).map(|r| {
+        let (id, world) = (r.get("measurement_id"), crate::data::text(r.experiment_field("gravity_label")));
+        let page_number = Some(r.get("pdf_page")).filter(|p| !p.is_empty()).unwrap_or_else(|| "—".to_string());
+        format!(r##"<tr data-record="{id}" tabindex="0" role="button" aria-label="Inspect {id}"><td class="table-material">{material}<span class="table-sub mono">{id}</span></td><td style="color:{colour}">{world}</td><td>{metric}</td><td><span class="number">{value}</span><span class="table-sub">{unit}</span></td><td><span class="chip {amber}" style="color:{kind_colour}">{evidence}</span></td><td class="mono">{source}<span class="table-sub">PDF p. {page_number} ↗</span></td></tr>"##,
+            material = esc(&crate::data::text(r.experiment_field("material"))), colour = crate::data::world_color(&world).unwrap_or("#d9ba88"), world = esc(&world),
+            metric = metric_name(r.metric()), value = number(r.field("value"), 8), unit = unit_label(&r.get("unit")),
+            amber = if r.evidence_type().starts_with("model") { "amber" } else { "" }, kind_colour = r.kind.color, evidence = evidence_label(r),
+            source = esc(&r.get("source_id").replacen("NTRS-", "", 1)))
+    }).collect();
+    (format!(r#"<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Record / material</th><th>Gravity</th><th>Metric</th><th>Value</th><th>Evidence</th><th>Source</th></tr></thead><tbody>{body}</tbody></table></div>{}"#,
+        pagination(page, pages, matches.len(), "results", "data-page", "evidence")), page)
+}
+
+/// The source library's frame: totals, search and collection filter.
+pub fn source_view(bundle: &Value, query: &str, source_type: &str) -> String {
+    let count = |key: &str| number(bundle.pointer(&format!("/tableCounts/{key}")), 0);
+    let sources = bundle.get("sources").and_then(Value::as_array).cloned().unwrap_or_default();
+    let types: String = ["All".to_string()].into_iter().chain(distinct(sources.iter().map(|s| crate::data::text(s.get("source_type")))))
+        .map(|v| option(&v, &if v == "All" { "All collections".to_string() } else { v.replace('_', " ") }, source_type)).collect();
+    format!(r##"<div class="view-title-row"><div><div class="eyebrow">SOURCE LIBRARY</div><h2>From the archive to the evidence.</h2><p>{sources} indexed sources. Sorted by extracted result count, highest first. Open the research behind each finding.</p></div></div><div class="pill-row"><span class="stat-pill"><strong>{raw}</strong>raw records catalogued</span><span class="stat-pill"><strong>{files}</strong>file metadata entries</span><span class="stat-pill"><strong>{evidence}</strong>supporting evidence statements</span></div><div class="filterbar"><label>{search}<input id="source-search" value="{query}" placeholder="Search titles, source IDs or DOI" aria-label="Search sources"></label><label>Collection<select id="source-type" aria-label="Filter source collection">{types}</select></label></div><section class="panel"><div id="source-results"></div></section><p class="browser-legend">Catalogue totals describe indexed records. They do not imply that every file was downloaded or that every source supplied quantitative data.</p>"##,
+        sources = count("sources"), raw = count("raw_records"), files = count("files"),
+        evidence = bundle.get("evidence").and_then(Value::as_array).map_or(0, Vec::len), search = icon("search"), query = esc(query))
+}
+
+/// The source table for one page of matches. Returns the markup and the page actually shown.
+pub fn source_results(bundle: &Value, rows: &[Row], query: &str, source_type: &str, page: usize) -> (String, usize) {
+    let query = query.to_lowercase();
+    let query = query.trim();
+    let sources = bundle.get("sources").and_then(Value::as_array).cloned().unwrap_or_default();
+    let measurements: Vec<Value> = rows.iter().map(|r| r.measurement.clone()).collect();
+    let field = |s: &Value, key: &str| crate::data::text(s.get(key));
+    let matches: Vec<&Value> = crate::discovery::sources_by_results(&sources, &measurements).into_iter().filter(|s| {
+        (source_type == "All" || field(s, "source_type") == source_type)
+            && [field(s, "title"), field(s, "source_id"), field(s, "doi")].join(" ").to_lowercase().contains(query)
+    }).collect();
+    let pages = matches.len().div_ceil(PAGE_SIZE).max(1);
+    let page = page.min(pages - 1);
+    if matches.is_empty() { return (r#"<div class="empty"><strong>No matching sources</strong>Try a shorter search.</div>"#.to_string(), page); }
+    let body: String = matches.iter().skip(page * PAGE_SIZE).take(PAGE_SIZE).map(|s| {
+        let id = field(s, "source_id");
+        let title = esc(&Some(field(s, "title")).filter(|t| !t.is_empty()).unwrap_or_else(|| id.clone()));
+        let year = Some(field(s, "publication_date")).filter(|d| !d.is_empty()).map_or("—".to_string(), |d| esc(&d.chars().take(4).collect::<String>()));
+        let results = rows.iter().filter(|r| r.get("source_id") == id).count();
+        format!(r#"<tr><td><a class="source-title" href="{url}" target="_blank" rel="noopener noreferrer">{title}</a><span class="table-sub mono">{id}</span></td><td>{kind}</td><td>{year}</td><td>{results}</td><td><button class="icon-btn" data-source="{id}" aria-label="Details for {title}">{info}</button></td></tr>"#,
+            url = crate::data::safe_url(&field(s, "url")), id = esc(&id), kind = esc(&field(s, "source_type").replace('_', " ")),
+            results = if results == 0 { "—".to_string() } else { results.to_string() }, info = icon("info"))
+    }).collect();
+    (format!(r#"<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Source / title</th><th>Collection</th><th>Year</th><th>Extracted results</th><th></th></tr></thead><tbody>{body}</tbody></table></div>{}"#,
+        pagination(page, pages, matches.len(), "sources", "data-source-page", "sources")), page)
+}
+
 /// `Value` text helper for callers that hold raw records.
 pub fn text_of(value: Option<&Value>) -> String { crate::data::text(value) }

@@ -26,9 +26,13 @@ async function loadApp(bundle) {
   const source = (await readFile(new URL('app.mjs', dist), 'utf8')).split('\n');
   const end = source.findIndex(line => line.startsWith('function showAbout('));
   const body = source.slice(0, end + 1).filter(line => line !== 'initGlossary();').join('\n').replaceAll("from './", `from '${dist.href}`) +
-    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,chartPanel,overview,setData(b){bundle=b;rows=joinResearch(b)}};\n';
+    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,chartPanel,overview,metricName,compare,option,evidence,renderEvidenceRows,sourceView,renderSources,setData(b){bundle=b;rows=joinResearch(b)}};\n';
   const element = new Proxy(function () {}, {get: (_, key) => key === 'forEach' ? () => {} : element, apply: () => element});
-  globalThis.document = new Proxy({}, {get: (_, key) => key === 'querySelectorAll' ? () => [] : () => element});
+  // Elements the render functions write into keep what was assigned, so it can be read back.
+  const sinks = {};
+  const sink = () => { const store = {}; return new Proxy(function () {}, {get: (_, key) => key in store ? store[key] : element, set: (_, key, value) => { store[key] = value; return true; }, apply: () => element}); };
+  globalThis.document = new Proxy({}, {get: (_, key) => key === 'querySelectorAll' ? () => [] : key === 'querySelector' ? selector => (sinks[selector] ??= sink()) : () => element});
+  globalThis.__sinks = sinks;
   await mkdir(new URL('../target/', import.meta.url), {recursive: true});
   const file = new URL('../target/app-under-test.mjs', import.meta.url);
   await writeFile(file, body);
@@ -39,6 +43,20 @@ async function loadApp(bundle) {
 const app = await loadApp(bundle);
 const viewStates = MATERIALS.flatMap(material => WORLDS.map(world => ({material, world})));
 const views = viewStates.map(({material, world}) => { Object.assign(app.state, {material, world}); const overview = app.overview(); return {material, world, materialPanel: app.materialPanel(), chart: app.chart(false), chartLarge: app.chart(true), chartPanel: app.chartPanel(false), chartPanelLarge: app.chartPanel(true), overview, specimenInstance: Number(/specimen-(\d+)/.exec(overview)[1])}; });
+const compares = MATERIALS.flatMap(material => ['Earth', 'Moon'].map(world => { Object.assign(app.state, {material, world}); return {material, world, html: app.compare()}; }));
+const evidenceFilters = [{}, {query: 'Ultem Moon MOC'}, {query: '<b> "x"'}, {world: 'Moon'}, {world: 'Earth-to-Moon model'}, {material: 'Nomex HT90-40', kind: 'reported_experimental_limit_aggregate'}, {kind: 'model_derived_compensation_from_experiments'}, {query: 'zzz'}, {world: 'Mars', material: 'Mylar G'}];
+const evidenceCases = evidenceFilters.flatMap(filter => [0, 1, 5, 99].map(page => {
+  Object.assign(app.state, {query: filter.query ?? '', filterWorld: filter.world ?? 'All', filterMaterial: filter.material ?? 'All', filterKind: filter.kind ?? 'All', page});
+  const frame = app.evidence(); app.renderEvidenceRows();
+  return {filter, page, frame, results: globalThis.__sinks['#evidence-results'].innerHTML, shownPage: app.state.page};
+}));
+const sourceTypes = ['All', ...new Set(bundle.sources.map(s => s.source_type))];
+const sourceCases = ['', 'saffire', 'zzz', 'NTRS-2013', '  Flame ', '"<'].flatMap(query => sourceTypes.flatMap(type => [0, 3, 999].map(page => {
+  Object.assign(app.state, {sourceQuery: query, sourceType: type, sourcePage: page});
+  const frame = app.sourceView(); app.renderSources();
+  return {query, type, page, frame, results: globalThis.__sinks['#source-results'].innerHTML, shownPage: app.state.sourcePage};
+})));
+const metricNames = [...new Set(rows.map(r => r.metric)), 'ULOI', 'unknown <metric>'].map(metric => [metric, app.metricName(metric)]);
 const specimens = [];
 let specimenCase = 0;
 for (const material of [...MATERIALS, 'Kapton', `<b>&"x"'`, '']) for (const world of [...WORLDS, '']) {
@@ -72,6 +90,11 @@ const golden = {
     evidenceLabel: rows.map(r => [r.measurement_id, app.evidenceLabel(r)]),
   },
   views,
+  compares,
+  evidenceCases,
+  sourceCases,
+  metricNames,
+  options: [['All', 'All evidence', 'All'], ['a"b', '<x>', 'c'], ['Moon', 'Moon', 'Moon']].map(args => [...args, app.option(...args)]),
   glossary: Object.entries(definitions).map(([key, d]) => [key, d.title, d.description]),
   terms: [...Object.keys(definitions), 'not a term', '<b>'].flatMap(key => [[key, key, false, term(key)], [key, `${key} & "label"`, false, term(key, `${key} & "label"`)], [key, 'in a button', true, term(key, 'in a button', {passive: true})]]),
   numbers: numbers.map(([value, digits]) => [value, digits ?? null, digits === undefined ? number(value) : number(value, digits)]),

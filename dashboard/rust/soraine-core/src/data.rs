@@ -16,6 +16,12 @@ pub fn world_color(world: &str) -> Option<&'static str> {
     })
 }
 
+/// The evidence types in the order the filters list them.
+pub const EVIDENCE_TYPES: [&str; 5] = [
+    "reported_experimental_limit_aggregate", "reported_fit_to_experimental_data", "reported_experimental_summary",
+    "source_derived_from_limit_aggregates", "model_derived_compensation_from_experiments",
+];
+
 /// Display name and colour for an evidence type.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Kind {
