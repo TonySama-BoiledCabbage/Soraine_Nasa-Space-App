@@ -102,3 +102,9 @@ Published [soraine.vercel.app](https://soraine.vercel.app) on Vercel's free Hobb
 Validation: anonymous HTTP requests returned 200 for the homepage, JavaScript modules and lunar texture, with the expected content types. Both public API routes returned live BigQuery responses. The research response contains 59 measurements, 45 experiment contexts and 307 sources; the original-data response contains 129 BASS-II and 15 Saffire-II CSV rows. `/server/index.mjs` and `/package.json` returned 404. The initial generated alias redirects to the clean production URL.
 
 Live browser checks confirmed the Moon model, planet zoom controls, Ultem-to-Mylar selection and the original NASA record explorer. The published interface reports BigQuery connected. Saved a deployment screenshot in `dashboard/qa/published-vercel.jpg`.
+
+## 2026-11-15: Combined GitHub handoff
+
+At Hogan's request, Codex combined the research-navigator handoff branch with the current dashboard branch. The shared scene JSON, adapter, types, examples, contributor archive and earlier Jarvis prototype now accompany the live dashboard in one pull request. Original research files and contributor attribution were preserved. The repository and contribution indexes identify the current dashboard separately from the earlier prototype, and the scene-link helper now opens `https://soraine.vercel.app/`.
+
+Validation: 27 dashboard checks and 5 navigator checks passed. The shared information validator covered all 15 objects across four scenes and 22 selectable cases, including reference integrity and separation of cabin settings from measured results. Diff checks passed. No teammate scene, physics or model files changed during consolidation.

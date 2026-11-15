@@ -1,7 +1,7 @@
 // Shared scene-to-research contract. No renderer or Google credentials required.
 import {MATERIALS} from './data.mjs';
 
-export const RESEARCH_SITE='https://soraine-dashboard-334840303039.us-central1.run.app/';
+export const RESEARCH_SITE='https://soraine.vercel.app/';
 const worlds={earth:'earth',moon:'moon',lunar:'moon',mars:'mars',martian:'mars',iss:'microgravity',microgravity:'microgravity'};
 const views=['overview','experiments','compare','evidence','sources'];
 

@@ -1,6 +1,8 @@
 # Working together on Soraine
 
-The shared dashboard source lives in `dashboard/` in the team repository. Make a branch, change the relevant module, run the checks, then open a pull request. Once this integration is merged, accepted dashboard changes on `main` are deployed by `.github/workflows/dashboard-deploy.yml`.
+The shared dashboard source lives in `dashboard/` and the public site is [soraine.vercel.app](https://soraine.vercel.app). Make a branch, change the relevant module, run the checks, then open a pull request. Vercel currently publishes `dashboard/dist` from `codex/mission-control-cloud`; its two data routes use the existing Cloud Run backend. Once this integration is merged, accepted dashboard changes on the team repository's `main` are deployed to Cloud Run by `.github/workflows/dashboard-deploy.yml`.
+
+The same branch includes the scene information pack, full contributor research archive and earlier Jarvis prototype in [`../contributions/hogan/`](../contributions/hogan/README.md). Use the information adapter there for object-level panels, or the scene-link helper below to open the current dashboard.
 
 ## Shared cloud project and data
 
