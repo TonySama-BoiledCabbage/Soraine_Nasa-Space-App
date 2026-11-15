@@ -7,6 +7,7 @@ import {sourcesByResults, originalFilesByRelevance} from '../../dist/discovery.m
 import {readingSummary, comparisonContext} from '../../dist/reading.mjs';
 import {researchUrl} from '../../dist/scene-link.mjs';
 import {specimenHTML} from '../../dist/specimen.mjs';
+import {definitions, term} from '../../dist/glossary.mjs';
 const read = async path => JSON.parse((await readFile(new URL(path, import.meta.url), 'utf8')).replace(/^﻿/, ''));
 const bundle = await read('../../dist/data/research.json'), original = await read('../../dist/data/original-data.json');
 const rows = joinResearch(bundle), id = r => r?.measurement_id ?? null;
@@ -40,6 +41,8 @@ const golden = {
   files: originalFilesByRelevance(original.datasets).map(d => d.id),
   links: links.map(([args, base]) => { try { return {args, base: base ?? null, out: base ? researchUrl(args, base) : researchUrl(args)}; } catch (error) { return {args, base: base ?? null, error: error.message}; } }),
   specimens,
+  glossary: Object.entries(definitions).map(([key, d]) => [key, d.title, d.description]),
+  terms: [...Object.keys(definitions), 'not a term', '<b>'].flatMap(key => [[key, key, false, term(key)], [key, `${key} & "label"`, false, term(key, `${key} & "label"`)], [key, 'in a button', true, term(key, 'in a button', {passive: true})]]),
   numbers: numbers.map(([value, digits]) => [value, digits ?? null, digits === undefined ? number(value) : number(value, digits)]),
   esc: ['', 'plain', `<a href="x">Tom & 'Jerry'</a>`, 'é ✓ 月'].map(s => [s, esc(s)]),
   safeUrl: ['https://ntrs.nasa.gov/citations/20130010991', 'http://example.org/a b', 'javascript:alert(1)', 'data:text/html,x', 'ftp://example.org/', '/relative', '', 'HTTPS://EXAMPLE.org'].map(s => [s, safeUrl(s)]),

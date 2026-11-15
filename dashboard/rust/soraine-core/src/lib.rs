@@ -6,6 +6,8 @@
 pub mod data;
 pub mod discovery;
 pub mod gesture;
+pub mod glossary;
+mod glossary_terms;
 pub mod reading;
 pub mod scene_link;
 pub mod specimen;

@@ -2338,6 +2338,598 @@
    "html": "<section class=\"specimen\" aria-label=\" specimen and reported oxygen limits\">\n <div class=\"specimen-caption\"><span>Illustrative specimen</span><span class=\"specimen-material-label\"></span></div>\n <div class=\"material-model\" data-material-model=\"\" tabindex=\"0\" role=\"group\" aria-label=\"Rotate the  specimen. Arrow keys rotate, plus and minus zoom, Home resets.\"><svg class=\"specimen-model\" viewBox=\"0 0 360 124\" aria-hidden=\"true\" focusable=\"false\"><defs>\n <radialGradient id=\"specimen-80-shadow\"><stop stop-color=\"#000\" stop-opacity=\".55\"/><stop offset=\"1\" stop-color=\"#000\" stop-opacity=\"0\"/></radialGradient>\n <linearGradient id=\"specimen-80-amber\" x1=\".15\" y1=\"0\" x2=\".78\" y2=\"1\"><stop stop-color=\"#ffe2a1\"/><stop offset=\".34\" stop-color=\"#dca346\"/><stop offset=\".65\" stop-color=\"#f5cf84\"/><stop offset=\"1\" stop-color=\"#a76320\"/></linearGradient>\n <linearGradient id=\"specimen-80-amber-edge\"><stop stop-color=\"#915520\"/><stop offset=\".5\" stop-color=\"#eab160\"/><stop offset=\"1\" stop-color=\"#744115\"/></linearGradient>\n <linearGradient id=\"specimen-80-glass\" x1=\"0\" y1=\".2\" x2=\"1\" y2=\".85\"><stop stop-color=\"#b3d6ef\" stop-opacity=\".28\"/><stop offset=\".24\" stop-color=\"#e9f6ff\" stop-opacity=\".85\"/><stop offset=\".38\" stop-color=\"#7aa6d2\" stop-opacity=\".32\"/><stop offset=\".57\" stop-color=\"#bcd8fb\" stop-opacity=\".5\"/><stop offset=\".74\" stop-color=\"#f5faff\" stop-opacity=\".94\"/><stop offset=\"1\" stop-color=\"#728db8\" stop-opacity=\".3\"/></linearGradient>\n <linearGradient id=\"specimen-80-silver\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop stop-color=\"#f2faff\"/><stop offset=\".42\" stop-color=\"#7791ae\"/><stop offset=\"1\" stop-color=\"#d8edff\"/></linearGradient>\n <linearGradient id=\"specimen-80-cloth\" x1=\"0\" y1=\"0\" x2=\".8\" y2=\"1\"><stop stop-color=\"#e4dfd2\"/><stop offset=\".6\" stop-color=\"#bfb8a8\"/><stop offset=\"1\" stop-color=\"#969184\"/></linearGradient>\n <linearGradient id=\"specimen-80-fold\"><stop stop-color=\"#7e796e\"/><stop offset=\".55\" stop-color=\"#c5bead\"/><stop offset=\"1\" stop-color=\"#eee7d6\"/></linearGradient>\n <pattern id=\"specimen-80-weave\" width=\"5\" height=\"5\" patternUnits=\"userSpaceOnUse\"><path d=\"M0 1H5M1 0V5\" stroke=\"#615e56\" stroke-opacity=\".25\" stroke-width=\"1.2\"/><path d=\"M0 3.5H5M3.5 0V5\" stroke=\"#fff8e9\" stroke-opacity=\".38\" stroke-width=\".8\"/></pattern>\n </defs><ellipse cx=\"185\" cy=\"106\" rx=\"128\" ry=\"17\" fill=\"url(#specimen-80-shadow)\"/><text x=\"180\" y=\"67\" text-anchor=\"middle\" fill=\"currentColor\" font-size=\"12\">Specimen illustration unavailable</text></svg></div>\n <div class=\"specimen-model-toolbar\"><span class=\"specimen-gesture\">Drag to rotate · Arrow keys</span><div class=\"specimen-model-actions\"><button type=\"button\" data-material-action=\"zoom-in\" aria-label=\"Zoom in on material\" title=\"Zoom in\">+</button><button type=\"button\" data-material-action=\"zoom-out\" aria-label=\"Zoom out from material\" title=\"Zoom out\">−</button><button type=\"button\" data-material-action=\"rotate-toggle\" aria-label=\"Pause material rotation\" title=\"Pause material rotation\">Ⅱ</button><button type=\"button\" data-material-action=\"reset\" aria-label=\"Reset material view\" title=\"Reset view\">↺</button></div></div>\n <button type=\"button\" class=\"specimen-source\" data-record=\"&lt;E&gt;\" aria-label=\"Read  test record for \">Read test record <span aria-hidden=\"true\">↗</span></button>\n <div class=\"specimen-axis\"><span class=\"specimen-axis-label\">Oxygen concentration</span>\n <svg viewBox=\"0 0 350 59\" role=\"img\" aria-labelledby=\"specimen-80-axis-title\" focusable=\"false\"><title id=\"specimen-80-axis-title\">0 to 30 percent oxygen. ULOI: 0.13 percent oxygen. MOC: 30 percent oxygen.</title>\n <text class=\"specimen-axis-name\" x=\"0\" y=\"17\">ULOI</text>\n <path class=\"specimen-axis-track\" d=\"M55 14H334\"/>\n <path class=\"specimen-axis-tick\" d=\"M55 11v6\"/><path class=\"specimen-axis-tick\" d=\"M148 11v6\"/><path class=\"specimen-axis-tick\" d=\"M241 11v6\"/><path class=\"specimen-axis-tick\" d=\"M334 11v6\"/>\n <g class=\"specimen-axis-point uloi\"><path d=\"M56.1625 8v12\"/><circle cx=\"56.1625\" cy=\"14\" r=\"3.5\"/></g><text class=\"specimen-axis-name\" x=\"0\" y=\"39\">MOC</text>\n <path class=\"specimen-axis-track\" d=\"M55 36H334\"/>\n <path class=\"specimen-axis-tick\" d=\"M55 33v6\"/><path class=\"specimen-axis-tick\" d=\"M148 33v6\"/><path class=\"specimen-axis-tick\" d=\"M241 33v6\"/><path class=\"specimen-axis-tick\" d=\"M334 33v6\"/>\n <g class=\"specimen-axis-point moc\"><path d=\"M334 30v12\"/><circle cx=\"334\" cy=\"36\" r=\"3.5\"/></g>\n <text class=\"specimen-axis-unit\" x=\"55\" y=\"56\">0%</text><text class=\"specimen-axis-unit\" x=\"148\" y=\"56\" text-anchor=\"middle\">10%</text><text class=\"specimen-axis-unit\" x=\"241\" y=\"56\" text-anchor=\"middle\">20%</text><text class=\"specimen-axis-unit\" x=\"334\" y=\"56\" text-anchor=\"end\">30%</text>\n </svg></div></section>"
   }
  ],
+ "glossary": [
+  [
+   "ULOI",
+   "Upward Limiting Oxygen Index",
+   "In Earth tests, the oxygen concentration where about half the samples met the burn-length limit."
+  ],
+  [
+   "MOC",
+   "Maximum Oxygen Concentration",
+   "The highest tested oxygen concentration where the material consistently self-extinguished under the stated test conditions."
+  ],
+  [
+   "ULOI*",
+   "Upward Limiting Oxygen Index (reduced gravity)",
+   "The lowest tested oxygen concentration where the flame lasted for the whole reduced-gravity drop test. These short-duration criteria differ from Earth tests."
+  ],
+  [
+   "MOC*",
+   "Maximum Oxygen Concentration (reduced gravity)",
+   "The highest tested oxygen concentration where the flame went out during the drop test. These short-duration criteria differ from Earth tests."
+  ],
+  [
+   "asterisk",
+   "Reduced-gravity test limits",
+   "The asterisk marks a limit from a short-duration reduced-gravity test. Its survival or extinction criteria differ from those used in Earth tests."
+  ],
+  [
+   "oxygen",
+   "Oxygen molar percent",
+   "Oxygen as a percentage of the gas molecules in the test atmosphere. This describes the gas mixture, not the total pressure or oxygen partial pressure."
+  ],
+  [
+   "pp",
+   "Percentage points",
+   "The difference between two percentages. A change from 20% oxygen to 21% oxygen is an increase of 1 percentage point."
+  ],
+  [
+   "oxygenDelta",
+   "Change in mean limiting oxygen concentration",
+   "The paper compares the midpoint of ULOI and MOC at each gravity with the Earth midpoint. This is not the change in ULOI alone or a probability of fire."
+  ],
+  [
+   "airflow",
+   "Airflow",
+   "The speed of gas flowing past the test sample. Flow can carry fresh oxygen toward a flame and move heat and combustion products away."
+  ],
+  [
+   "cmps",
+   "Centimetres per second",
+   "A unit of speed. An airflow of 30 cm/s means gas moves 30 centimetres in one second."
+  ],
+  [
+   "kPa",
+   "Kilopascals, absolute pressure",
+   "A unit of gas pressure. These values are measured relative to a vacuum, rather than relative to the surrounding atmosphere."
+  ],
+  [
+   "psia",
+   "Pounds per square inch absolute",
+   "Gas pressure measured relative to a vacuum. The “a” distinguishes absolute pressure from pressure measured above the surrounding atmosphere."
+  ],
+  [
+   "g",
+   "Nominal gravity relative to Earth",
+   "Gravity expressed as a multiple of Earth’s surface gravity. The dataset’s gravity labels are nominal categories, not a measured acceleration trace for each test."
+  ],
+  [
+   "microgravity",
+   "Microgravity",
+   "A condition of very small apparent weight during free fall, as in orbit or a drop tower. Gravity is still present. This differs from the surface gravity of the Moon or Mars."
+  ],
+  [
+   "PSI",
+   "NASA Physical Sciences Informatics",
+   "NASA’s research data repository. PSI here names the database; lowercase psi is a unit of pressure: pounds per square inch."
+  ],
+  [
+   "NTRS",
+   "NASA Technical Reports Server",
+   "NASA’s public research repository. Source links open the original report, paper or presentation so you can read the test methods and results."
+  ],
+  [
+   "PMMA",
+   "Poly(methyl methacrylate)",
+   "An acrylic plastic. The lunar combustion study in this dataset tested a 4 mm diameter PMMA rod; its results describe that specimen and test setup."
+  ],
+  [
+   "PEI",
+   "Polyetherimide",
+   "The polymer family used for Ultem 1000. The oxygen-limit comparison tested a 10 mil PEI film, so the results describe that material and specimen geometry."
+  ],
+  [
+   "PET",
+   "Polyethylene terephthalate",
+   "The polymer in Mylar G and the related Melinex 515 film used for the Earth comparison. These are similar but distinct film products."
+  ],
+  [
+   "fitted",
+   "Fitted result",
+   "A value obtained by fitting a mathematical relationship to experimental observations. It summarizes measurements and is not an independent trial."
+  ],
+  [
+   "model",
+   "Model-derived result",
+   "A value calculated using a model and stated assumptions. It is not a direct measurement under the condition the model describes."
+  ],
+  [
+   "published",
+   "Published experimental limit",
+   "A flammability limit reported by the source for its stated test conditions. It is not a general fire-risk score or a material safety certification."
+  ],
+  [
+   "derived",
+   "Derived summary",
+   "A number calculated from already reported results, such as a difference between oxygen limits. It does not represent a new experiment."
+  ],
+  [
+   "summary",
+   "Reported experimental summary",
+   "An experimental value summarized by the source, rather than a complete record of an individual raw trial."
+  ]
+ ],
+ "terms": [
+  [
+   "ULOI",
+   "ULOI",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"ULOI\" data-term=\"ULOI\" aria-label=\"ULOI: definition\">ULOI</button>"
+  ],
+  [
+   "ULOI",
+   "ULOI & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"ULOI\" data-term=\"ULOI\" aria-label=\"ULOI &amp; &quot;label&quot;: definition\">ULOI &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "ULOI",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"ULOI\" data-term=\"ULOI\">in a button</span>"
+  ],
+  [
+   "MOC",
+   "MOC",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"MOC\" data-term=\"MOC\" aria-label=\"MOC: definition\">MOC</button>"
+  ],
+  [
+   "MOC",
+   "MOC & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"MOC\" data-term=\"MOC\" aria-label=\"MOC &amp; &quot;label&quot;: definition\">MOC &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "MOC",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"MOC\" data-term=\"MOC\">in a button</span>"
+  ],
+  [
+   "ULOI*",
+   "ULOI*",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"ULOI*\" data-term=\"ULOI*\" aria-label=\"ULOI*: definition\">ULOI*</button>"
+  ],
+  [
+   "ULOI*",
+   "ULOI* & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"ULOI*\" data-term=\"ULOI*\" aria-label=\"ULOI* &amp; &quot;label&quot;: definition\">ULOI* &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "ULOI*",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"ULOI*\" data-term=\"ULOI*\">in a button</span>"
+  ],
+  [
+   "MOC*",
+   "MOC*",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"MOC*\" data-term=\"MOC*\" aria-label=\"MOC*: definition\">MOC*</button>"
+  ],
+  [
+   "MOC*",
+   "MOC* & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"MOC*\" data-term=\"MOC*\" aria-label=\"MOC* &amp; &quot;label&quot;: definition\">MOC* &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "MOC*",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"MOC*\" data-term=\"MOC*\">in a button</span>"
+  ],
+  [
+   "asterisk",
+   "asterisk",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"asterisk\" data-term=\"asterisk\" aria-label=\"asterisk: definition\">asterisk</button>"
+  ],
+  [
+   "asterisk",
+   "asterisk & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"asterisk\" data-term=\"asterisk\" aria-label=\"asterisk &amp; &quot;label&quot;: definition\">asterisk &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "asterisk",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"asterisk\" data-term=\"asterisk\">in a button</span>"
+  ],
+  [
+   "oxygen",
+   "oxygen",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"oxygen\" data-term=\"oxygen\" aria-label=\"oxygen: definition\">oxygen</button>"
+  ],
+  [
+   "oxygen",
+   "oxygen & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"oxygen\" data-term=\"oxygen\" aria-label=\"oxygen &amp; &quot;label&quot;: definition\">oxygen &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "oxygen",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"oxygen\" data-term=\"oxygen\">in a button</span>"
+  ],
+  [
+   "pp",
+   "pp",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"pp\" data-term=\"pp\" aria-label=\"pp: definition\">pp</button>"
+  ],
+  [
+   "pp",
+   "pp & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"pp\" data-term=\"pp\" aria-label=\"pp &amp; &quot;label&quot;: definition\">pp &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "pp",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"pp\" data-term=\"pp\">in a button</span>"
+  ],
+  [
+   "oxygenDelta",
+   "oxygenDelta",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"oxygenDelta\" data-term=\"oxygenDelta\" aria-label=\"oxygenDelta: definition\">oxygenDelta</button>"
+  ],
+  [
+   "oxygenDelta",
+   "oxygenDelta & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"oxygenDelta\" data-term=\"oxygenDelta\" aria-label=\"oxygenDelta &amp; &quot;label&quot;: definition\">oxygenDelta &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "oxygenDelta",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"oxygenDelta\" data-term=\"oxygenDelta\">in a button</span>"
+  ],
+  [
+   "airflow",
+   "airflow",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"airflow\" data-term=\"airflow\" aria-label=\"airflow: definition\">airflow</button>"
+  ],
+  [
+   "airflow",
+   "airflow & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"airflow\" data-term=\"airflow\" aria-label=\"airflow &amp; &quot;label&quot;: definition\">airflow &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "airflow",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"airflow\" data-term=\"airflow\">in a button</span>"
+  ],
+  [
+   "cmps",
+   "cmps",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"cmps\" data-term=\"cmps\" aria-label=\"cmps: definition\">cmps</button>"
+  ],
+  [
+   "cmps",
+   "cmps & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"cmps\" data-term=\"cmps\" aria-label=\"cmps &amp; &quot;label&quot;: definition\">cmps &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "cmps",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"cmps\" data-term=\"cmps\">in a button</span>"
+  ],
+  [
+   "kPa",
+   "kPa",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"kPa\" data-term=\"kPa\" aria-label=\"kPa: definition\">kPa</button>"
+  ],
+  [
+   "kPa",
+   "kPa & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"kPa\" data-term=\"kPa\" aria-label=\"kPa &amp; &quot;label&quot;: definition\">kPa &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "kPa",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"kPa\" data-term=\"kPa\">in a button</span>"
+  ],
+  [
+   "psia",
+   "psia",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"psia\" data-term=\"psia\" aria-label=\"psia: definition\">psia</button>"
+  ],
+  [
+   "psia",
+   "psia & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"psia\" data-term=\"psia\" aria-label=\"psia &amp; &quot;label&quot;: definition\">psia &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "psia",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"psia\" data-term=\"psia\">in a button</span>"
+  ],
+  [
+   "g",
+   "g",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"g\" data-term=\"g\" aria-label=\"g: definition\">g</button>"
+  ],
+  [
+   "g",
+   "g & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"g\" data-term=\"g\" aria-label=\"g &amp; &quot;label&quot;: definition\">g &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "g",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"g\" data-term=\"g\">in a button</span>"
+  ],
+  [
+   "microgravity",
+   "microgravity",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"microgravity\" data-term=\"microgravity\" aria-label=\"microgravity: definition\">microgravity</button>"
+  ],
+  [
+   "microgravity",
+   "microgravity & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"microgravity\" data-term=\"microgravity\" aria-label=\"microgravity &amp; &quot;label&quot;: definition\">microgravity &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "microgravity",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"microgravity\" data-term=\"microgravity\">in a button</span>"
+  ],
+  [
+   "PSI",
+   "PSI",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PSI\" data-term=\"PSI\" aria-label=\"PSI: definition\">PSI</button>"
+  ],
+  [
+   "PSI",
+   "PSI & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PSI\" data-term=\"PSI\" aria-label=\"PSI &amp; &quot;label&quot;: definition\">PSI &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "PSI",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"PSI\" data-term=\"PSI\">in a button</span>"
+  ],
+  [
+   "NTRS",
+   "NTRS",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"NTRS\" data-term=\"NTRS\" aria-label=\"NTRS: definition\">NTRS</button>"
+  ],
+  [
+   "NTRS",
+   "NTRS & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"NTRS\" data-term=\"NTRS\" aria-label=\"NTRS &amp; &quot;label&quot;: definition\">NTRS &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "NTRS",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"NTRS\" data-term=\"NTRS\">in a button</span>"
+  ],
+  [
+   "PMMA",
+   "PMMA",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PMMA\" data-term=\"PMMA\" aria-label=\"PMMA: definition\">PMMA</button>"
+  ],
+  [
+   "PMMA",
+   "PMMA & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PMMA\" data-term=\"PMMA\" aria-label=\"PMMA &amp; &quot;label&quot;: definition\">PMMA &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "PMMA",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"PMMA\" data-term=\"PMMA\">in a button</span>"
+  ],
+  [
+   "PEI",
+   "PEI",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PEI\" data-term=\"PEI\" aria-label=\"PEI: definition\">PEI</button>"
+  ],
+  [
+   "PEI",
+   "PEI & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PEI\" data-term=\"PEI\" aria-label=\"PEI &amp; &quot;label&quot;: definition\">PEI &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "PEI",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"PEI\" data-term=\"PEI\">in a button</span>"
+  ],
+  [
+   "PET",
+   "PET",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PET\" data-term=\"PET\" aria-label=\"PET: definition\">PET</button>"
+  ],
+  [
+   "PET",
+   "PET & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"PET\" data-term=\"PET\" aria-label=\"PET &amp; &quot;label&quot;: definition\">PET &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "PET",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"PET\" data-term=\"PET\">in a button</span>"
+  ],
+  [
+   "fitted",
+   "fitted",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"fitted\" data-term=\"fitted\" aria-label=\"fitted: definition\">fitted</button>"
+  ],
+  [
+   "fitted",
+   "fitted & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"fitted\" data-term=\"fitted\" aria-label=\"fitted &amp; &quot;label&quot;: definition\">fitted &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "fitted",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"fitted\" data-term=\"fitted\">in a button</span>"
+  ],
+  [
+   "model",
+   "model",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"model\" data-term=\"model\" aria-label=\"model: definition\">model</button>"
+  ],
+  [
+   "model",
+   "model & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"model\" data-term=\"model\" aria-label=\"model &amp; &quot;label&quot;: definition\">model &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "model",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"model\" data-term=\"model\">in a button</span>"
+  ],
+  [
+   "published",
+   "published",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"published\" data-term=\"published\" aria-label=\"published: definition\">published</button>"
+  ],
+  [
+   "published",
+   "published & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"published\" data-term=\"published\" aria-label=\"published &amp; &quot;label&quot;: definition\">published &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "published",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"published\" data-term=\"published\">in a button</span>"
+  ],
+  [
+   "derived",
+   "derived",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"derived\" data-term=\"derived\" aria-label=\"derived: definition\">derived</button>"
+  ],
+  [
+   "derived",
+   "derived & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"derived\" data-term=\"derived\" aria-label=\"derived &amp; &quot;label&quot;: definition\">derived &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "derived",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"derived\" data-term=\"derived\">in a button</span>"
+  ],
+  [
+   "summary",
+   "summary",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"summary\" data-term=\"summary\" aria-label=\"summary: definition\">summary</button>"
+  ],
+  [
+   "summary",
+   "summary & \"label\"",
+   false,
+   "<button type=\"button\" class=\"science-term\" data-termkey=\"summary\" data-term=\"summary\" aria-label=\"summary &amp; &quot;label&quot;: definition\">summary &amp; &quot;label&quot;</button>"
+  ],
+  [
+   "summary",
+   "in a button",
+   true,
+   "<span class=\"science-term\" data-termkey=\"summary\" data-term=\"summary\">in a button</span>"
+  ],
+  [
+   "not a term",
+   "not a term",
+   false,
+   "not a term"
+  ],
+  [
+   "not a term",
+   "not a term & \"label\"",
+   false,
+   "not a term &amp; &quot;label&quot;"
+  ],
+  [
+   "not a term",
+   "in a button",
+   true,
+   "in a button"
+  ],
+  [
+   "<b>",
+   "<b>",
+   false,
+   "&lt;b&gt;"
+  ],
+  [
+   "<b>",
+   "<b> & \"label\"",
+   false,
+   "&lt;b&gt; &amp; &quot;label&quot;"
+  ],
+  [
+   "<b>",
+   "in a button",
+   true,
+   "in a button"
+  ]
+ ],
  "numbers": [
   [
    null,

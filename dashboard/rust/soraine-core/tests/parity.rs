@@ -162,3 +162,18 @@ fn specimen_markup_matches_javascript() {
         assert!(actual == expected, "{} / {} / {} / {}: {}", case["material"], case["world"], case["uloi"], case["moc"], first_difference(&actual, expected));
     }
 }
+
+#[test]
+fn glossary_matches_javascript() {
+    use soraine_core::glossary::{definition, term, DEFINITIONS};
+    let golden = golden();
+    let entries = golden["glossary"].as_array().unwrap();
+    assert_eq!(entries.len(), DEFINITIONS.len());
+    for (entry, expected) in DEFINITIONS.iter().zip(entries) {
+        assert_eq!((entry.0, entry.1, entry.2), (s(&expected[0]), s(&expected[1]), s(&expected[2])));
+        assert_eq!(definition(entry.0), Some((entry.1, entry.2)));
+    }
+    for case in golden["terms"].as_array().unwrap() {
+        assert_eq!(term(s(&case[0]), s(&case[1]), case[2].as_bool().unwrap()), s(&case[3]), "{case}");
+    }
+}
