@@ -7,7 +7,7 @@
   var C = window.SORAINE_CONTENT, STOPS = C.STOPS, INFO = C.INFO, NOTE = C.NOTE;   // all text lives in content.js
 
   var $ = function (id) { return document.getElementById(id); };
-  var stage = $('stage'), canvas = $('scene'), wipe = $('wipe'), ring = $('ring'), current = C.first, busy = false, inspecting = false, queued = null;
+  var stage = $('stage'), canvas = $('scene'), wipe = $('wipe'), ring = $('ring'), current = C.first, busy = true, inspecting = false, queued = null;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function show(id) {
@@ -77,17 +77,25 @@
 
   var ok = true;
   var why = '';
-  try { SoraineScene.setStill(reduced.matches); SoraineScene.init(canvas, C.first); } catch (e) { ok = false; why = e && e.message ? e.message : String(e); }
-  if (!ok) $('line').textContent = 'The 3D scene could not start: ' + why;
-  window.addEventListener('soraine:error', function (ev) { $('line').textContent = ev.detail; });
-  window.addEventListener('error', function (ev) { if (ev.message) $('line').textContent = 'Something went wrong: ' + ev.message; });
-  if (ok) show(STOPS[location.hash.slice(1)] ? location.hash.slice(1) : C.first);
-  requestAnimationFrame(function () { stage.classList.add('is-on'); });
+  var assetsLoading = false;
+  THREE.DefaultLoadingManager.onStart = function () { assetsLoading = true; };
+  THREE.DefaultLoadingManager.onLoad = function () { assetsLoading = false; };
+  window.SoraineWaitForAssets = function () { return new Promise(function (resolve, reject) { var start = performance.now(); function check() { if (!assetsLoading) return resolve(); if (performance.now() - start > 30000) return reject(new Error('Images took too long to load. Please retry.')); setTimeout(check, 30); } check(); }); };
+  function progress(value, label) { $('loading-progress').value = value; $('loading-percent').textContent = value + '%'; $('loading-label').textContent = label; }
+  requestAnimationFrame(function () { setTimeout(async function () {
+    try {
+      SoraineScene.setStill(reduced.matches); SoraineScene.init(canvas, 'earth');
+      stage.classList.add('is-on'); show('earth'); setTop(true);
+      await SoraineScene.prepareAll(progress); show('earth'); setTop(true);
+      $('scene-loading').hidden = true; document.querySelector('.ui').inert = false; busy = false;
+    } catch (e) { ok = false; progress($('loading-progress').value, 'Could not finish preparing: ' + e.message); $('loading-retry').hidden = false; }
+  }, 0); });
 
   // The page opens looking straight down on the pan. The first click pulls back to the whole scene; after that the button moves on.
   function setTop(on) { SoraineScene.topView(on, on ? 'pan' : null); stage.classList.toggle('is-top', !!on); $('go').textContent = on ? C.BEGIN : STOPS[current].go; var b = $('lab-top'); if (b) b.textContent = on ? 'Back to the scene view' : 'Top view of the pan'; }
-  if (ok && location.hash.slice(1) && location.hash.slice(1) !== C.first) setTop(false);
-  stage.classList.toggle('is-top', !!(SoraineScene.isTop && SoraineScene.isTop()));
+
+  stage.classList.add('is-top');
+  $('controls-toggle').addEventListener('click', function () { var open = stage.classList.toggle('controls-open'); this.setAttribute('aria-expanded', String(open)); });
   $('go').addEventListener('click', function () { if (SoraineScene.isTop()) { setTop(false); return; } goTo(STOPS[current].next); });
   if ($('lab-top')) $('lab-top').addEventListener('click', function () { setTop(!SoraineScene.isTop()); });
   window.addEventListener('keydown', function (e) { if ((e.key === 't' || e.key === 'T') && !inspecting && !/input|textarea/i.test(e.target.tagName)) setTop(!SoraineScene.isTop()); });

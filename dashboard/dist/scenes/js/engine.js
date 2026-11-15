@@ -21,6 +21,7 @@
   var T = THREE, K = SoraineKit, objects = K.objects, floaters = K.floaters;
   var renderer, scene, camera, state = null, still = false, k = 0, lastT = 0, freeStart = 0;
   var HQ = /[?&]hq\b/.test(location.search), LITE = /[?&]lite\b/.test(location.search), shadowDirty = 4, ratio = LITE ? 1 : 1.5, frames = 0, slow = 0, level = LITE ? 2 : 0, acc = 0, tick = 0;
+  var preparing = false;
   var groups = {}, built = {}, hooks = [], lineMat, inspectKey, pickRoots = [];
   var view = 'intro', introUntil = 0, focus = null, saved = [], focusCenter = new T.Vector3(), tmp = new T.Vector3();
   var goalPos = new T.Vector3(), goalLook = new T.Vector3(), camPos = new T.Vector3(), camLook = new T.Vector3();
@@ -34,7 +35,7 @@
     group: function (id) { return groups[id]; }
   };
   var rig = null, dof = 0, dofGoal = 0;                           // Tony's page views: a named camera rig, and depth-of-field blur for the detail page
-  var topMode = 'fire';                                         // which special view `top` means: the opening close shot of the fire, or the top-down view of the pan
+  var topMode = 'pan';                                         // which special view `top` means: the opening close shot of the fire, or the top-down view of the pan
   var top = true;                                               // the top-down view over the pan (the opening shot)
   // Tony's scan wave: see scanCapture / scanFire below
   var wave = { active: false, t: 0, R: -1, v0: 4, accel: 44, cubic: 120, maxR: 220, swept: false, tSweep: 0 }, rt = null, oldCanvas = null, oldTex = null, quad = null, qScene = null, qCam = null, waveDone = null, bufSize = new T.Vector2();
@@ -89,6 +90,8 @@
     }
     k += ((free ? 1 : 0) - k) * (still ? 1 : 1 - Math.exp(-dt * 1.8));
 
+    // Lift the hood out of the overhead camera's sightline; restore it in all other views.
+    if (objects.hood) objects.hood.visible = !(state === 'earth' && top && topMode === 'pan' && !rig && !focus);
     // camera: opening close shot on the burner, then the scene's resting view, or a turnable close shot of one object
     var sway = still ? 0 : Math.sin(t * 0.22) * 0.05;
     if (view === 'intro' && (now > introUntil || still)) view = 'overview';
@@ -200,7 +203,7 @@
     renderer.setRenderTarget(rt); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(qScene, qCam);
     if (wave.active && wave.R > wave.maxR) { wave.active = false; wave.R = -1; shadowDirty = 4; var cb = waveDone; waveDone = null; if (cb) cb(); }
   }
-  function loop(now) { draw(now); requestAnimationFrame(loop); }
+  function loop(now) { if (!preparing && !document.hidden) draw(now); requestAnimationFrame(loop); }
 
   // Scenes are built the first time they are needed (and quietly ahead of time once the page is up),
   // so opening the page only has to build the first one.
@@ -243,14 +246,38 @@
       renderer.shadowMap.enabled = !LITE; renderer.shadowMap.type = T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;   // add ?lite to the address for slow machines: no shadows, lower resolution
       E.renderer = renderer;
       build(first || Object.keys(K.scenes)[0]); setState(first || Object.keys(K.scenes)[0]);
-      setTimeout(prebuild, 2500);
+      // All worlds are prepared behind the startup overlay.
       canvas.addEventListener('webglcontextlost', function (ev) { ev.preventDefault(); window.dispatchEvent(new CustomEvent('soraine:error', { detail: 'The graphics card dropped the 3D view (out of graphics memory). Reload the page.' })); });
       camera.aspect = window.innerWidth / window.innerHeight; overview();
       if (still) { camPos.copy(goalPos); camLook.copy(goalLook); view = 'overview'; }
-      else { camPos.copy(E.burner).add(tmp.set(0.14, 0.1, 0.52)); camLook.copy(E.burner); camLook.y += 0.1; view = 'overview'; }   // open close on the fire
+      else { camPos.copy(E.burner).add(tmp.set(0, 1.25, 0.03)); camLook.copy(E.burner); view = 'overview'; }   // open close on the fire
       resize();
       window.addEventListener('resize', resize);
       requestAnimationFrame(loop);
+    },
+    prepareAll: async function (progress) {
+      preparing = true;
+      var ids = Object.keys(K.scenes), target = new T.WebGLRenderTarget(256, 256);
+      var breathe = function () { return new Promise(function (resolve) { requestAnimationFrame(function () { requestAnimationFrame(resolve); }); }); };
+      try {
+        for (var i = 0; i < ids.length; i++) {
+          progress(Math.round(i / ids.length * 90), 'Preparing ' + (ids[i] === 'orbit' ? 'ISS' : ids[i]) + '…');
+          await breathe(); ensure(ids[i]);
+          await window.SoraineWaitForAssets();
+          setState(ids[i]);
+          var textures = new Set(); scene.traverse(function (o) { if (!o.material) return; var ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(function (m) { Object.keys(m).forEach(function (k) { if (m[k] && m[k].isTexture) textures.add(m[k]); }); }); });
+          textures.forEach(function (t) { renderer.initTexture(t); });
+          renderer.compile(scene, camera);
+          var culled = []; scene.traverse(function (o) { if (o.isMesh) { culled.push([o, o.frustumCulled]); o.frustumCulled = false; } });
+          renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null);
+          culled.forEach(function (x) { x[0].frustumCulled = x[1]; });
+        }
+        progress(95, 'Preparing transitions…'); await breathe();
+        if (!rt) initWave(); renderer.compile(qScene, qCam);
+        setState('earth'); top = true; topMode = 'pan'; rig = null; dof = dofGoal = 0;
+        camPos.copy(E.burner).add(tmp.set(0, 1.25, 0.03)); camLook.copy(E.burner);
+        lastT = performance.now(); draw(lastT); progress(100, 'Ready');
+      } finally { renderer.setRenderTarget(null); target.dispose(); preparing = false; }
     },
     setState: setState,
     camera: function () { return camera; },
