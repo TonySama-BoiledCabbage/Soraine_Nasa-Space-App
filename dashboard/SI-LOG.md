@@ -25,3 +25,11 @@ Planet rendering now uses NASA day/night Earth imagery, the LRO Moon map and an 
 Validation: ten data/backend tests and thirteen desktop/mobile browser checks passed. The initial Cloud Run deployment returned HTTP 200 anonymously and its API confirmed a fresh BigQuery response from the copied dataset, with 59 measurements, 45 contexts and 307 sources. A GitHub Actions workflow is configured with credentials restricted to the team's main branch and exact workflow path; it still requires the PR to be merged before its first run.
 
 The dashboard is an independent folder on a new contribution branch. Team scene implementation files remain unchanged. The shared workflow and handoff explain how teammates can integrate their scenes through environment/material URL parameters.
+
+## 2026-11-14: Moon and Mars rendering update
+
+Hogan paused mobile work and requested planetary models that match the Earth's visual quality, with planetary publication first. Mobile changes are saved separately and excluded from this update.
+
+Codex identified that the earlier Mars Trek layer returned grayscale imagery despite its catalogue title. Replaced it with the 4K Viking VIS / MDIM 2.1 color mosaic. Updated the Moon with NASA's 4K LROC color map and normal shading derived from LOLA elevation, using spherical pixel spacing and the lunar reference radius. Added rough, nonmetallic surface materials, directional sunlight and subdued fill, and framed the familiar lunar near side and Martian canyon region. The Earth shader and the research values remain unchanged. No AI-generated surface imagery was used.
+
+An isolated browser rendered Earth, Moon and Mars without shader or asset errors, verified their zoom controls, and captured the updated models for visual review. The existing dashboard regression checks also passed before deployment.
