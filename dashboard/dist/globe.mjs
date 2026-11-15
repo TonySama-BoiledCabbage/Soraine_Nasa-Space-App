@@ -15,49 +15,52 @@ export function createGlobe(host,world){
  let renderer;try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});}catch(error){host.replaceChildren();showStatus('The 3D view is unavailable in this browser. Research data is still available.','error');throw error}
  const touchDevice=matchMedia('(pointer: coarse)').matches;
  const compact=touchDevice||matchMedia('(max-width: 760px)').matches;
- const pixelRatio=()=>Math.min(window.devicePixelRatio||1,2);renderer.setPixelRatio(pixelRatio());renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
- let surfaceReady=world==='Microgravity',initialized=false;renderer.domElement.style.visibility=surfaceReady?'visible':'hidden';
- if(!surfaceReady)showStatus(`Loading ${world} surface…`);
+ const pixelRatio=()=>Math.min(window.devicePixelRatio||1,compact?1.5:2);renderer.setPixelRatio(pixelRatio());renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.replaceChildren(renderer.domElement);
+ let surfaceReady=false,initialized=false;renderer.domElement.style.visibility='hidden';
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(0,.12,5.8);const group=new THREE.Group();group.rotation.z=world==='Microgravity'?0:.15;scene.add(group);
- const loader=new THREE.ImageLoader(),textures=[];let disposed=false;
- const primary=world==='Moon'?'moon-lroc.jpg':world==='Mars'?'mars-viking.jpg':'earth.png';
+ const loader=new THREE.ImageLoader(),textures=new Map(),worlds=new Map();let disposed=false,active=null,lab=null,sphere=null,selection=0,requestedWorld=null,fade=null;
  const load=(name,colorSpace=THREE.SRGBColorSpace)=>{
+  if(textures.has(name))return textures.get(name);
   // A defined black night map avoids invented lights if that optional image fails.
   const placeholder=document.createElement('canvas');placeholder.width=placeholder.height=1;
   const context=placeholder.getContext('2d');context.fillStyle=name==='moon-normal.png'?'#8080ff':'#000';context.fillRect(0,0,1,1);
-  const texture=new THREE.Texture(placeholder);texture.needsUpdate=true;texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);textures.push(texture);
+  const texture=new THREE.Texture(placeholder);texture.colorSpace=colorSpace;texture.wrapS=THREE.RepeatWrapping;texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);
   const small=name.replace(/\.(png|jpg)$/, '-mobile.webp');
-  const preview=name==='earth.png'||name==='earth-night.png';
-  const first=compact||preview?small:name;
-  let loaded=false,generation=0;
-  function request(asset,canFallback,upgrade=false){
-   const attempt=++generation;
-   loader.load(new URL('./assets/'+asset,import.meta.url).href,image=>{
-    if(disposed||attempt!==generation)return;
-    // WebGL2 texture storage is immutable: reallocate when leaving the 1px
-    // fallback or upgrading the preview, while retaining material references.
-    if(texture.image.width!==image.width||texture.image.height!==image.height)texture.dispose();
-    texture.image=image;texture.needsUpdate=true;loaded=true;
-    if(name===primary&&!surfaceReady){surfaceReady=true;host.dataset.globeState='ready';host.setAttribute('aria-busy','false');status.remove();renderer.domElement.style.visibility='visible'}
-    draw();schedule();
-    // Reuse the same texture and keep the preview visible during the quality upgrade.
-    if(!compact&&preview&&asset===small)request(name,false,true);
-   },undefined,()=>{
-    if(disposed||attempt!==generation)return;
-    if(canFallback){request(asset===small?name:small,false);return}
-    if(loaded||upgrade)return;
-    if(name===primary&&world!=='Microgravity')showStatus(`${world} imagery could not load. The research data is still available.`,'error',()=>{showStatus(`Loading ${world} surface…`);request(first,true)});
-    else if(name==='earth-night.png')host.dataset.globeNight='unavailable';
+  // These NASA-derived maps resolve the displayed globe without a mid-animation
+  // multi-megabyte replacement. Keep both decoded maps and GPU textures alive.
+  const ready=loader.loadAsync(new URL('./assets/'+small,import.meta.url).href)
+   .catch(()=>loader.loadAsync(new URL('./assets/'+name,import.meta.url).href))
+   .then(async image=>{
+    if(disposed)return;
+    if(image.decode)await image.decode();
+    if(disposed)return;
+    texture.image=image;texture.needsUpdate=true;renderer.initTexture(texture);
+   }).catch(error=>{
+    if(name==='earth-night.png'||name==='moon-normal.png'){
+     if(!disposed){texture.needsUpdate=true;renderer.initTexture(texture)}
+     return;
+    }
+    textures.delete(name);texture.dispose();throw error;
    });
-  }
-  request(first,true);return texture;
+  const entry={texture,ready};textures.set(name,entry);return entry;
  };
- const lab=world==='Microgravity'?makeMicrogravityScene({THREE,load}):null;
- let sphere;
- if(lab){group.add(lab.group);}else{
-  const {material,atmosphere}=makePlanet({world,load});
-  sphere=new THREE.Mesh(new THREE.SphereGeometry(1.6,compact?64:96,compact?40:64),material);group.add(sphere);sphere.rotation.y=world==='Moon'?-1.45:world==='Mars'?-.55:1.8;
-  if(atmosphere)group.add(atmosphere);
+ function prepare(next){
+  if(worlds.has(next))return worlds.get(next).ready;
+  const root=new THREE.Group(),pending=[],read=(name,colorSpace)=>{const entry=load(name,colorSpace);pending.push(entry.ready);return entry.texture};
+  const record={root,lab:null,sphere:null,ready:null};
+  if(next==='Microgravity'){record.lab=makeMicrogravityScene({THREE,load:read});root.add(record.lab.group)}
+  else{
+   const {material,atmosphere}=makePlanet({world:next,load:read});
+   record.sphere=new THREE.Mesh(new THREE.SphereGeometry(1.6,compact?64:96,compact?40:64),material);
+   record.sphere.rotation.y=next==='Moon'?-1.45:next==='Mars'?-.55:1.8;root.add(record.sphere);if(atmosphere)root.add(atmosphere);
+  }
+  record.ready=Promise.all(pending).then(async()=>{
+   if(disposed)return record;
+   // Compile with the existing scene's lights before the visible world changes.
+   await renderer.compileAsync(root,camera,scene);
+   return record;
+  }).catch(error=>{worlds.delete(next);disposeTree(root);throw error});
+  worlds.set(next,record);return record.ready;
  }
  // Decorative orbit guide. Thin geometry supplies the light falloff without a bloom pass.
  const orbit=new THREE.Group();orbit.visible=!lab;orbit.rotation.set(1.08,-.12,-.45);group.add(orbit);
@@ -84,7 +87,7 @@ export function createGlobe(host,world){
  const markerGlow=new THREE.Mesh(new THREE.SphereGeometry(.037,12,8),new THREE.MeshBasicMaterial({color:0x168bff,transparent:true,opacity:.12,depthTest:true,depthWrite:false,toneMapped:false,blending:THREE.AdditiveBlending}));
  markerGlow.renderOrder=3;orbitMarker.add(markerCore,markerGlow);
  let orbitPhase=1.05;const placeMarker=()=>orbitMarker.position.set(Math.cos(orbitPhase)*orbitRadius,Math.sin(orbitPhase)*orbitRadius,0);placeMarker();
- scene.add(new THREE.AmbientLight(0xffffff,world==='Moon'?.065:.10));const sun=new THREE.DirectionalLight(0xfff8f0,3.1);sun.position.set(-3,1.8,2.7);scene.add(sun);const fill=new THREE.DirectionalLight(world==='Mars'?0xd49670:0xabc4e0,.08);fill.position.set(4,-1,3);scene.add(fill);
+ const ambient=new THREE.AmbientLight(0xffffff,.10);scene.add(ambient);const sun=new THREE.DirectionalLight(0xfff8f0,3.1);sun.position.set(-3,1.8,2.7);scene.add(sun);const fill=new THREE.DirectionalLight(0xabc4e0,.08);fill.position.set(4,-1,3);scene.add(fill);
  let seed=789;const rand=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);const positions=[];for(let i=0;i<380;i++){positions.push((rand()-.5)*18,(rand()-.5)*14,-4-rand()*7)}const starsGeo=new THREE.BufferGeometry();starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xcddfff,size:.018,transparent:true,opacity:.65})));
  let paused=reduced.matches,frame=null,previous=0,drag=false,lastX=0,lastY=0,visible=true,pointer=null,zoomDistance=5.8,targetDistance=5.8,resumeAt=0,dirty=false,scrolling=false,scrollTimer=null;
  function fitCamera(){camera.position.z=zoomDistance*Math.max(1,1/camera.aspect)}
@@ -124,6 +127,43 @@ export function createGlobe(host,world){
   end(){drag=false;resumeAt=performance.now()+1400}
  });
  function moveCamera(){if(reduced.matches){zoomDistance=targetDistance;fitCamera();draw()}else schedule()}
- const onMotion=()=>{paused=reduced.matches;stop();moveCamera();draw();host.dispatchEvent(new CustomEvent('rotationchange',{detail:paused}))};reduced.addEventListener('change',onMotion);initialized=true;if(surfaceReady){host.dataset.globeState='ready';host.setAttribute('aria-busy','false')}resize();schedule();
- return {get paused(){return paused},set paused(value){paused=!!value;stop();schedule();draw()},zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,4.3,7.8);moveCamera()},reset(){gestures.stop();group.rotation.set(0,0,lab?0:.15);lab?.reset();targetDistance=5.8;moveCamera();draw()},dispose(){disposed=true;stop();clearTimeout(scrollTimer);window.removeEventListener('scroll',onScroll);observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);gestures.dispose();scene.traverse(obj=>{obj.geometry?.dispose();if(obj.material)obj.material.dispose()});textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss()}};
+ function disposeTree(root){
+  const geometry=new Set(),materials=new Set();root.traverse(obj=>{if(obj.geometry)geometry.add(obj.geometry);if(obj.material)(Array.isArray(obj.material)?obj.material:[obj.material]).forEach(m=>materials.add(m))});
+  geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());
+ }
+ async function setWorld(next){
+  if(disposed||!['Earth','Moon','Mars','Microgravity'].includes(next)||requestedWorld===next)return;
+  requestedWorld=next;const ticket=++selection;
+  fade?.cancel();fade=null;renderer.domElement.style.opacity='1';
+  host.dataset.requestedWorld=next;
+  // Keep the last complete planet visible while a new surface is being prepared.
+  status.style.top=surfaceReady?'auto':'40%';status.style.bottom=surfaceReady?'8px':'auto';
+  showStatus(`Preparing ${next}…`);
+  try{
+   const record=await prepare(next);
+   if(disposed||ticket!==selection)return;
+   if(surfaceReady&&!reduced.matches){
+    fade=renderer.domElement.animate([{opacity:1},{opacity:0}],{duration:100,fill:'forwards',easing:'ease-out'});
+    await fade.finished.catch(()=>{});
+    if(disposed||ticket!==selection)return;
+   }
+   if(active)group.remove(active.root);
+   active=record;lab=record.lab;sphere=record.sphere;world=next;group.add(record.root);
+   group.rotation.z=lab?0:.15;orbit.visible=!lab;
+   ambient.intensity=next==='Moon'?.065:.10;fill.color.set(next==='Mars'?0xd49670:0xabc4e0);
+   surfaceReady=true;host.dataset.globeWorld=next;host.dataset.globeState='ready';host.setAttribute('aria-busy','false');status.remove();
+   renderer.domElement.style.visibility='visible';fade?.cancel();
+   draw();requestDraw();
+   if(!reduced.matches)fade=renderer.domElement.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'});
+  }catch(error){
+   if(disposed||ticket!==selection)return;
+   requestedWorld=null;showStatus(`${next} imagery could not load. Research data is still available.`,'error',()=>setWorld(next));
+   console.warn('Planet preparation:',error);
+  }
+ }
+ const onMotion=()=>{paused=reduced.matches;if(reduced.matches)fade?.finish();stop();moveCamera();draw();host.dispatchEvent(new CustomEvent('rotationchange',{detail:paused}))};reduced.addEventListener('change',onMotion);initialized=true;resize();setWorld(world);
+ return {setWorld,get paused(){return paused},set paused(value){paused=!!value;stop();schedule();draw()},zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,4.3,7.8);moveCamera()},reset(){gestures.stop();group.rotation.set(0,0,lab?0:.15);lab?.reset();targetDistance=5.8;moveCamera();draw()},dispose(){
+  if(disposed)return;disposed=true;++selection;fade?.cancel();stop();clearTimeout(scrollTimer);window.removeEventListener('scroll',onScroll);observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);gestures.dispose();
+  if(active)group.remove(active.root);worlds.forEach(record=>disposeTree(record.root));disposeTree(scene);textures.forEach(entry=>entry.texture.dispose());renderer.dispose();renderer.forceContextLoss();
+ }};
 }

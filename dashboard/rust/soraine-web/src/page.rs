@@ -234,8 +234,8 @@ fn render() {
         (a.render_sequence, s.view.clone(), s.world.clone(), markup)
     }) else { return };
     let overview = name == "overview";
-    // Changing the material keeps the planet's renderer, textures and camera state.
-    let retained = if overview && app(|a| a.globe.is_some() && a.globe_world == world).unwrap_or(false) { query("#globe") } else { None };
+    // All environments share one renderer; switching worlds must not lose its GPU cache.
+    let retained = if overview && app(|a| a.globe.is_some()).unwrap_or(false) { query("#globe") } else { None };
     if retained.is_none() { if let Some(globe) = app(|a| a.globe.take()).flatten() { let _ = js_call(&globe, "dispose", &[]); } }
     let retained_material = if overview { app(|a| a.material_view.as_ref().map(|m| m.host.clone())).flatten().filter(|host| host.get_attribute("data-model-state").as_deref() != Some("fallback")) } else { None };
     if retained_material.is_none() { dispose_material_view(); }
@@ -288,6 +288,7 @@ fn render() {
     sync_material_view(view.query_selector("[data-material-model]").ok().flatten());
     if let (Some(kept), Some(placeholder)) = (&retained, query("#globe")) {
         let _ = placeholder.replace_with_with_node_1(kept);
+        app(|a| { if let Some(globe) = &a.globe { let _ = js_call(globe, "setWorld", &[world.as_str().into()]); } a.globe_world = world.clone(); });
         sync_rotation_button();
         return;
     }
