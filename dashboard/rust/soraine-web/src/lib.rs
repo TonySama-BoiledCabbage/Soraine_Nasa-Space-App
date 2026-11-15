@@ -4,7 +4,7 @@
 use serde_json::Value;
 use soraine_core::data::{self, Filter, Row};
 use soraine_core::scene_link::{self, Link};
-use soraine_core::{discovery, reading};
+use soraine_core::{discovery, reading, views};
 use wasm_bindgen::prelude::*;
 
 fn id(row: Option<&Row>) -> String { row.map(|r| r.get("measurement_id")).unwrap_or_default() }
@@ -46,6 +46,18 @@ impl Research {
 
     #[wasm_bindgen(js_name = readingSummary)]
     pub fn reading_summary(&self, material: &str, world: &str) -> String { reading::reading_summary(&self.rows, material, world) }
+
+    /// Markup of the overview view for the selected material and gravity environment.
+    #[wasm_bindgen(js_name = overviewHtml)]
+    pub fn overview_html(&self, material: &str, world: &str, specimen_instance: u32) -> String {
+        views::overview(&self.rows, material, world, specimen_instance)
+    }
+
+    /// Markup of the four-gravity oxygen-limit chart panel.
+    #[wasm_bindgen(js_name = chartPanelHtml)]
+    pub fn chart_panel_html(&self, material: &str, world: &str, large: bool) -> String {
+        views::chart_panel(&self.rows, material, world, large)
+    }
 
     /// Source IDs, most-cited first.
     #[wasm_bindgen(js_name = sourceOrder)]

@@ -26,7 +26,7 @@ async function loadApp(bundle) {
   const source = (await readFile(new URL('app.mjs', dist), 'utf8')).split('\n');
   const end = source.findIndex(line => line.startsWith('function showAbout('));
   const body = source.slice(0, end + 1).filter(line => line !== 'initGlossary();').join('\n').replaceAll("from './", `from '${dist.href}`) +
-    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,setData(b){bundle=b;rows=joinResearch(b)}};\n';
+    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,chartPanel,overview,setData(b){bundle=b;rows=joinResearch(b)}};\n';
   const element = new Proxy(function () {}, {get: (_, key) => key === 'forEach' ? () => {} : element, apply: () => element});
   globalThis.document = new Proxy({}, {get: (_, key) => key === 'querySelectorAll' ? () => [] : () => element});
   await mkdir(new URL('../target/', import.meta.url), {recursive: true});
@@ -38,7 +38,7 @@ async function loadApp(bundle) {
 }
 const app = await loadApp(bundle);
 const viewStates = MATERIALS.flatMap(material => WORLDS.map(world => ({material, world})));
-const views = viewStates.map(({material, world}) => { Object.assign(app.state, {material, world}); return {material, world, materialPanel: app.materialPanel(), chart: app.chart(false), chartLarge: app.chart(true)}; });
+const views = viewStates.map(({material, world}) => { Object.assign(app.state, {material, world}); const overview = app.overview(); return {material, world, materialPanel: app.materialPanel(), chart: app.chart(false), chartLarge: app.chart(true), chartPanel: app.chartPanel(false), chartPanelLarge: app.chartPanel(true), overview, specimenInstance: Number(/specimen-(\d+)/.exec(overview)[1])}; });
 const specimens = [];
 let specimenCase = 0;
 for (const material of [...MATERIALS, 'Kapton', `<b>&"x"'`, '']) for (const world of [...WORLDS, '']) {

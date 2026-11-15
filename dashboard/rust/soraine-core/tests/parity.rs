@@ -200,12 +200,14 @@ fn app_helpers_and_data_match_javascript() {
 
 #[test]
 fn material_panel_and_chart_match_javascript() {
-    use soraine_core::views::{chart, material_panel};
+    use soraine_core::views::{chart, chart_panel, material_panel, overview};
     let (bundle, golden) = (bundle(), golden());
     let rows = join_research(&bundle);
     for view in golden["views"].as_array().unwrap() {
         let (material, world) = (s(&view["material"]), s(&view["world"]));
-        for (actual, key) in [(material_panel(&rows, material), "materialPanel"), (chart(&rows, material, world, false), "chart"), (chart(&rows, material, world, true), "chartLarge")] {
+        let instance = view["specimenInstance"].as_u64().unwrap() as u32;
+        for (actual, key) in [(material_panel(&rows, material), "materialPanel"), (chart(&rows, material, world, false), "chart"), (chart(&rows, material, world, true), "chartLarge"),
+            (chart_panel(&rows, material, world, false), "chartPanel"), (chart_panel(&rows, material, world, true), "chartPanelLarge"), (overview(&rows, material, world, instance), "overview")] {
             assert!(actual == s(&view[key]), "{key} for {material} / {world}: {}", first_difference(&actual, s(&view[key])));
         }
     }

@@ -42,6 +42,7 @@ try {
       context: golden.context.map(([material]) => [material, wasm.comparisonContext(material)]),
       sources: research.sourceOrder(),
       links: golden.links.map(({args, base}) => { try { return wasm.researchUrl(args.world, args.material, args.view, args.record, base ?? undefined); } catch (error) { return {error: error.message}; } }),
+      views: golden.views.map(view => ({overview: research.overviewHtml(view.material, view.world, view.specimenInstance), chartPanel: research.chartPanelHtml(view.material, view.world, false), chartPanelLarge: research.chartPanelHtml(view.material, view.world, true)})),
       numbers: golden.numbers.map(([value, digits]) => wasm.formatNumber(value ?? undefined, digits ?? undefined)),
     };
   }, golden);
@@ -55,5 +56,6 @@ try {
   assert.deepEqual(actual.sources, golden.sources);
   assert.deepEqual(actual.links, golden.links.map(link => link.out ?? {error: link.error}));
   assert.deepEqual(actual.numbers, golden.numbers.map(n => n[2]));
-  console.log(`WebAssembly build matches the JavaScript reference in Chrome: ${actual.rowCount} results, ${actual.filters.length} filters, ${actual.sources.length} sources, ${actual.links.length} links, ${actual.numbers.length} numbers.`);
+  assert.deepEqual(actual.views, golden.views.map(view => ({overview: view.overview, chartPanel: view.chartPanel, chartPanelLarge: view.chartPanelLarge})));
+  console.log(`WebAssembly build matches the JavaScript reference in Chrome: ${actual.rowCount} results, ${actual.filters.length} filters, ${actual.sources.length} sources, ${actual.links.length} links, ${actual.numbers.length} numbers, ${actual.views.length} overview and chart views.`);
 } finally { await browser.close(); server.close(); }

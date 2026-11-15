@@ -98,5 +98,52 @@ pub fn chart(rows: &[Row], material: &str, world: &str, large: bool) -> String {
         if large { "limit-chart-large" } else { "" }, esc(material), term("ULOI", "ULOI / *", false), term("MOC", "MOC / *", false))
 }
 
+pub fn chart_panel(rows: &[Row], material: &str, world: &str, large: bool) -> String {
+    let t = |key: &str| term(key, key, false);
+    format!("<section class=\"panel chart-panel\"><div class=\"panel-head\"><span>How the reported limits compare</span><span class=\"tiny\">{}</span></div><div class=\"legend\"><span><i style=\"background:#36a7ff\"></i>{} / {}</span><span><i style=\"background:#b7d9ff\"></i>{} / {}</span></div>{}<p class=\"chart-note\">{} Starred low-g limits use short-duration flame survival or extinction. Earth tests use different burn criteria. <a href=\"https://ntrs.nasa.gov/citations/20130010991\" target=\"_blank\" rel=\"noopener noreferrer\">Table I, p. 6 ↗</a></p></section>",
+        esc(material), t("ULOI"), t("ULOI*"), t("MOC"), t("MOC*"), chart(rows, material, world, large), term("asterisk", "*", false))
+}
+
+/// The overview: environment picker, planet stage, and the material in focus.
+/// `specimen_instance` numbers the specimen card (see [`crate::specimen::specimen_html`]).
+pub fn overview(rows: &[Row], material: &str, world: &str, specimen_instance: u32) -> String {
+    use crate::specimen::{numeric, specimen_html, Specimen};
+    let micro = world == "Microgravity";
+    let info = world_info(world);
+    let field = |pick: fn(&WorldInfo) -> &'static str| info.map_or("", pick);
+    let limits = crate::data::get_limits(rows, material, world);
+    let experiment = limits.uloi.and_then(|r| r.experiment.as_ref());
+    let conditions = experiment.and_then(|e| e.get("conditions")).and_then(Value::as_str).filter(|c| !c.is_empty()).unwrap_or("Published sample");
+    let record = limits.uloi.map(|r| r.get("measurement_id")).unwrap_or_default();
+    let picker: String = ["Earth", "Microgravity", "Moon", "Mars"].iter().enumerate().map(|(i, w)| {
+        let active = *w == world;
+        format!("<button data-world=\"{w}\" class=\"{}\" aria-pressed=\"{active}\" aria-label=\"{w}\"><span class=\"world-index\">0{}</span>{}<span class=\"world-indicator\"></span></button>",
+            if active { "active" } else { "" }, i + 1, if *w == "Microgravity" { "Micro-g" } else { w })
+    }).collect();
+    let specimen = specimen_html(&Specimen {
+        material, world,
+        uloi: limits.uloi.and_then(|r| numeric(r.field("value"))),
+        moc: limits.moc.and_then(|r| numeric(r.field("value"))),
+        record_id: limits.uloi.map(|_| record.as_str()),
+    }, specimen_instance);
+    let pair: String = [(limits.uloi, "ULOI"), (limits.moc, "MOC")].into_iter().map(|(row, label)| {
+        let key = row.map(|r| r.metric()).filter(|metric| !metric.is_empty()).unwrap_or(label);
+        format!("<div><div class=\"label\">{}</div><strong>{}<small>%</small></strong><div class=\"subtle\">{}</div></div>",
+            term(key, key, false), row.map_or("—".to_string(), |r| number(r.field("value"), 8)), term("oxygen", "oxygen, molar", false))
+    }).collect();
+    format!("<div class=\"mission-overview\"><div class=\"mission-toolbar\"><span class=\"label\">01 / Choose an environment</span><div class=\"world-picker\" aria-label=\"Gravity context\">{picker}</div></div>\n <div class=\"mission-grid\">\n  <section class=\"space-panel\" aria-label=\"Interactive planet context\">\n   <div id=\"globe\" aria-label=\"{globe_label}\" role=\"img\"><div class=\"globe-fallback\"></div></div>\n   <div class=\"space-top\"><span class=\"space-label\">{title}</span><span class=\"space-reference\">{reference}</span></div>\n   <div class=\"space-caption\"><span class=\"label\">FLAME IN FREEFALL</span><h2>{name}</h2><p>{caption}</p></div>\n   <div class=\"space-foot\"><span>{view_kind} <span class=\"foot-dot\">·</span> Drag to explore</span><div class=\"globe-actions\"><button id=\"zoom-in\" aria-label=\"Zoom in\" title=\"Zoom in\">+</button><button id=\"zoom-out\" aria-label=\"Zoom out\" title=\"Zoom out\">−</button><button id=\"rotate-toggle\" aria-label=\"Pause rotation\" title=\"Pause rotation\">{pause}</button><button id=\"reset-globe\" aria-label=\"Reset globe\" title=\"Reset globe\">{reset}</button></div></div>\n  </section>\n  <aside class=\"research-column\" aria-label=\"Selected material research\">\n   {panel}\n   <section class=\"panel focus-panel\"><div class=\"label\">02 / Material in focus</div><div class=\"focus-heading\"><h2>{material_text}</h2><span class=\"chip\">{published}</span></div><p class=\"focus-sub\">{description}<br>Study specimen: {sample} <span> / </span> {world}</p>\n    <div class=\"focus-inspector-grid\">{specimen}\n    <div class=\"focus-values\"><div class=\"limit-pair\">{pair}</div>\n    <dl class=\"condition-list\"><div><dt>Test pressure</dt><dd>{pressure} {kpa}</dd></div><div><dt>{gravity_label}</dt><dd>{g} {g_term}</dd></div><div><dt>Source</dt><dd>NASA {ntrs} · Table I</dd></div></dl>\n    <button class=\"primary-btn wide\" data-view=\"compare\">Compare across gravity {arrow}</button>\n    </div></div>\n   </section>\n   <div class=\"reading-summary\"><span class=\"label\">READ THE RESULT</span><p>{reading}</p></div>\n   <div class=\"research-footnote\"><span class=\"note-number\">↳</span><div><p>These are tests of ignited samples, not a prediction of habitat fire risk.</p><button class=\"text-link\" data-record=\"{record}\">Read the conditions {arrow}</button></div></div>\n\n  </aside>\n </div>\n </div>",
+        globe_label = if micro { "Drag to explore the illustrative orbital laboratory" } else { "Drag or swipe sideways to rotate the decorative planet" },
+        title = field(|i| i.title),
+        reference = if micro { "NEAR-WEIGHTLESS <span>/ FREE FALL</span>".to_string() } else { format!("{} g <span>/ NOMINAL</span>", field(|i| i.g)) },
+        name = field(|i| i.name), caption = field(|i| i.caption),
+        view_kind = if micro { "Illustrative orbital habitat" } else { "Illustrative view" },
+        pause = icon("pause"), reset = icon("reset"), panel = material_panel(rows, material), material_text = esc(material),
+        published = term("published", "Published", false), description = sample_text(material_description(material)), sample = sample_text(conditions),
+        pressure = number(experiment.and_then(|e| e.get("pressure_kpa")), 1), kpa = term("kPa", "kPa absolute", false),
+        gravity_label = if micro { "Effective acceleration" } else { "Gravity category" }, g = field(|i| i.g),
+        g_term = term(if micro { "microgravity" } else { "g" }, "g", false), ntrs = term("NTRS", "NTRS", false), arrow = icon("arrow"),
+        reading = esc(&crate::reading::reading_summary(rows, material, world)), record = esc(&record))
+}
+
 /// `Value` text helper for callers that hold raw records.
 pub fn text_of(value: Option<&Value>) -> String { crate::data::text(value) }
