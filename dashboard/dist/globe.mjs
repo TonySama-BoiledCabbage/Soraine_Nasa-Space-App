@@ -91,7 +91,8 @@ export function createGlobe(host,world){
  let seed=789;const rand=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);const positions=[];for(let i=0;i<380;i++){positions.push((rand()-.5)*18,(rand()-.5)*14,-4-rand()*7)}const starsGeo=new THREE.BufferGeometry();starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xcddfff,size:.018,transparent:true,opacity:.65})));
  let paused=reduced.matches,frame=null,previous=0,drag=false,lastX=0,lastY=0,visible=true,pointer=null,zoomDistance=5.8,targetDistance=5.8,resumeAt=0,dirty=false,scrolling=false,scrollTimer=null;
  function fitCamera(){camera.position.z=zoomDistance*Math.max(1,1/camera.aspect)}
- function resize(){if(disposed)return;const w=host.clientWidth,h=host.clientHeight;if(w<1||h<1)return;camera.aspect=w/h;fitCamera();camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio());renderer.setSize(w,h,false);draw()}
+ let width=0,height=0,dpr=0;
+ function resize(){if(disposed)return;const w=host.clientWidth,h=host.clientHeight,p=pixelRatio();if(w<1||h<1||(w===width&&h===height&&p===dpr))return;width=w;height=h;dpr=p;camera.aspect=w/h;fitCamera();camera.updateProjectionMatrix();renderer.setPixelRatio(p);renderer.setSize(w,h,false);draw()}
  function draw(){if(disposed||!initialized||!surfaceReady||!visible||scrolling||document.hidden)return;renderer.render(scene,camera);dirty=false}
  function requestDraw(){dirty=true;schedule()}
  const isZooming=()=>Math.abs(targetDistance-zoomDistance)>.001;
@@ -100,7 +101,7 @@ export function createGlobe(host,world){
   frame=null;if(disposed||!visible||document.hidden)return;
   if(!previous)previous=t;
   // Zoom gets up to 60 fps; quiet background rotation stays capped near 30.
-  const zooming=isZooming(),interval=zooming?1000/60:(touchDevice?42:33);
+  const zooming=isZooming(),interval=zooming?1000/60:1000/30;
   if(dirty||t-previous>=interval){
    const dt=Math.min((t-previous)/1000,.05);previous=t;
    if(zooming){zoomDistance+=(targetDistance-zoomDistance)*(1-Math.exp(-10*dt));if(!isZooming())zoomDistance=targetDistance;fitCamera()}

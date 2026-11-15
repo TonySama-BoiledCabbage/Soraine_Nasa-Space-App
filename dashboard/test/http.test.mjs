@@ -21,6 +21,8 @@ test('public assets support conditional reads and HEAD without exposing server f
  assert.equal(head.status,200);assert.equal(head.headers.get('content-type'),'image/webp');
  assert.match(head.headers.get('cache-control'),/max-age=3600/);
  assert.ok(Number(head.headers.get('content-length'))>0);assert.equal(await head.text(),'');
+ const wasm=await fetch(base+'/pkg/soraine_web_bg.wasm',{method:'HEAD'});
+ assert.equal(wasm.status,200);assert.equal(wasm.headers.get('content-type'),'application/wasm');
  const privateFile=await fetch(base+'/server/index.mjs');assert.equal(privateFile.status,404);
  const mutation=await fetch(base+'/api/research',{method:'POST'});assert.equal(mutation.status,405);
  assert.equal(mutation.headers.get('allow'),'GET, HEAD');
