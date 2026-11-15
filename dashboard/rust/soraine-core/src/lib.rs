@@ -11,3 +11,5 @@ mod glossary_terms;
 pub mod reading;
 pub mod scene_link;
 pub mod specimen;
+pub mod views;
+mod app_data;

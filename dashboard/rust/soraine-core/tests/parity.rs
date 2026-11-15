@@ -177,3 +177,36 @@ fn glossary_matches_javascript() {
         assert_eq!(term(s(&case[0]), s(&case[1]), case[2].as_bool().unwrap()), s(&case[3]), "{case}");
     }
 }
+
+#[test]
+fn app_helpers_and_data_match_javascript() {
+    use soraine_core::views::*;
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for (entry, expected) in ICON_PATHS.iter().zip(golden["icons"].as_array().unwrap()) { assert_eq!((entry.0, entry.1), (s(&expected[0]), s(&expected[1]))); }
+    for case in golden["iconMarkup"].as_array().unwrap() { assert_eq!(icon(s(&case[0])), s(&case[1])); }
+    for info in &WORLD_INFO {
+        let expected = &golden["worldInfo"][info.world];
+        assert_eq!([info.title, info.g, info.sub, info.name, info.caption], ["title", "g", "sub", "name", "caption"].map(|key| s(&expected[key])));
+    }
+    assert_eq!(WORLD_INFO.len(), golden["worldInfo"].as_object().unwrap().len());
+    let helpers = &golden["helpers"];
+    for case in helpers["sampleText"].as_array().unwrap() { assert_eq!(sample_text(s(&case[0])), s(&case[1])); }
+    for case in helpers["materialDescription"].as_array().unwrap() { assert_eq!(material_description(s(&case[0])), s(&case[1])); }
+    for case in helpers["unitLabel"].as_array().unwrap() { assert_eq!(unit_label(s(&case[0])), s(&case[1])); }
+    for case in helpers["fieldLabel"].as_array().unwrap() { assert_eq!(field_label(s(&case[0])), s(&case[1])); }
+    for (row, case) in rows.iter().zip(helpers["evidenceLabel"].as_array().unwrap()) { assert_eq!(evidence_label(row), s(&case[1]), "{}", case[0]); }
+}
+
+#[test]
+fn material_panel_and_chart_match_javascript() {
+    use soraine_core::views::{chart, material_panel};
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    for view in golden["views"].as_array().unwrap() {
+        let (material, world) = (s(&view["material"]), s(&view["world"]));
+        for (actual, key) in [(material_panel(&rows, material), "materialPanel"), (chart(&rows, material, world, false), "chart"), (chart(&rows, material, world, true), "chartLarge")] {
+            assert!(actual == s(&view[key]), "{key} for {material} / {world}: {}", first_difference(&actual, s(&view[key])));
+        }
+    }
+}

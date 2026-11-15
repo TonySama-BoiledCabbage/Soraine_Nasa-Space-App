@@ -1,7 +1,7 @@
 // Writes soraine-core/tests/golden.json: what the current JavaScript modules
 // return for the published data. The Rust port must reproduce it exactly.
 //   node tools/make-golden.mjs      (run from dashboard/rust)
-import {readFile, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {MATERIALS, WORLDS, TYPES, joinResearch, getLimits, filterRows, csv, comparisonRows, number, esc, safeUrl} from '../../dist/data.mjs';
 import {sourcesByResults, originalFilesByRelevance} from '../../dist/discovery.mjs';
 import {readingSummary, comparisonContext} from '../../dist/reading.mjs';
@@ -19,6 +19,26 @@ const links = [[{}], [{world: 'Lunar', material: 'Nomex HT90-40', record: 'E014'
   [{record: '<script>'}], [{record: 'E01'}], [{record: 'E014 '}], [{}, 'javascript:alert(1)'], [{}, 'not a url'], [{world: 'moon'}, 'https://example.org/a b/?x=1']];
 const numbers = [[null], [''], ['0'], ['0.000016', 6], ['1234567.891'], ['1234567.891', 2], ['2.5', 0], ['1.5', 0], ['0.5', 0], ['0.05'], ['-0.04'], ['-1234.5', 0], ['19.95'], ['1.005', 2],
   ['21.1'], ['999.95'], ['0.125', 2], ['abc'], ['1e21'], ['70.3'], [' 42 '], ['1.1000000000000014'], ['1000'], ['-0.06']];
+// app.mjs keeps its view functions private and touches the page when it loads.
+// Load the part that defines them against a stand-in document and export them.
+async function loadApp(bundle) {
+  const dist = new URL('../../dist/', import.meta.url);
+  const source = (await readFile(new URL('app.mjs', dist), 'utf8')).split('\n');
+  const end = source.findIndex(line => line.startsWith('function showAbout('));
+  const body = source.slice(0, end + 1).filter(line => line !== 'initGlossary();').join('\n').replaceAll("from './", `from '${dist.href}`) +
+    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,setData(b){bundle=b;rows=joinResearch(b)}};\n';
+  const element = new Proxy(function () {}, {get: (_, key) => key === 'forEach' ? () => {} : element, apply: () => element});
+  globalThis.document = new Proxy({}, {get: (_, key) => key === 'querySelectorAll' ? () => [] : () => element});
+  await mkdir(new URL('../target/', import.meta.url), {recursive: true});
+  const file = new URL('../target/app-under-test.mjs', import.meta.url);
+  await writeFile(file, body);
+  const {__app} = await import(file.href);
+  __app.setData(bundle);
+  return __app;
+}
+const app = await loadApp(bundle);
+const viewStates = MATERIALS.flatMap(material => WORLDS.map(world => ({material, world})));
+const views = viewStates.map(({material, world}) => { Object.assign(app.state, {material, world}); return {material, world, materialPanel: app.materialPanel(), chart: app.chart(false), chartLarge: app.chart(true)}; });
 const specimens = [];
 let specimenCase = 0;
 for (const material of [...MATERIALS, 'Kapton', `<b>&"x"'`, '']) for (const world of [...WORLDS, '']) {
@@ -41,6 +61,17 @@ const golden = {
   files: originalFilesByRelevance(original.datasets).map(d => d.id),
   links: links.map(([args, base]) => { try { return {args, base: base ?? null, out: base ? researchUrl(args, base) : researchUrl(args)}; } catch (error) { return {args, base: base ?? null, error: error.message}; } }),
   specimens,
+  icons: Object.entries(app.paths),
+  iconMarkup: [...Object.keys(app.paths), 'missing'].map(name => [name, app.icon(name)]),
+  worldInfo: app.worldInfo,
+  helpers: {
+    sampleText: ['10 mil PEI film', 'PET (PETG) and PMMA_x', 'SPEIGHT PEI-2 <PET>', 'pei', ''].map(v => [v, app.sampleText(v)]),
+    materialDescription: [...MATERIALS, 'Kapton'].map(v => [v, app.materialDescription(v)]),
+    unitLabel: ['O2 molar percent', 'O2 percentage points', 'cm/s', 'kPa', '<x>'].map(v => [v, app.unitLabel(v)]),
+    fieldLabel: ['Test pressure', 'Oxygen', 'Airflow', 'Gravity category', 'A & B'].map(v => [v, app.fieldLabel(v)]),
+    evidenceLabel: rows.map(r => [r.measurement_id, app.evidenceLabel(r)]),
+  },
+  views,
   glossary: Object.entries(definitions).map(([key, d]) => [key, d.title, d.description]),
   terms: [...Object.keys(definitions), 'not a term', '<b>'].flatMap(key => [[key, key, false, term(key)], [key, `${key} & "label"`, false, term(key, `${key} & "label"`)], [key, 'in a button', true, term(key, 'in a button', {passive: true})]]),
   numbers: numbers.map(([value, digits]) => [value, digits ?? null, digits === undefined ? number(value) : number(value, digits)]),
