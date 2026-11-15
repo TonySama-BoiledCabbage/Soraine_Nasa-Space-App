@@ -1,8 +1,8 @@
 /* The outpost: everything the Moon and Mars scenes share. One place to change the
- * platform, the plant or the falling debris for both worlds.
+ * platform and the plant for both worlds.
  *
- *   K.outpost(group, opts)        the metal work-platform, potted plant, loose utensils, droplets,
- *                                 crumbs and dust. opts: { gravity (m/s2), rock (material), dust (hex), dome, platform: false to leave it out }
+ *   K.outpost(group, opts)        the metal work-platform and potted plant.
+ *                                 opts: { dome, platform: false to leave it out }
  *                                 Returns { update(t, still) }: call it every frame.
  */
 (function () {
@@ -12,7 +12,7 @@
 
   K.outpost = function (moon, opts) {
     opts = opts || {};
-    var i, tossed = [], dust, grav = opts.gravity || 1.62, soil = opts.rock || std(0x55555a, 1);
+    var i;
 
     // metallic modular work-platform: two modules, yellow edge markers, chunky feet
       var metal = std(0xb4bac3, 0.36, 0.8), metalDark = std(0x7a7f88, 0.45, 0.75), marker = std(0xf2b21d, 0.45, 0.2);
@@ -47,34 +47,12 @@
         var lf2 = ball(0.085, i % 2 ? leaf : leafHi, Math.cos(la) * lr, 0.2 + lh, Math.sin(la) * lr, mplant); lf2.scale.set(1.25, 0.14, 0.72); lf2.rotation.y = -la; lf2.rotation.z = 0.45;
       }
 
-    // loose utensils, water droplets and crumbs: tossed up, they come back down slowly (the scene's own gravity)
-    function toss(obj, x, y, z, vx, vy, vz, rest, spin) { obj.position.set(x, y, z); moon.add(obj); tossed.push({ o: obj, p: new T.Vector3(x, y, z), v: new T.Vector3(vx, vy, vz), T: 2 * vy / grav, rest: rest, ph: rand() * 6, spin: spin || 0 }); }
-    function spoon(c) { var g3 = new T.Group(); rbox(0.02, 0.24, 0.012, 0.005, c, 0, 0, 0, g3); var bw = ball(0.035, c, 0, 0.15, 0, g3); bw.scale.set(1, 1.3, 0.35); return g3; }
-      var paleWood = std(0xd9a55f, 0.6);
-      // (the spoons and spatula that kept hopping here were removed after Tony's review: they pulled the eye away from the fire)
-    var water = new T.MeshStandardMaterial({ color: 0xbfe3ff, roughness: 0.05, transparent: true, opacity: 0.8 });
-    for (i = 0; i < 16; i++) toss(new T.Mesh(new T.SphereGeometry(0.014 + rand() * 0.016, 14, 10), water), -0.5 + rand() * 2.6, 0.03, -2.4 + rand() * 1.5, (rand() - 0.5) * 0.08, 0.7 + rand() * 0.9, (rand() - 0.5) * 0.08, 0.3 + rand() * 1.5);
-    var crumb = std(0xc99a5b, 0.9);
-    for (i = 0; i < 26; i++) toss(new T.Mesh(new T.DodecahedronGeometry(0.008 + rand() * 0.012, 0), i % 3 ? crumb : soil), -0.4 + rand() * 2.4, 0.02, -2.3 + rand() * 1.4, (rand() - 0.5) * 0.06, 0.5 + rand() * 0.8, (rand() - 0.5) * 0.06, 0.4 + rand() * 2, 2);
-    var dp = []; for (i = 0; i < 320; i++) dp.push(0.8 + (rand() - 0.5) * 5, rand() * 2.2, -1.65 + (rand() - 0.5) * 4);
-    var dg = new T.BufferGeometry(); dg.setAttribute('position', new T.Float32BufferAttribute(dp, 3));
-    dust = new T.Points(dg, new T.PointsMaterial({ color: opts.dust || 0xd9d4c8, size: 1.6, sizeAttenuation: false, transparent: true, opacity: 0.55 })); moon.add(dust);
-
-
     // baked contact shadows where things meet the platform and the ground
     if (opts.platform !== false) K.contact(moon, 0.8, -0.4, -1.65, 5.4, 3.6, 0.55);
     K.contact(moon, 0.3, 0.004, -2.02, 1.35, 1.05, 0.55);
     K.contact(moon, -0.29, 0.004, -1.78, 0.5, 0.5, 0.5); K.contact(moon, 1.75, 0.004, -1.3, 0.55, 0.55, 0.5);
 
-    return {
-      update: function (t, still) {
-        for (var ti = 0; ti < tossed.length; ti++) {             // up, then back down: y = v t - g t^2 / 2 with this world's g
-          var ts = tossed[ti], tau = still ? 0.35 * ts.T : (t + ts.ph) % (ts.T + ts.rest), fl = Math.min(tau, ts.T);
-          ts.o.position.set(ts.p.x + ts.v.x * fl, ts.p.y + ts.v.y * fl - 0.5 * grav * fl * fl, ts.p.z + ts.v.z * fl);
-          if (ts.spin) ts.o.rotation.set(fl * ts.spin, fl * ts.spin * 0.6, 1.2);
-        }
-        dust.rotation.y = still ? 0 : t * 0.01; dust.position.y = still ? 0 : Math.sin(t * 0.15) * 0.05;
-      }
-    };
+    // Keep the shared scene interface; the outpost has no ambient particle animation.
+    return { update: function () {} };
   };
 })();

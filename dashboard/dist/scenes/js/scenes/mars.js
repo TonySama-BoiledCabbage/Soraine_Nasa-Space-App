@@ -5,7 +5,7 @@
   var T = THREE, K = SoraineKit, std = K.std, glow = K.glow, put = K.put, roundedGeo = K.roundedGeo, rbox = K.rbox, tube = K.tube, ball = K.ball,
       group = K.group, halo = K.halo, canvasTex = K.canvasTex, rand = K.rand, floater = K.floater, objects = K.objects, m = K.mat;
   var cream = m.cream, creamDark = m.creamDark, white = m.white, chrome = m.chrome, brass = m.brass, iron = m.iron, sage = m.sage, sageDark = m.sageDark, wood = m.wood, woodDark = m.woodDark, teal = m.teal, plaster = m.plaster, tile = m.tile, stone = m.stone, leaf = m.leaf;
-  var post, wisps = [], motes, devil = [], RM = 95, GY = 0.028;   // RM: radius of the round world (large: a wide, gently curving surface); GY: ground level, just above the props' feet so they sink into the sand
+  var post, wisps = [], devil = [], RM = 95, GY = 0.028;   // RM: radius of the round world (large: a wide, gently curving surface); GY: ground level, just above the props' feet so they sink into the sand
   function sink(x, z) { return RM * (1 - Math.cos(Math.max(0, Math.hypot(x - 0.8, z + 1.65) - 2.7) / RM)); }   // how far the round ground has dropped at (x, z)
 
   K.scenes.mars = {
@@ -48,7 +48,7 @@
       K.ground('mars', mars, [0.8, GY, -1.65], { sun: SUN, shade: 0.86, tint: [0.6, 0.22, 0.1], fine: fine, fineTile: 1.7, fineBump: 0.034, tile: 28, curve: RM, relief: 1.15, reach: 230, grid: 256, bakeSteps: 16, spread: 1, pad: 0.62,
         farAmp: 2.5, dunes: 0.8, mesas: 20, mesaFrom: 40, strata: true, ripple: 0.06, rocks: 240, pebbles: 2800, rockColor: 0x3c1a0e });
 
-      // dust in the air: low wisps drifting across the mid-ground dunes, fine motes blowing past, and one distant dust devil
+      // dust in the air: low wisps drifting across the mid-ground dunes, and one distant dust devil
       var puff = canvasTex(256, function (g, n) {
         for (var q = 0; q < 46; q++) { var px = n * (0.15 + rand() * 0.7), py = n * (0.36 + rand() * 0.28), r = n * (0.08 + rand() * 0.16), rg = g.createRadialGradient(px, py, 0, px, py, r);
           rg.addColorStop(0, 'rgba(255,255,255,.16)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = rg; g.fillRect(0, 0, n, n); }
@@ -57,9 +57,6 @@
         var sp = new T.Sprite(new T.SpriteMaterial({ map: puff, color: 0xd98a50, transparent: true, opacity: 0.3, depthWrite: false }));
         sp.scale.set(9 + rand() * 10, 1.6 + rand() * 2, 1); mars.add(sp); wisps.push({ o: sp, x: rand() * 60, z: -6 - rand() * 26, lift: 0.4 + rand() * 0.9, v: 0.35 + rand() * 0.5, a: 0.2 + rand() * 0.2 });
       }
-      var mp = new Float32Array(700 * 3); for (i = 0; i < 700; i++) { mp[i * 3] = rand() * 30 - 15; mp[i * 3 + 1] = rand() * 5 - 0.6; mp[i * 3 + 2] = rand() * 13 - 14; }
-      var mg = new T.BufferGeometry(); mg.setAttribute('position', new T.BufferAttribute(mp, 3));
-      motes = new T.Points(mg, new T.PointsMaterial({ color: 0xffd9ae, size: 0.035, transparent: true, opacity: 0.7, depthWrite: false })); motes.frustumCulled = false; mars.add(motes);
       for (i = 0; i < 14; i++) {
         var dv = new T.Sprite(new T.SpriteMaterial({ map: puff, color: 0xa8521f, transparent: true, opacity: 0.8, depthWrite: false })), f = i / 13;
         dv.scale.set(0.9 + f * f * 3.4, 1.3, 1); mars.add(dv); devil.push({ o: dv, f: f });
@@ -80,7 +77,6 @@
         var w = wisps[k], x = 30 - ((w.x + tt * w.v) % 60), edge = Math.min(1, (30 - Math.abs(x)) / 8);
         w.o.position.set(x, GY - sink(x, w.z) + w.lift, w.z); w.o.material.opacity = w.a * edge;
       }
-      motes.position.x = -((tt * 0.6) % 6); motes.position.y = Math.sin(tt * 0.3) * 0.08;
       for (k = 0; k < devil.length; k++) {                       // a thin leaning column that twists as it wanders
         var d = devil[k], bx = 9 + Math.sin(tt * 0.07) * 1.5, bz = -22;
         d.o.position.set(bx + d.f * 0.9 + Math.sin(tt * 1.7 + d.f * 7) * (0.08 + d.f * 0.35), GY - sink(bx, bz) + 0.3 + d.f * 5.2, bz + Math.cos(tt * 1.3 + d.f * 6) * 0.2);
