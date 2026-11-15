@@ -5,5 +5,6 @@
 //! (WebAssembly), the server and native tests.
 pub mod data;
 pub mod discovery;
+pub mod gesture;
 pub mod reading;
 pub mod scene_link;
