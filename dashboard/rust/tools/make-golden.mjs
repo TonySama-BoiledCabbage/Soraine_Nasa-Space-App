@@ -8,6 +8,7 @@ import {readingSummary, comparisonContext} from '../../dist/reading.mjs';
 import {researchUrl} from '../../dist/scene-link.mjs';
 import {specimenHTML} from '../../dist/specimen.mjs';
 import {definitions, term} from '../../dist/glossary.mjs';
+import {loadApp} from './load-app.mjs';
 const read = async path => JSON.parse((await readFile(new URL(path, import.meta.url), 'utf8')).replace(/^﻿/, ''));
 const bundle = await read('../../dist/data/research.json'), original = await read('../../dist/data/original-data.json');
 const rows = joinResearch(bundle), id = r => r?.measurement_id ?? null;
@@ -19,27 +20,6 @@ const links = [[{}], [{world: 'Lunar', material: 'Nomex HT90-40', record: 'E014'
   [{record: '<script>'}], [{record: 'E01'}], [{record: 'E014 '}], [{}, 'javascript:alert(1)'], [{}, 'not a url'], [{world: 'moon'}, 'https://example.org/a b/?x=1']];
 const numbers = [[null], [''], ['0'], ['0.000016', 6], ['1234567.891'], ['1234567.891', 2], ['2.5', 0], ['1.5', 0], ['0.5', 0], ['0.05'], ['-0.04'], ['-1234.5', 0], ['19.95'], ['1.005', 2],
   ['21.1'], ['999.95'], ['0.125', 2], ['abc'], ['1e21'], ['70.3'], [' 42 '], ['1.1000000000000014'], ['1000'], ['-0.06']];
-// app.mjs keeps its view functions private and touches the page when it loads.
-// Load the part that defines them against a stand-in document and export them.
-async function loadApp(bundle) {
-  const dist = new URL('../../dist/', import.meta.url);
-  const source = (await readFile(new URL('app.mjs', dist), 'utf8')).split('\n');
-  const end = source.findIndex(line => line.startsWith('function showAbout('));
-  const body = source.slice(0, end + 1).filter(line => line !== 'initGlossary();').join('\n').replaceAll("from './", `from '${dist.href}`) +
-    '\nexport const __app={paths,icon,state,worldInfo,sampleText,materialDescription,unitLabel,evidenceLabel,fieldLabel,materialPanel,chart,chartPanel,overview,metricName,compare,option,evidence,renderEvidenceRows,sourceView,renderSources,setData(b){bundle=b;rows=joinResearch(b)}};\n';
-  const element = new Proxy(function () {}, {get: (_, key) => key === 'forEach' ? () => {} : element, apply: () => element});
-  // Elements the render functions write into keep what was assigned, so it can be read back.
-  const sinks = {};
-  const sink = () => { const store = {}; return new Proxy(function () {}, {get: (_, key) => key in store ? store[key] : element, set: (_, key, value) => { store[key] = value; return true; }, apply: () => element}); };
-  globalThis.document = new Proxy({}, {get: (_, key) => key === 'querySelectorAll' ? () => [] : key === 'querySelector' ? selector => (sinks[selector] ??= sink()) : () => element});
-  globalThis.__sinks = sinks;
-  await mkdir(new URL('../target/', import.meta.url), {recursive: true});
-  const file = new URL('../target/app-under-test.mjs', import.meta.url);
-  await writeFile(file, body);
-  const {__app} = await import(file.href);
-  __app.setData(bundle);
-  return __app;
-}
 const app = await loadApp(bundle);
 const viewStates = MATERIALS.flatMap(material => WORLDS.map(world => ({material, world})));
 const views = viewStates.map(({material, world}) => { Object.assign(app.state, {material, world}); const overview = app.overview(); return {material, world, materialPanel: app.materialPanel(), chart: app.chart(false), chartLarge: app.chart(true), chartPanel: app.chartPanel(false), chartPanelLarge: app.chartPanel(true), overview, specimenInstance: Number(/specimen-(\d+)/.exec(overview)[1])}; });
@@ -48,14 +28,24 @@ const evidenceFilters = [{}, {query: 'Ultem Moon MOC'}, {query: '<b> "x"'}, {wor
 const evidenceCases = evidenceFilters.flatMap(filter => [0, 1, 5, 99].map(page => {
   Object.assign(app.state, {query: filter.query ?? '', filterWorld: filter.world ?? 'All', filterMaterial: filter.material ?? 'All', filterKind: filter.kind ?? 'All', page});
   const frame = app.evidence(); app.renderEvidenceRows();
-  return {filter, page, frame, results: globalThis.__sinks['#evidence-results'].innerHTML, shownPage: app.state.page};
+  return {filter, page, frame, results: app.written('#evidence-results'), shownPage: app.state.page};
 }));
 const sourceTypes = ['All', ...new Set(bundle.sources.map(s => s.source_type))];
 const sourceCases = ['', 'saffire', 'zzz', 'NTRS-2013', '  Flame ', '"<'].flatMap(query => sourceTypes.flatMap(type => [0, 3, 999].map(page => {
   Object.assign(app.state, {sourceQuery: query, sourceType: type, sourcePage: page});
   const frame = app.sourceView(); app.renderSources();
-  return {query, type, page, frame, results: globalThis.__sinks['#source-results'].innerHTML, shownPage: app.state.sourcePage};
+  return {query, type, page, frame, results: app.written('#source-results'), shownPage: app.state.sourcePage};
 })));
+const dialog = () => app.written('#detail-content');
+const recordDialogs = rows.map(r => { app.openRecord(r.measurement_id); return [r.measurement_id, dialog()]; });
+const dialogSources = [...new Set([...bundle.evidence.map(e => e.source_id), ...bundle.sources.slice(0, 12).map(s => s.source_id)])];
+const sourceDialogs = dialogSources.map(id => { app.openSource(id); return [id, dialog()]; });
+const aboutDialogs = [[undefined, bundle.exportedAt], ['bigquery', '2026-11-15T00:00:00.000Z'], ['cached-stale', '2026-01-02T23:59:59.999Z'], ['snapshot', '2026-11-15T12:05:09Z'], ['bigquery', 'nonsense']].map(([mode, exportedAt]) => {
+  const next = {...bundle, exportedAt, ...(mode ? {delivery: {mode}} : {})};
+  app.setData(next); app.showAbout();
+  return {mode: mode ?? null, exportedAt, html: dialog()};
+});
+app.setData(bundle);
 const metricNames = [...new Set(rows.map(r => r.metric)), 'ULOI', 'unknown <metric>'].map(metric => [metric, app.metricName(metric)]);
 const specimens = [];
 let specimenCase = 0;
@@ -94,6 +84,9 @@ const golden = {
   evidenceCases,
   sourceCases,
   metricNames,
+  recordDialogs,
+  sourceDialogs,
+  aboutDialogs,
   options: [['All', 'All evidence', 'All'], ['a"b', '<x>', 'c'], ['Moon', 'Moon', 'Moon']].map(args => [...args, app.option(...args)]),
   glossary: Object.entries(definitions).map(([key, d]) => [key, d.title, d.description]),
   terms: [...Object.keys(definitions), 'not a term', '<b>'].flatMap(key => [[key, key, false, term(key)], [key, `${key} & "label"`, false, term(key, `${key} & "label"`)], [key, 'in a button', true, term(key, 'in a button', {passive: true})]]),

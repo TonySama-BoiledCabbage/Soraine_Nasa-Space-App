@@ -264,5 +264,95 @@ pub fn source_results(bundle: &Value, rows: &[Row], query: &str, source_type: &s
         pagination(page, pages, matches.len(), "sources", "data-source-page", "sources")), page)
 }
 
+/// The detail dialog for one measurement, or `None` if the id is unknown.
+pub fn record_dialog(rows: &[Row], id: &str) -> Option<String> {
+    use crate::data::text;
+    let r = rows.iter().find(|r| r.get("measurement_id") == id)?;
+    let e = |key: &str| r.experiment_field(key);
+    let null = |key: &str| matches!(e(key), Some(Value::Null));
+    let measured = |key: &str, unit: &str| if null(key) { "Not reported".to_string() } else { format!("{}{unit}", number(e(key), 1)) };
+    let or = |key: &str, fallback: String| Some(text(e(key))).filter(|v| !v.is_empty()).unwrap_or(fallback);
+    let fields = [
+        ("Environment", text(e("gravity_label"))),
+        ("Test pressure", measured("pressure_kpa", " kPa absolute")),
+        ("Oxygen", measured("oxygen_pct", " molar %")),
+        ("Airflow", if null("flow_speed_cm_s") { or("flow_mode", "Not reported".to_string()) } else { measured("flow_speed_cm_s", " cm/s") }),
+        ("Sample", or("conditions", text(e("material")))),
+        ("Platform", or("platform", "See source".to_string())),
+        ("Test duration", measured("duration_s", " s")),
+        ("Evidence type", r.kind.name.clone()),
+    ];
+    let grid: String = fields.iter().map(|(label, value)| {
+        let shown = match *label {
+            "Evidence type" => evidence_label(r),
+            "Sample" => sample_text(value),
+            _ if value == "Microgravity" => term("microgravity", value, false),
+            _ => esc(value),
+        };
+        format!("<div><span>{}</span><b>{shown}</b></div>", field_label(label))
+    }).collect();
+    let uncertainty = if matches!(r.field("uncertainty_value"), Some(Value::Null)) { "not supplied in this record".to_string() } else {
+        let unit = match r.field("uncertainty_unit") { Some(Value::Null) => "null".to_string(), None => "undefined".to_string(), other => text(other) };
+        esc(&format!("{} {unit}", r.get("uncertainty_value")))
+    };
+    Some(format!(r##"<div class="eyebrow">EVIDENCE / {id}</div><h2 id="detail-title">{material}</h2><span class="chip {amber}">{evidence}</span><div class="record-value">{value}<small>{unit}</small></div><div class="subtle">{metric}</div><div class="detail-grid">{grid}</div><h3>Original source</h3><a class="detail-source" href="{url}" target="_blank" rel="noopener noreferrer">{title} ↗<br><small>{locator} · PDF page {page}</small></a><div class="detail-limitation"><h3>How to interpret this result</h3><p>{limitation}</p><p>Reported summary, not an independent raw trial. Uncertainty values are {uncertainty}.</p></div><p class="subtle">Gravity basis: {basis}</p><div class="detail-actions"><button class="export-btn" data-download-record="{raw_id}">{download}Download record</button></div>"##,
+        id = esc(&r.get("measurement_id")), material = esc(&text(e("material"))), amber = if r.evidence_type().starts_with("model") { "amber" } else { "" },
+        evidence = evidence_label(r), value = number(r.field("value"), 8), unit = unit_label(&r.get("unit")), metric = metric_name(r.metric()),
+        url = crate::data::safe_url(&text(r.source_field("url"))), title = esc(&text(r.source_field("title"))), locator = esc(&r.get("locator")),
+        page = Some(r.get("pdf_page")).filter(|p| !p.is_empty()).unwrap_or_else(|| "not specified".to_string()), limitation = esc(&r.get("limitation")),
+        basis = esc(&or("gravity_basis", "See the source methods.".to_string())), raw_id = r.get("measurement_id"), download = icon("download")))
+}
+
+/// The detail dialog for one source, or `None` if the id is unknown.
+pub fn source_dialog(bundle: &Value, rows: &[Row], id: &str) -> Option<String> {
+    use crate::data::text;
+    let list = |key: &str| bundle.get(key).and_then(Value::as_array).cloned().unwrap_or_default();
+    let source = list("sources").into_iter().find(|s| s.get("source_id").and_then(Value::as_str) == Some(id))?;
+    let field = |record: &Value, key: &str| text(record.get(key));
+    let statements: Vec<Value> = list("evidence").into_iter().filter(|e| e.get("source_id").and_then(Value::as_str) == Some(id)).collect();
+    let excerpts: String = statements.iter().map(|e| {
+        let (page, limitation) = (field(e, "pdf_page"), field(e, "limitation"));
+        format!(r#"<div class="source-excerpt">{}<small>{}{}</small>{}</div>"#, esc(&field(e, "statement")),
+            esc(&Some(field(e, "locator")).filter(|l| !l.is_empty()).unwrap_or_else(|| "Source text".to_string())),
+            if page.is_empty() { String::new() } else { format!(" · PDF p. {page}") },
+            if limitation.is_empty() { String::new() } else { format!("<p>{}</p>", esc(&limitation)) })
+    }).collect();
+    let date = field(&source, "publication_date");
+    Some(format!(r#"<div class="eyebrow">SOURCE / {id}</div><h2 id="detail-title">{title}</h2><p>{kind}{year}</p><a class="detail-source" href="{url}" target="_blank" rel="noopener noreferrer">Open original source ↗</a><h3>{results} extracted results · {count} evidence statements</h3>{excerpts}<p>Inclusion in the source catalogue does not mean this document contributed a measurement.</p>"#,
+        id = esc(&field(&source, "source_id")), title = esc(&Some(field(&source, "title")).filter(|t| !t.is_empty()).unwrap_or_else(|| field(&source, "source_id"))),
+        kind = esc(&field(&source, "source_type").replace('_', " ")),
+        year = if date.is_empty() { String::new() } else { format!(" · {}", esc(&date.chars().take(4).collect::<String>())) },
+        url = crate::data::safe_url(&field(&source, "url")), results = rows.iter().filter(|r| r.get("source_id") == id).count(), count = statements.len()))
+}
+
+/// `new Date(iso).toLocaleString('en-CA', {timeZone: 'UTC'})` for the ISO timestamps the bundle carries.
+pub fn locale_datetime(iso: &str) -> String {
+    let parse = || -> Option<String> {
+        let (date, time) = iso.strip_suffix('Z')?.split_once('T')?;
+        let mut ymd = date.split('-').map(|part| part.parse::<u32>().ok());
+        let (year, month, day) = (ymd.next()??, ymd.next()??, ymd.next()??);
+        let mut hms = time.split('.').next()?.split(':').map(|part| part.parse::<u32>().ok());
+        let (hour, minute, second) = (hms.next()??, hms.next()??, hms.next()??);
+        if date.len() != 10 || !(1..=12).contains(&month) || !(1..=31).contains(&day) || hour > 23 || minute > 59 || second > 59 { return None; }
+        Some(format!("{year:04}-{month:02}-{day:02}, {}:{minute:02}:{second:02} {}", if hour % 12 == 0 { 12 } else { hour % 12 }, if hour < 12 { "a.m." } else { "p.m." }))
+    };
+    parse().unwrap_or_else(|| "Invalid Date".to_string())
+}
+
+/// The "about this data" dialog. Its fixed text lives in `views_templates/about.html`.
+pub fn about_dialog(bundle: &Value) -> String {
+    let count = |key: &str| bundle.get(key).and_then(Value::as_array).map_or(0, Vec::len).to_string();
+    let delivery = match bundle.pointer("/delivery/mode").and_then(Value::as_str) {
+        Some("bigquery") => "The server reads BigQuery and caches complete results for five minutes.",
+        Some("cached-stale") => "Showing the last successful BigQuery refresh while the connection recovers.",
+        _ => "Browsing and filtering use the saved snapshot, not a live database connection.",
+    };
+    include_str!("views_templates/about.html")
+        .replace("{date}", &locale_datetime(bundle.get("exportedAt").and_then(Value::as_str).unwrap_or("")))
+        .replace("{delivery}", delivery)
+        .replace("{measurements}", &count("measurements")).replace("{experiments}", &count("experiments"))
+        .replace("{sources}", &count("sources")).replace("{evidence}", &count("evidence"))
+}
+
 /// `Value` text helper for callers that hold raw records.
 pub fn text_of(value: Option<&Value>) -> String { crate::data::text(value) }

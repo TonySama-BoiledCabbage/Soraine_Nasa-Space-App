@@ -246,3 +246,24 @@ fn compare_evidence_and_source_views_match_javascript() {
         assert_eq!(page as u64, case["shownPage"].as_u64().unwrap());
     }
 }
+
+#[test]
+fn dialogs_match_javascript() {
+    use soraine_core::views::{about_dialog, record_dialog, source_dialog};
+    let (bundle, golden) = (bundle(), golden());
+    let rows = join_research(&bundle);
+    let same = |actual: String, expected: &Value, what: String| assert!(actual == s(expected), "{what}: {}", first_difference(&actual, s(expected)));
+    let records = golden["recordDialogs"].as_array().unwrap();
+    assert_eq!(records.len(), rows.len());
+    for case in records { same(record_dialog(&rows, s(&case[0])).unwrap(), &case[1], format!("record {}", case[0])); }
+    assert!(record_dialog(&rows, "E-nope").is_none());
+    let sources = golden["sourceDialogs"].as_array().unwrap();
+    assert!(sources.len() > 12);
+    for case in sources { same(source_dialog(&bundle, &rows, s(&case[0])).unwrap(), &case[1], format!("source {}", case[0])); }
+    for case in golden["aboutDialogs"].as_array().unwrap() {
+        let mut next = bundle.clone();
+        next["exportedAt"] = case["exportedAt"].clone();
+        if let Some(mode) = case["mode"].as_str() { next["delivery"] = serde_json::json!({"mode": mode}); }
+        same(about_dialog(&next), &case["html"], format!("about {} {}", case["mode"], case["exportedAt"]));
+    }
+}
