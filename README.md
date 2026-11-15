@@ -18,6 +18,27 @@ ES modules and GLB files need a real `http://` origin, so opening `index.html` s
 | `vendor/` | three.js 0.160, GLTFLoader, cannon-es 0.20, bundled so nothing loads from a CDN |
 | `backend/` | `python -m backend check` validates data contracts. `python -m backend build <new-dir>` produces a static release (allowlisted files) |
 | `tools/blender/` | Scripts that regenerate the terrain GLBs |
+| [`contributions/hogan/`](contributions/hogan/README.md) | Shared research, Jarvis navigator prototype, scene integration guides and SI log |
+
+## Hogan: Research & Dashboard
+
+The research and dashboard contribution lives in [`contributions/hogan/`](contributions/hogan/README.md). It is a separate module that can connect to the kitchen scene's detail view.
+
+- **[Shared information](contributions/hogan/research/README.md):** one JSON and lookup adapter for both scene teams, with 89 evidence records, 22 selectable cases, 52 sources and exact material/test conditions.
+- **[Research navigator](contributions/hogan/navigator/README.md):** a runnable Jarvis-style prototype with an animated orb, Ultem Moon/Mars comparison, source links and evidence download.
+- **[Connect to this kitchen app](contributions/hogan/REPO-INTEGRATION.md):** actual file locations, scene ID mapping and same-origin deployment requirements.
+- **[Full research archive](contributions/hogan/research/archive/README.md):** Hogan, Ethan and Tony's merged research and contributor attribution.
+- **[SI log](contributions/hogan/SI-LOG.md)** and **[validation](contributions/hogan/VALIDATION.md)** record the work and completed checks.
+
+To run the navigator separately, use Node 22.12+ and pnpm:
+
+```sh
+cd contributions/hogan/navigator
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+Open http://127.0.0.1:4319. The current prototype has guided local commands and a finished Ultem comparison. The root kitchen app still runs through `start.bat` / `serve.py`; its detail panel and release build have not yet been connected to the navigator.
 
 ## Notes
 
