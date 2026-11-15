@@ -85,12 +85,25 @@ export function createGlobe(host,world){
  let orbitPhase=1.05;const placeMarker=()=>orbitMarker.position.set(Math.cos(orbitPhase)*orbitRadius,Math.sin(orbitPhase)*orbitRadius,0);placeMarker();
  scene.add(new THREE.AmbientLight(0xffffff,world==='Moon'?.065:.10));const sun=new THREE.DirectionalLight(0xfff8f0,3.1);sun.position.set(-3,1.8,2.7);scene.add(sun);const fill=new THREE.DirectionalLight(world==='Mars'?0xd49670:0xabc4e0,.08);fill.position.set(4,-1,3);scene.add(fill);
  let seed=789;const rand=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);const positions=[];for(let i=0;i<380;i++){positions.push((rand()-.5)*18,(rand()-.5)*14,-4-rand()*7)}const starsGeo=new THREE.BufferGeometry();starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xcddfff,size:.018,transparent:true,opacity:.65})));
- let paused=reduced.matches,frame=null,previous=0,drag=false,lastX=0,lastY=0,visible=true,pointer=null,zoomDistance=5.8;
+ let paused=reduced.matches,frame=null,previous=0,drag=false,lastX=0,lastY=0,visible=true,pointer=null,zoomDistance=5.8,targetDistance=5.8,resumeAt=0;
  function fitCamera(){camera.position.z=zoomDistance*Math.max(1,1/camera.aspect)}
  function resize(){if(disposed)return;const w=host.clientWidth,h=host.clientHeight;if(w<1||h<1)return;camera.aspect=w/h;fitCamera();camera.updateProjectionMatrix();renderer.setSize(w,h,false);draw()}
  function draw(){if(disposed||!initialized||!surfaceReady)return;renderer.render(scene,camera)}
- function schedule(){if(initialized&&surfaceReady&&!disposed&&visible&&!document.hidden&&!paused&&frame===null)frame=requestAnimationFrame(animate)}
- function animate(t){frame=null;if(disposed||!visible||document.hidden||paused)return;if(t-previous>=(touchDevice?42:33)){const dt=Math.min((t-previous)/1000,.05);previous=t;if(!drag){if(lab)lab.tick(dt);else{sphere.rotation.y+=dt*.025;orbitPhase=(orbitPhase+dt*.075)%(Math.PI*2);placeMarker();}draw()}}schedule()}
+ const isZooming=()=>Math.abs(targetDistance-zoomDistance)>.001;
+ function schedule(){if(initialized&&surfaceReady&&!disposed&&visible&&!document.hidden&&(!paused||isZooming())&&frame===null)frame=requestAnimationFrame(animate)}
+ function animate(t){
+  frame=null;if(disposed||!visible||document.hidden)return;
+  if(!previous)previous=t;
+  // Zoom gets up to 60 fps; quiet background rotation stays capped near 30.
+  const zooming=isZooming(),interval=zooming?1000/60:(touchDevice?42:33);
+  if(t-previous>=interval){
+   const dt=Math.min((t-previous)/1000,.05);previous=t;
+   if(zooming){zoomDistance+=(targetDistance-zoomDistance)*(1-Math.exp(-10*dt));if(!isZooming())zoomDistance=targetDistance;fitCamera()}
+   if(!paused&&!drag&&pointer===null&&t>=resumeAt){if(lab)lab.tick(dt);else{sphere.rotation.y+=dt*.06;orbitPhase=(orbitPhase+dt*.075)%(Math.PI*2);placeMarker()}}
+   draw();
+  }
+  schedule();
+ }
  function stop(){if(frame!==null)cancelAnimationFrame(frame);frame=null;previous=0}
  const visibility=()=>{if(document.hidden)stop();else schedule()};
  document.addEventListener('visibilitychange',visibility);
@@ -99,8 +112,9 @@ export function createGlobe(host,world){
  // Horizontal touch drags rotate; vertical gestures remain native page scrolling.
  const down=e=>{if(!e.isPrimary||e.button!==0)return;pointer=e.pointerId;drag=e.pointerType!=='touch';lastX=e.clientX;lastY=e.clientY;if(drag)host.setPointerCapture(e.pointerId)};
  const move=e=>{if(e.pointerId!==pointer)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;if(!drag){if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;if(Math.abs(dy)>=Math.abs(dx)){pointer=null;return}drag=true;host.setPointerCapture(e.pointerId)}group.rotation.y+=dx*.007;if(e.pointerType!=='touch')group.rotation.x=THREE.MathUtils.clamp(group.rotation.x+dy*.004,-.7,.7);lastX=e.clientX;lastY=e.clientY;draw()};
- const up=e=>{if(e.pointerId!==pointer)return;if(host.hasPointerCapture(e.pointerId))host.releasePointerCapture(e.pointerId);pointer=null;drag=false};
+ const up=e=>{if(e.pointerId!==pointer)return;if(host.hasPointerCapture(e.pointerId))host.releasePointerCapture(e.pointerId);pointer=null;drag=false;resumeAt=performance.now()+1400};
  host.addEventListener('pointerdown',down);host.addEventListener('pointermove',move);host.addEventListener('pointerup',up);host.addEventListener('pointercancel',up);host.addEventListener('lostpointercapture',up);
- const onMotion=()=>{paused=reduced.matches;if(paused)stop();else schedule();draw();host.dispatchEvent(new CustomEvent('rotationchange',{detail:paused}))};reduced.addEventListener('change',onMotion);initialized=true;if(surfaceReady){host.dataset.globeState='ready';host.setAttribute('aria-busy','false')}resize();schedule();
- return {get paused(){return paused},set paused(value){paused=value;if(paused)stop();else schedule();draw()},zoom(amount){zoomDistance=THREE.MathUtils.clamp(zoomDistance+amount,4.3,7.8);fitCamera();draw()},reset(){group.rotation.set(0,0,lab?0:.15);lab?.reset();zoomDistance=5.8;fitCamera();draw()},dispose(){disposed=true;stop();observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);scene.traverse(obj=>{obj.geometry?.dispose();if(obj.material)obj.material.dispose()});textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss()}};
+ function moveCamera(){if(reduced.matches){zoomDistance=targetDistance;fitCamera();draw()}else schedule()}
+ const onMotion=()=>{paused=reduced.matches;stop();moveCamera();draw();host.dispatchEvent(new CustomEvent('rotationchange',{detail:paused}))};reduced.addEventListener('change',onMotion);initialized=true;if(surfaceReady){host.dataset.globeState='ready';host.setAttribute('aria-busy','false')}resize();schedule();
+ return {get paused(){return paused},set paused(value){paused=!!value;stop();schedule();draw()},zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,4.3,7.8);moveCamera()},reset(){group.rotation.set(0,0,lab?0:.15);lab?.reset();targetDistance=5.8;moveCamera();draw()},dispose(){disposed=true;stop();observer.disconnect();intersection.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',onMotion);host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);scene.traverse(obj=>{obj.geometry?.dispose();if(obj.material)obj.material.dispose()});textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss()}};
 }

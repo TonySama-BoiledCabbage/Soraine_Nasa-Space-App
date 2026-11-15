@@ -84,3 +84,11 @@ The initial Earth audit found that its atmosphere rendered before the surface te
 The overview's selected evidence shows the two displayed oxygen-limit records. Other results remain in the Evidence view. Narrow and short windows keep a scrolling layout, and compact-height evidence records use a shared row. Comparison labels were spaced apart and sized for the narrower research column.
 
 Validation: all 27 existing automated checks passed. Browser review confirmed that the 1920 by 1080 overview shows the planet, material viewer, limits, comparison, source records and counts without page or analysis-column scrolling. Checked the 1440 by 900 layout, narrow-window chart readability and a 390px layout with no horizontal overflow. Earth, Moon, Mars and the microgravity scene rendered. A forced Earth-image failure displayed retry, and retry recovered while rotation was paused. The texture upgrade releases the previous GPU allocation when image dimensions change, fixing the lab's placeholder-to-Earth upload as well as the detailed Earth upgrade.
+
+## 2026-11-15: Gentle rotation and smooth zoom
+
+At Hogan's request, Codex made the planets and material specimens rotate slowly by default. Planet rotation is 0.06 radians per second; material rotation is 0.08. Each viewer has a pause control. Manual inspection briefly holds the rotation, and the material pause state survives sample changes. Hidden and offscreen views stop their animation work. Reduced-motion preferences start both viewers paused.
+
+Planet zoom now eases toward a bounded target at up to 60 frames per second. Repeated clicks accumulate against that target, and zoom keeps working while rotation is paused. Material zoom also eases, while quiet rotation stays near 30 frames per second. Reduced-motion zoom changes the view directly. Research numbers and data connections are unchanged.
+
+Validation: all 27 automated checks passed. Browser instrumentation confirmed continuous rotation in both viewers, 34 distinct planet-camera distances during one zoom, no overshoot, accumulated zoom limits, zoom while paused, retained material pause state, two retained canvases and reduced-motion controls. Material lifecycle checks covered drag cooldown, offscreen and hidden states, preference changes and disposal.

@@ -6,20 +6,42 @@ const NAMES=new Set(['Ultem 1000','Mylar G','Nomex HT90-40']);
 export function createMaterialModel(host,initialMaterial){
  if(!host||!NAMES.has(initialMaterial))throw Error('Unsupported specimen');
  const fallbackNodes=[...host.childNodes];
- let renderer,environment,resizeObserver,intersectionObserver,frame=null,disposed=false,visible=true;
+ let renderer,environment,resizeObserver,intersectionObserver,frame=null,resumeTimer=null,disposed=false,visible=true;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let paused=reduced.matches,holdUntil=0,lastRender=0,dirty=true;
  const controller=new AbortController(),geometries=new Set(),materials=new Set(),textures=new Set(),models=new Map();
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.05,30),turntable=new THREE.Group();
- let distance=4.05,pointer=null,dragging=false,lastX=0,lastY=0;
+ let distance=4.05,targetDistance=4.05,pointer=null,dragging=false,lastX=0,lastY=0;
  const geometry=value=>(geometries.add(value),value),finish=value=>(materials.add(value),value),texture=value=>(textures.add(value),value);
  const listen=(target,event,callback,options={})=>target.addEventListener(event,callback,{...options,signal:controller.signal});
 
- function draw(){frame=null;if(!disposed&&visible&&!document.hidden)renderer.render(scene,camera);}
- function requestDraw(){if(!disposed&&visible&&!document.hidden&&frame===null)frame=requestAnimationFrame(draw);}
- function stop(){if(frame!==null)cancelAnimationFrame(frame);frame=null;}
+ const zooming=()=>Math.abs(targetDistance-distance)>.002;
+ const rotating=now=>!paused&&!dragging&&pointer===null&&now>=holdUntil;
+ function schedule(){
+  if(disposed||!visible||document.hidden)return;
+  const now=performance.now();
+  if(frame===null&&(dirty||zooming()||rotating(now)))frame=requestAnimationFrame(draw);
+  else if(frame===null&&!paused&&!dragging&&pointer===null&&holdUntil>now&&resumeTimer===null)resumeTimer=setTimeout(()=>{resumeTimer=null;schedule();},holdUntil-now+8);
+ }
+ function draw(now){
+  frame=null;if(disposed||!visible||document.hidden)return;
+  // A single shared loop renders at most 30 fps unless a direct input needs a frame.
+  if(dirty||now-lastRender>=1000/30){
+   const dt=lastRender?Math.min((now-lastRender)/1000,.08):1/30;lastRender=now;
+   if(rotating(now))turntable.rotation.y+=dt*.08;
+   if(zooming()){distance=reduced.matches?targetDistance:THREE.MathUtils.lerp(distance,targetDistance,1-Math.exp(-dt*13));if(Math.abs(targetDistance-distance)<=.002)distance=targetDistance;fit();}
+   renderer.render(scene,camera);dirty=false;
+  }
+  schedule();
+ }
+ function requestDraw(){dirty=true;schedule();}
+ function stop(){if(frame!==null)cancelAnimationFrame(frame);if(resumeTimer!==null)clearTimeout(resumeTimer);frame=resumeTimer=null;lastRender=0;}
+ function inspect(){holdUntil=performance.now()+2200;requestDraw();}
+ function setPaused(value){paused=Boolean(value);stop();if(!paused)holdUntil=0;requestDraw();host.dispatchEvent(new CustomEvent('materialrotationchange',{detail:paused}));}
  function fit(){camera.position.set(0,.08,distance*Math.max(1,1.25/camera.aspect));camera.lookAt(0,0,0);camera.updateProjectionMatrix();}
  function resize(){if(disposed)return;const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;camera.aspect=width/height;fit();renderer.setSize(width,height,false);requestDraw();}
- function reset(){turntable.rotation.set(-.43,-.48,-.18);distance=3.85;fit();requestDraw();}
- function zoom(amount){if(!Number.isFinite(amount))return;distance=THREE.MathUtils.clamp(distance+amount,2.65,6.5);fit();requestDraw();}
+ function reset(manual=true){turntable.rotation.set(-.43,-.48,-.18);distance=targetDistance=3.85;fit();if(manual)inspect();else requestDraw();}
+ function zoom(amount){if(!Number.isFinite(amount))return;targetDistance=THREE.MathUtils.clamp(targetDistance+amount,2.65,6.5);inspect();}
 
  function dispose(){
   if(disposed)return;disposed=true;stop();controller.abort();resizeObserver?.disconnect();intersectionObserver?.disconnect();
@@ -128,17 +150,17 @@ export function createMaterialModel(host,initialMaterial){
   const floor=new THREE.Mesh(geometry(new THREE.PlaneGeometry(20,20)),finish(new THREE.MeshStandardMaterial({color:0x080b10,roughness:.95,metalness:0})));floor.rotation.x=-Math.PI/2;floor.position.y=-.78;scene.add(floor);
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=128;const shadowContext=shadowCanvas.getContext('2d'),gradient=shadowContext.createRadialGradient(64,64,5,64,64,64);gradient.addColorStop(0,'rgba(0,0,0,.65)');gradient.addColorStop(1,'rgba(0,0,0,0)');shadowContext.fillStyle=gradient;shadowContext.fillRect(0,0,128,128);
   const shadow=new THREE.Mesh(geometry(new THREE.PlaneGeometry(3.7,1.35)),finish(new THREE.MeshBasicMaterial({map:texture(new THREE.CanvasTexture(shadowCanvas)),transparent:true,depthWrite:false})));shadow.rotation.x=-Math.PI/2;shadow.position.set(0,-.776,.04);scene.add(shadow);
-  setMaterial(initialMaterial);reset();resize();stop();renderer.render(scene,camera);
+  setMaterial(initialMaterial);reset(false);resize();stop();renderer.render(scene,camera);dirty=false;
   // Retain the supplied SVG fallback if setup or the first GPU render throws.
   host.replaceChildren(renderer.domElement);
 
-  listen(host,'pointerdown',event=>{if(!event.isPrimary||event.button!==0)return;pointer=event.pointerId;dragging=event.pointerType!=='touch';lastX=event.clientX;lastY=event.clientY;if(dragging)host.setPointerCapture(pointer);});
+  listen(host,'pointerdown',event=>{if(!event.isPrimary||event.button!==0)return;pointer=event.pointerId;dragging=event.pointerType!=='touch';lastX=event.clientX;lastY=event.clientY;stop();if(dragging)host.setPointerCapture(pointer);});
   listen(host,'pointermove',event=>{
    if(event.pointerId!==pointer)return;const dx=event.clientX-lastX,dy=event.clientY-lastY;
-   if(!dragging){if(Math.max(Math.abs(dx),Math.abs(dy))<7)return;if(Math.abs(dy)>=Math.abs(dx)){pointer=null;return;}dragging=true;host.setPointerCapture(pointer);}
+   if(!dragging){if(Math.max(Math.abs(dx),Math.abs(dy))<7)return;if(Math.abs(dy)>=Math.abs(dx)){pointer=null;inspect();return;}dragging=true;host.setPointerCapture(pointer);}
    turntable.rotation.y+=dx*.009;turntable.rotation.x=THREE.MathUtils.clamp(turntable.rotation.x+dy*.007,-1.25,1.25);lastX=event.clientX;lastY=event.clientY;requestDraw();
   });
-  const release=event=>{if(event.pointerId!==pointer)return;if(host.hasPointerCapture(pointer))host.releasePointerCapture(pointer);pointer=null;dragging=false;};
+  const release=event=>{if(event.pointerId!==pointer)return;const released=pointer;pointer=null;dragging=false;if(host.hasPointerCapture(released))host.releasePointerCapture(released);inspect();};
   for(const event of ['pointerup','pointercancel','lostpointercapture'])listen(host,event,release);
   listen(host,'keydown',event=>{
    if(event.ctrlKey||event.metaKey||event.altKey)return;
@@ -149,11 +171,13 @@ export function createMaterialModel(host,initialMaterial){
    else if(['+','='].includes(event.key))zoom(-.35);
    else if(event.key==='-')zoom(.35);
    else if(event.key==='Home')reset();else return;
-   event.preventDefault();event.stopPropagation();requestDraw();
+   event.preventDefault();event.stopPropagation();inspect();
   });
+  listen(reduced,'change',()=>{if(reduced.matches){distance=targetDistance;fit();}setPaused(reduced.matches);});
   listen(document,'visibilitychange',()=>{if(document.hidden)stop();else requestDraw();});
   resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);
   intersectionObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)requestDraw();else stop();});intersectionObserver.observe(host);
-  return {setMaterial,zoom,reset,dispose};
+  schedule();
+  return {setMaterial,zoom,reset,dispose,get paused(){return paused},set paused(value){setPaused(value)}};
  }catch(error){dispose();host.replaceChildren(...fallbackNodes);throw error;}
 }

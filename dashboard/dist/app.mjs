@@ -62,8 +62,8 @@ function renderEvidenceRows(){const matches=matchingRows(),size=10,pages=Math.ma
 function sourceView(){return `<div class="view-title-row"><div><div class="eyebrow">SOURCE LIBRARY</div><h2>From the archive to the evidence.</h2><p>${number(bundle.tableCounts.sources,0)} indexed sources. Open the original research and see which documents have extracted results.</p></div></div><div class="pill-row"><span class="stat-pill"><strong>${number(bundle.tableCounts.raw_records,0)}</strong>raw records catalogued</span><span class="stat-pill"><strong>${number(bundle.tableCounts.files,0)}</strong>file metadata entries</span><span class="stat-pill"><strong>${bundle.evidence.length}</strong>supporting evidence statements</span></div><div class="filterbar"><label>${icon('search')}<input id="source-search" value="${esc(state.sourceQuery)}" placeholder="Search titles, source IDs or DOI" aria-label="Search sources"></label><label>Collection<select id="source-type" aria-label="Filter source collection">${['All',...new Set(bundle.sources.map(s=>s.source_type))].map(v=>option(v,v==='All'?'All collections':v.replaceAll('_',' '),state.sourceType)).join('')}</select></label></div><section class="panel"><div id="source-results"></div></section><p class="browser-legend">Catalogue totals describe indexed records. They do not imply that every file was downloaded or that every source supplied quantitative data.</p>`}
 function renderSources(){const query=state.sourceQuery.toLowerCase().trim(),matches=bundle.sources.filter(s=>(state.sourceType==='All'||s.source_type===state.sourceType)&&[s.title,s.source_id,s.doi].join(' ').toLowerCase().includes(query));const size=10,pages=Math.max(1,Math.ceil(matches.length/size));state.sourcePage=Math.min(state.sourcePage,pages-1);document.querySelector('#source-results').innerHTML=matches.length?`<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Source / title</th><th>Collection</th><th>Year</th><th>Extracted results</th><th></th></tr></thead><tbody>${matches.slice(state.sourcePage*size,(state.sourcePage+1)*size).map(s=>`<tr><td><a class="source-title" href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title||s.source_id)}</a><span class="table-sub mono">${esc(s.source_id)}</span></td><td>${esc(s.source_type.replaceAll('_',' '))}</td><td>${s.publication_date?esc(s.publication_date.slice(0,4)):'—'}</td><td>${rows.filter(r=>r.source_id===s.source_id).length||'—'}</td><td><button class="icon-btn" data-source="${esc(s.source_id)}" aria-label="Details for ${esc(s.title||s.source_id)}">${icon('info')}</button></td></tr>`).join('')}</tbody></table></div><div class="pagination"><span>${state.sourcePage*size+1}–${Math.min((state.sourcePage+1)*size,matches.length)} of ${matches.length} sources</span><div><button data-source-page="-1" ${state.sourcePage===0?'disabled':''} aria-label="Previous sources page">←</button><span>${state.sourcePage+1} / ${pages}</span><button data-source-page="1" ${state.sourcePage===pages-1?'disabled':''} aria-label="Next sources page">→</button></div></div>`:`<div class="empty"><strong>No matching sources</strong>Try a shorter search.</div>`;labelTableCells();}
 function syncRotationButton(){const button=document.querySelector('#rotate-toggle');if(!button||!globe)return;button.innerHTML=icon(globe.paused?'play':'pause');button.setAttribute('aria-label',globe.paused?'Resume rotation':'Pause rotation');button.title=button.getAttribute('aria-label')}
-function disposeMaterialView(){const previous=materialView;materialView=null;previous?.api?.dispose();}
-function syncMaterialControls(){view.querySelectorAll('[data-material-action]').forEach(button=>{button.disabled=!materialView?.api;});}
+function disposeMaterialView(){const previous=materialView;materialView=null;previous?.host.removeEventListener('materialrotationchange',syncMaterialControls);previous?.api?.dispose();}
+function syncMaterialControls(){view.querySelectorAll('[data-material-action]').forEach(button=>{const api=materialView?.api;button.disabled=!api;if(button.dataset.materialAction==='rotate-toggle'){const paused=api?.paused??true;button.innerHTML=icon(paused?'play':'pause');button.setAttribute('aria-label',paused?'Resume material rotation':'Pause material rotation');button.title=button.getAttribute('aria-label');}});}
 view.addEventListener('click',event=>{
  // Exploring a specimen never opens the separate source-record button.
  if(event.target.closest('[data-material-model]')){event.stopPropagation();return;}
@@ -72,6 +72,7 @@ view.addEventListener('click',event=>{
  const action=button.dataset.materialAction;
  if(action==='zoom-in')materialView?.api?.zoom(-.35);
  else if(action==='zoom-out')materialView?.api?.zoom(.35);
+ else if(action==='rotate-toggle'&&materialView?.api)materialView.api.paused=!materialView.api.paused;
  else if(action==='reset')materialView?.api?.reset();
 });
 async function syncMaterialView(host){
@@ -82,6 +83,7 @@ async function syncMaterialView(host){
  }
  disposeMaterialView();
  const instance={host,material:state.material,api:null,pending:null};materialView=instance;
+ host.addEventListener('materialrotationchange',syncMaterialControls);
  const current=()=>materialView===instance&&state.view==='overview'&&host.isConnected;
  host.dataset.modelState='loading';syncMaterialControls();
  instance.pending=(async()=>{
