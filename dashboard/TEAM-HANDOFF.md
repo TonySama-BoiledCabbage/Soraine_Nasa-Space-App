@@ -62,3 +62,6 @@ The reusable data functions are in `dist/data.mjs`: `joinResearch`, `filterRows`
 Run `node server/index.mjs` and open `http://localhost:4335`. Local development uses the bundled snapshot. Run `node --test test/*.test.mjs` before a PR. Browser checks live in `test/browser.mjs` and use Playwright with an isolated Chrome profile.
 
 GitHub deployment uses Workload Identity Federation restricted to this exact repository, `main`, and the dashboard workflow. Pull requests run tests but cannot obtain deployment credentials. Cloud Run scales to zero when idle and has a maximum of two instances. Hosting, builds and database usage can incur Google Cloud charges.
+## Compact overview layout
+
+The desktop overview is styled by `dist/command-deck.css`, loaded after the existing stylesheets. Its structural wrappers are `mission-overview`, `focus-inspector-grid` and `mission-evidence` in `dist/app.mjs`. It shares the same renderers, data state, source dialogs and scene links. Use the existing action attributes when connecting scene controls; the layout does not introduce a second state model.

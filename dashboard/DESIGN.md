@@ -47,3 +47,10 @@ Ethan's standalone prototype informed direct research navigation and plain-langu
 The layout study used [The Bluejack Group Dashboard on Awwwards](https://www.awwwards.com/sites/the-bluejack-group-dashboard), particularly its open metric columns and fine rules. [Anthropic’s frontend design article](https://claude.com/resources/articles/improving-frontend-design-through-skills) informed the emphasis on intentional typography, hierarchy and restrained motion. No reference artwork was copied.
 
 The site remains JavaScript, Three.js, HTML and CSS with a Node backend. This pass reduces texture transfer, renderer churn and unnecessary animation. A Rust/Wasm module should be considered only for a measured CPU bottleneck, with a benchmark and an explicit data contract. It would not replace Three.js rendering or improve texture downloads by itself.
+## Compact desktop overview
+
+The overview uses a 60/40 composition on desktop windows at least 1100px wide and 760px tall. The planet, headline and archive counts occupy the open left stage. The right column keeps material inspection, oxygen limits, test conditions, gravity comparison and source records together. At 1080p, the core overview fits without page scrolling. Shorter or narrower windows retain normal scrolling; the analysis column can also scroll when needed for larger text.
+
+The HUD reference informs the blue orbit guides, thin connectors and aligned labels. It does not add simulated telemetry, glass-card grids or extra animation. Counts retain their database meanings: reported results, experiment contexts, sources and file catalogue entries.
+
+`dist/command-deck.css` scopes the compact layout to the overview. The complete Compare, Evidence, Original data and Sources views remain available. Earth first loads the existing lightweight NASA texture and then upgrades its detail; loading and retry states keep missing imagery from appearing as a finished globe.
