@@ -19,25 +19,33 @@ The public backend reads only `sources`, `experiments`, `measurements`, and `evi
 
 ## Connect a Moon or Mars scene
 
-Open the dashboard with an environment and optional material:
+Use the shared helper from either scene. Copy or import this module with `data.mjs` from the same directory:
 
 ```js
-const url = new URL('https://soraine-dashboard-334840303039.us-central1.run.app');
-url.searchParams.set('world', 'moon'); // earth, moon, mars, iss, microgravity
-url.searchParams.set('material', 'Ultem 1000');
-url.hash = 'compare'; // overview, compare, evidence, sources
-window.open(url, '_blank', 'noopener');
+import {researchUrl} from './dashboard/dist/scene-link.mjs';
+
+// Run from a user click on the selected material's “View research” control.
+window.open(researchUrl({
+  world: 'moon', // earth, moon, mars, iss, microgravity
+  material: 'Ultem 1000', // Ultem 1000, Mylar G, Nomex HT90-40
+  view: 'compare' // overview, compare, evidence, sources
+}), '_blank', 'noopener');
 ```
 
 For a local scene, link to `dashboard/dist/` when serving the complete repository statically. Static hosting reads the saved research JSON; Cloud Run provides `/api/research`. Do not place Google credentials in scene JavaScript.
 
-The reusable data functions are in `dist/data.mjs`: `joinResearch`, `filterRows`, `getLimits`, and `comparisonRows`. Environment selection describes experimental gravity; it does not automatically set a cabin's pressure or oxygen fraction.
+For an exact result, add `record: 'E014'`. Its source-and-conditions drawer opens on arrival. With `view: 'evidence'`, the supplied environment and material also filter the table. Use the same helper with `world: 'mars'` for Johnson's scene. The helper accepts an optional second argument for a local dashboard base URL.
+
+The inspected `models-only` and `physics-integration` branches in Ethan's repository use `kitchen/pages.js` for the detail panel and `selectScenario()` in `kitchen/main.js` for scene selection. Wire a normal link or click handler into that detail panel using `this.scenario.slug` as the environment. Keep the material tied to a real experimental sample; a kitchen object such as a spoon is not automatically an Ultem sample. These branches have been inspected, not merged into this contribution.
+
+The reusable data functions are in `dist/data.mjs`: `joinResearch`, `filterRows`, `getLimits`, and `comparisonRows`. Environment selection describes experimental gravity; it does not automatically set a cabin's pressure or oxygen fraction. No Google login or database credentials are needed by the scene renderer.
 
 ## Module ownership
 
 | Work | Files |
 |---|---|
-| Dashboard layout, navigation and panels | `dist/app.mjs`, `dist/styles.css`, `dist/index.html` |
+| Research layout, navigation and details | `dist/app.mjs`, `dist/observatory.css`, `dist/observatory-responsive.css`, `dist/index.html` |
+| Scene links and brand rules | `dist/scene-link.mjs`, `DESIGN.md` |
 | Planet rendering and shaders | `dist/globe.mjs`, `dist/planet-materials.mjs` |
 | Research filtering and comparison | `dist/data.mjs` |
 | Public data contract, caching and API | `server/research.mjs`, `server/index.mjs` |

@@ -38,11 +38,19 @@ const server=http.createServer(async(req,res)=>{
     // Restrict serving to public assets, never repository, cloud config or source.
     let file=resolve(root,'.'+pathname);
     if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403).end();return;}
-    if((await stat(file)).isDirectory()) file=resolve(file,'index.html');
-    const body=await readFile(file);
-    res.writeHead(200,{'Content-Type':types[extname(file)]||'application/octet-stream','Cache-Control':'public, max-age=0, must-revalidate'});
-    res.end(req.method==='HEAD'?undefined:body);
+    let info=await stat(file);
+    if(info.isDirectory()){file=resolve(file,'index.html');info=await stat(file);}
+    const etag='W/"'+info.size.toString(16)+'-'+Math.trunc(info.mtimeMs).toString(16)+'"';
+    const stableAsset=/\.(png|jpg|webp|woff2|svg)$/.test(file);
+    res.setHeader('Cache-Control',stableAsset?'public, max-age=3600':'public, max-age=0, must-revalidate');
+    res.setHeader('ETag',etag);
+    if((req.headers['if-none-match']||'').split(',').map(v=>v.trim()).includes(etag)){res.writeHead(304).end();return;}
+    res.setHeader('Content-Type',types[extname(file)]||'application/octet-stream');
+    res.setHeader('Content-Length',info.size);
+    res.writeHead(200);
+    res.end(req.method==='HEAD'?undefined:await readFile(file));
   }catch{res.writeHead(404,{'Content-Type':'text/plain'}).end('Not found');}
 });
+export {server};
 server.listen(Number(process.env.PORT||4335),'0.0.0.0',()=>console.log('Soraine dashboard ready'));
 process.on('SIGTERM',()=>server.close());

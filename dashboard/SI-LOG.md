@@ -33,3 +33,15 @@ Hogan paused mobile work and requested planetary models that match the Earth's v
 Codex identified that the earlier Mars Trek layer returned grayscale imagery despite its catalogue title. Replaced it with the 4K Viking VIS / MDIM 2.1 color mosaic. Updated the Moon with NASA's 4K LROC color map and normal shading derived from LOLA elevation, using spherical pixel spacing and the lunar reference radius. Added rough, nonmetallic surface materials, directional sunlight and subdued fill, and framed the familiar lunar near side and Martian canyon region. The Earth shader and the research values remain unchanged. No AI-generated surface imagery was used.
 
 An isolated browser rendered Earth, Moon and Mars without shader or asset errors, verified their zoom controls, and captured the updated models for visual review. The existing dashboard regression checks also passed before deployment.
+
+## 2026-11-14: Soraine redesign and automatic phone layout
+
+Hogan requested a cleaner design informed by Awwwards and Claude's design guidance, with no card grid, recognizable material icons and continued focus on the complete Soraine experience. Hogan also asked for automatic fitting to phone screens.
+
+Codex studied The Bluejack Group Dashboard on Awwwards and Anthropic's frontend design article. Replaced the boxed layout with open sections, thin rules, larger typography, a single planetary view and adjacent material results. Added original inline SVG material icons and a responsive bottom navigation. The layout responds to available viewport width; users do not choose a device resolution.
+
+Kept JavaScript and Three.js. Reduced phone texture transfer with WebP derivatives, retained the planet renderer when changing materials, stopped animation when hidden or offscreen, and respected reduced-motion preferences. Added conditional HTTP caching and body-free HEAD responses. The mobile Moon image pair is 876,318 bytes versus 12,133,962 bytes for the detailed pair. This is a byte comparison, not a measured frame-rate improvement.
+
+Inspected Ethan's models-only and physics-integration branches and added a shared scene-link helper with environment, material, research view and optional evidence record. Documented where the link fits into the scene's existing information panel. No teammate scene branch was merged or rewritten. Research values, evidence classifications, source links and scientific limitations were preserved.
+
+Validation: fourteen data, backend, HTTP and scene-link tests passed. Browser checks verified the rendered planets, exact Ultem comparisons, evidence filters, source search, record conditions, CSV export, empty states, pagination, global search, reduced motion, narrow responsive layouts and direct evidence links. DOM identity checks confirmed that material changes retain the same planet canvas. No uncaught browser errors were observed. The desktop and narrow-screen layouts were visually reviewed, and temporary viewport and reduced-motion overrides were reset.

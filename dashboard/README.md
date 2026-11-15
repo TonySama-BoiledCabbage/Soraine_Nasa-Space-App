@@ -2,7 +2,7 @@
 
 [Open the public dashboard](https://soraine-dashboard-334840303039.us-central1.run.app) · [Team handoff](TEAM-HANDOFF.md) · [Image credits](ASSET-CREDITS.md)
 
-A JavaScript / Three.js research dashboard for Flame in Freefall. It combines NASA planetary imagery, material comparisons across four gravity contexts, searchable measurements and sources, and CSV/JSON exports.
+A JavaScript / Three.js research interface for Flame in Freefall. It combines NASA planetary imagery, material comparisons across four gravity contexts, searchable measurements and sources, and CSV/JSON exports. Open sections, thin dividers and material icons connect the research to Soraine's visual world. The [design guide](DESIGN.md) documents the shared direction.
 
 ## Run and test
 
@@ -34,4 +34,4 @@ The [team handoff](TEAM-HANDOFF.md) gives module locations, scene URL parameters
 
 ## Credits
 
-Research contributors: Hogan, Ethan and Tony / Team Soraine. Visual composition is inspired by Fuselab Creative's CyberDefend. The planet lighting references the Three.js Earth example, implemented in WebGL for broad device support. Earth, Moon and Mars maps come from NASA sources; full credits and endpoints are in [ASSET-CREDITS.md](ASSET-CREDITS.md). Three.js's MIT license is included in `dist/vendor/`. The SI assistance record is in [SI-LOG.md](SI-LOG.md).
+Research contributors: Hogan, Ethan and Tony / Team Soraine. The current layout study references The Bluejack Group Dashboard on Awwwards. The planet lighting references the Three.js Earth example, implemented in WebGL for broad device support. Earth, Moon and Mars maps come from NASA sources; full credits and endpoints are in [ASSET-CREDITS.md](ASSET-CREDITS.md). Three.js's MIT license is included in `dist/vendor/`. The SI assistance record is in [SI-LOG.md](SI-LOG.md).
