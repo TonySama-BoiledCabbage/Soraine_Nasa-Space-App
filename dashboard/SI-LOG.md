@@ -134,3 +134,11 @@ At Hogan's request, Codex added a blurred startup overlay with preparation progr
 Mobile world selection, expandable controls and bottom navigation occupy separate rows. The control panel scrolls within short viewports. Scientific bindings and simulation rules remain unchanged.
 
 Validation: local Node tests and syntax checks passed; PR #4 passed both GitHub workflows and Vercel deployment. Chromium checks at 390 px width, including a 500 px tall viewport, showed the overhead pan and separate controls without horizontal overflow. Production displayed the preparation progress, opened on Earth from a Mars URL and switched to the prepared Moon scene. Phone hardware frame rates were not measured.
+
+## 2026-11-15: Clear the view before scene actions
+
+At Hogan's request, Codex replaced the scene's small control list with a blue lab drawer, grouped action buttons, a separate readout and a camera control. The drawer fades away before the original action handler runs, so short egg and flame animations remain visible. Closing restores keyboard focus; hidden controls are inert. Action feedback remains below the scene rather than inside the closed drawer. The drawer scrolls on short mobile screens.
+
+Startup now also renders particles, outlines, full-resolution depth/transition buffers, screen-output shader variants and object inspection lighting behind the loading overlay. GPU uploads finish before interaction is enabled. This moves first-use work into preparation; ongoing frame rate still depends on the device and scene workload. Scientific values and simulation rules were not changed.
+
+A blue Soraine QR code links to https://soraine.vercel.app/. The final branded PNG decoded correctly at 1100, 440 and 330 pixels wide using OpenCV. PNG and SVG are in dist/assets/brand. Validation: 31 Node tests and JavaScript syntax checks passed. Chromium checks confirmed the flip handler ran once after the drawer reached zero opacity, with no horizontal overflow at 390 and 320 pixels. At 320 x 568, the drawer stays above the bottom navigation and scrolls to its remaining controls.

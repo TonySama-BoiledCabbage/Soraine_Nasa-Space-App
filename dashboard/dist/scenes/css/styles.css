@@ -213,3 +213,37 @@ button.face:focus-visible { outline: 2px solid #5aa8ff; outline-offset: -4px; }
  .info { position:absolute; bottom:76px; left:16px; right:16px; max-height:45dvh; overflow:auto; }.info .line { font-size:14px; }
  .viewcube { position:absolute; top:64px; right:14px; }.is-inspect .controls-toggle { display:none; }
 }
+
+/* One compact lab drawer, with the animation visible after each action. */
+.controls-toggle { display:block; position:absolute; top:max(var(--pad), env(safe-area-inset-top)); right:max(var(--pad), env(safe-area-inset-right)); min-height:42px; padding:9px 16px; font:500 14px/1.2 "Jost",sans-serif; color:#e8f5ff; background:rgba(7,20,37,.88); border:1px solid #3187bf; border-radius:12px; cursor:pointer; }
+.controls-toggle[aria-expanded=true] { background:#103654; border-color:#56bfff; }
+.side { display:flex; left:auto; top:calc(max(var(--pad), env(safe-area-inset-top)) + 54px); right:max(var(--pad), env(safe-area-inset-right)); width:340px; max-height:calc(100dvh - 160px); padding:20px; gap:12px; z-index:5; border:1px solid rgba(72,177,255,.35); border-radius:18px; background:linear-gradient(145deg,rgba(13,31,52,.97),rgba(4,12,24,.96)); box-shadow:0 18px 50px #0005; text-shadow:none; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#365d7d transparent; opacity:0; visibility:hidden; transform:translateY(-8px) scale(.98); transform-origin:top right; pointer-events:none; transition:opacity 180ms ease,transform 180ms ease,visibility 180ms; }
+.controls-open .side { display:flex; opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+.controls-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.controls-eyebrow { color:#50baff; font-size:10px; letter-spacing:.18em; font-weight:600; }
+.controls-heading h2 { margin:4px 0 0; font-size:24px; font-weight:500; letter-spacing:-.02em; }
+#controls-close { width:40px; height:40px; flex-shrink:0; border:1px solid #38536c; border-radius:50%; color:#dcefff; background:#ffffff06; font:24px/1 sans-serif; cursor:pointer; }
+.controls-hint { font-size:13px; line-height:1.5; color:#a9bed3; }
+.side .lab { order:3; padding:12px 0 0; border:0; border-top:1px solid #ffffff1c; border-radius:0; background:none; box-shadow:none; backdrop-filter:none; text-shadow:none; }
+.side .lab summary { font-size:13px; color:#b5cce1; }
+.side .quick { padding:0; border:0; background:none; backdrop-filter:none; box-shadow:none; text-shadow:none; }
+.quick .valve { display:flex; justify-content:space-between; gap:12px; font-size:14px; }
+.quick .valve output { color:#62c6ff; font-variant-numeric:tabular-nums; }
+.quick input[type=range] { height:28px; margin:4px 0; accent-color:#2baaff; }
+.control-group-title { margin:14px 0 8px; color:#9fb9d0; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:.12em; }
+.quick .action-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:0; }
+.quick .action-grid button { display:flex; gap:10px; align-items:center; min-height:46px; padding:10px 12px; font-size:14px; text-align:left; border-color:#72b9ed30; background:#3996db0c; border-radius:10px; transition:background 120ms ease,border-color 120ms ease; }
+.quick .action-grid button span { color:#50baff; font-size:21px; line-height:1; width:19px; text-align:center; }
+.quick .action-grid button:hover { border-color:#63c3ff99; background:#319be322; }
+.quick .fall { grid-column:1/-1; font-size:12px; color:#9fb9d0; }
+.quick .camera-action { width:100%; margin-top:14px; min-height:44px; font-size:13px; color:#b9ddff; background:transparent; border-color:#5a9ed445; }
+.side button:focus-visible,.controls-toggle:focus-visible { outline:2px solid #63c3ff; outline-offset:3px; }
+.scene-feedback { position:absolute; bottom:78px; left:50%; transform:translateX(-50%); width:max-content; max-width:min(420px,calc(100% - 32px)); padding:9px 14px; border:1px solid #539ed440; border-radius:10px; background:rgba(5,16,29,.9); color:#d6ecff; font-size:13px; line-height:1.4; text-align:center; pointer-events:none; }
+.scene-feedback:empty { display:none; }
+.stage:has(.scene-feedback:not(:empty)) .hero { display:none; }
+.is-inspect .controls-toggle,.is-inspect .scene-feedback,.is-about .scene-feedback,.is-detail .scene-feedback { display:none; }
+@media(max-width:900px) {
+ .controls-toggle { top:10px; right:14px; }
+ .side { top:116px; right:14px; left:14px; width:auto; max-height:calc(100dvh - 185px); padding:16px; }
+}
+@media(prefers-reduced-motion:reduce) { .side { transition:none; } }
