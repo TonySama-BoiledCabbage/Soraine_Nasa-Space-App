@@ -34,4 +34,6 @@ The [team handoff](TEAM-HANDOFF.md) gives module locations, scene URL parameters
 
 ## Credits
 
+The music button in the header opens the optional original soundtrack, **Quiet Orbit**, with play/pause, mute and volume controls. It does not autoplay or download audio on initial page load. Playback continues while navigating research views. The original score and synthesizer are reproducible with `scripts/compose-observatory.py` (Python and NumPy); provenance is in `dist/assets/audio/README.md`.
+
 Research contributors: Hogan, Ethan and Tony / Team Soraine. The current layout study references The Bluejack Group Dashboard on Awwwards. The planet lighting references the Three.js Earth example, implemented in WebGL for broad device support. Earth, Moon and Mars maps come from NASA sources; full credits and endpoints are in [ASSET-CREDITS.md](ASSET-CREDITS.md). Three.js's MIT license is included in `dist/vendor/`. The SI assistance record is in [SI-LOG.md](SI-LOG.md).

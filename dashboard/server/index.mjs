@@ -1,5 +1,7 @@
 import http from 'node:http';
+import {createReadStream} from 'node:fs';
 import {readFile, stat} from 'node:fs/promises';
+import {pipeline} from 'node:stream/promises';
 import {resolve, extname, sep, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createResearchCache, readPublicBundle} from './research.mjs';
@@ -23,7 +25,22 @@ async function request(url){
   return response.json();
 }
 const research = createResearchCache({snapshot,refresh:()=>readPublicBundle({request,project,dataset,snapshot}).catch(error=>{console.warn('Research refresh:',error.message);throw error})});
-const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2'};
+const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
+// Ignore malformed or multipart requests; a valid range outside the file is 416.
+function audioRange(header,size){
+  const match=/^bytes=(\d*)-(\d*)$/i.exec((header||'').trim());
+  if(!match||(!match[1]&&!match[2]))return null;
+  const length=BigInt(size);
+  if(!match[1]){
+    const suffix=BigInt(match[2]);
+    if(!length||!suffix)return false;
+    return {start:Number(suffix>=length?0n:length-suffix),end:size-1};
+  }
+  const start=BigInt(match[1]),requestedEnd=match[2]?BigInt(match[2]):null;
+  if(requestedEnd!==null&&requestedEnd<start)return null;
+  if(start>=length)return false;
+  return {start:Number(start),end:Number(requestedEnd===null||requestedEnd>=length?length-1n:requestedEnd)};
+}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');
@@ -41,15 +58,38 @@ const server=http.createServer(async(req,res)=>{
     let info=await stat(file);
     if(info.isDirectory()){file=resolve(file,'index.html');info=await stat(file);}
     const etag='W/"'+info.size.toString(16)+'-'+Math.trunc(info.mtimeMs).toString(16)+'"';
-    const stableAsset=/\.(png|jpg|webp|woff2|svg)$/.test(file);
+    const extension=extname(file).toLowerCase(),audioAsset=['.wav','.ogg','.mp3'].includes(extension);
+    const stableAsset=audioAsset||/\.(png|jpg|webp|woff2|svg)$/.test(file);
     res.setHeader('Cache-Control',stableAsset?'public, max-age=3600':'public, max-age=0, must-revalidate');
     res.setHeader('ETag',etag);
+    res.setHeader('Last-Modified',info.mtime.toUTCString());
+    if(audioAsset)res.setHeader('Accept-Ranges','bytes');
     if((req.headers['if-none-match']||'').split(',').map(v=>v.trim()).includes(etag)){res.writeHead(304).end();return;}
-    res.setHeader('Content-Type',types[extname(file)]||'application/octet-stream');
+    res.setHeader('Content-Type',types[extension]||'application/octet-stream');
     res.setHeader('Content-Length',info.size);
+    // Range applies to GET only. HEAD reports the full representation's headers.
+    if(req.method==='HEAD'){res.writeHead(200).end();return;}
+    if(audioAsset){
+      const ifRange=req.headers['if-range'];
+      // Our validator is weak, so If-Range can match only a modification date.
+      const rangeAllowed=!ifRange||Date.parse(ifRange)>=Math.floor(info.mtimeMs/1000)*1000;
+      const range=rangeAllowed?audioRange(req.headers.range,info.size):null;
+      if(range===false){
+        res.writeHead(416,{'Content-Range':`bytes */${info.size}`,'Content-Length':0}).end();return;
+      }
+      if(range){
+        res.writeHead(206,{'Content-Range':`bytes ${range.start}-${range.end}/${info.size}`,'Content-Length':range.end-range.start+1});
+      }else res.writeHead(200);
+      await pipeline(createReadStream(file,range||undefined),res);
+      return;
+    }
     res.writeHead(200);
-    res.end(req.method==='HEAD'?undefined:await readFile(file));
-  }catch{res.writeHead(404,{'Content-Type':'text/plain'}).end('Not found');}
+    res.end(await readFile(file));
+  }catch{
+    if(res.headersSent){res.destroy();return;}
+    res.removeHeader('Content-Length');res.removeHeader('Content-Range');
+    res.writeHead(404,{'Content-Type':'text/plain'}).end(req.method==='HEAD'?undefined:'Not found');
+  }
 });
 export {server};
 server.listen(Number(process.env.PORT||4335),'0.0.0.0',()=>console.log('Soraine dashboard ready'));

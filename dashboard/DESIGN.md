@@ -11,8 +11,9 @@ The research interface is one part of Soraine. Moon and Mars scenes can open a r
 ## Typography and colour
 
 - DM Sans for controls, data and body text; Instrument Serif italic for the main brand phrase.
-- Background: `#0b1012`; primary text: `#edf0e9`; secondary text: `#9aa8a8`.
-- Sage accent: `#c6edba`; blue secondary accent: `#a5cddc`.
+- Background: `#05070d`; primary text: `#f1f2f4`; secondary text: `#a1a5af`.
+- Electric blue: `#168bff`; cyan highlight: `#00b7ff`. Hogan's illuminated black-and-blue keyboard is the palette reference.
+- Fine static blue glows mark active underlines, material icons and the main action. Keep body text neutral and preserve NASA image colours.
 - Reserve strong colour for the active selection, comparison series and important actions.
 - Material icons use the same inline SVG stroke style: polymer block for Ultem, layered film for Mylar, weave for Nomex. Always keep the written material name.
 
@@ -21,6 +22,10 @@ The research interface is one part of Soraine. Moon and Mars scenes can open a r
 Transitions use opacity and translation. Do not add full-screen blur or continuous layout animation. The planet pauses when hidden or outside the viewport. Reduced-motion preferences disable automatic rotation and decorative transitions. Material selection preserves the existing renderer and camera. The camera automatically fits the planet to the available canvas aspect ratio, including narrow desktop panels.
 
 Small screens use a bottom research navigation, stacked sections, larger controls and labelled evidence rows. Horizontal drags rotate the planet; vertical swipes scroll. Small screens load smaller WebP maps; desktop retains the detailed NASA assets. Normal-map vectors are renormalized after resizing.
+
+## Sound
+
+The optional original soundtrack, **Quiet Orbit**, is a calm 3/4 ambient waltz. The header music icon opens play/pause, mute and volume controls. Music starts only on a Play gesture; opening the site does not download or play the audio. Volume and mute preferences persist locally, but playback never resumes automatically on reload. The player remains mounted during research navigation.
 
 ## Research presentation
 

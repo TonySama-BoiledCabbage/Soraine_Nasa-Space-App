@@ -47,3 +47,13 @@ Inspected Ethan's models-only and physics-integration branches and added a share
 Validation: fourteen data, backend, HTTP and scene-link tests passed. Browser checks verified the rendered planets, exact Ultem comparisons, evidence filters, source search, record conditions, CSV export, empty states, pagination, global search, reduced motion, narrow responsive layouts and direct evidence links. DOM identity checks confirmed that material changes retain the same planet canvas. No uncaught browser errors were observed. The desktop and narrow-screen layouts were visually reviewed, and temporary viewport and reduced-motion overrides were reset.
 
 Final responsive review also adjusted the 3D camera to fit the available canvas aspect ratio. The narrow desktop panel now keeps the planetary disc in frame while preserving zoom controls.
+
+## 2026-11-14: Electric-blue theme and original soundtrack
+
+Hogan rejected the green theme and supplied a photograph of a black keyboard with bright blue lighting. Codex changed the interface to near-black, electric blue and cyan, including active controls, material icons, chart series and decorative orbit lines. NASA surface imagery and scientific values retain their original meaning.
+
+Hogan requested original calm observatory-style music. Codex wrote a reproducible Python/NumPy score and synthesizer for Quiet Orbit, a 53.33-second ambient waltz with celesta, harp, pad and bass. No external recordings, samples or Nintendo melody were used. Signal checks verified finite samples, no clipping, and wrapped note/reverb tails. No listening assessment is claimed.
+
+Added a user-initiated player with play/pause, mute, remembered volume and a Web Audio gain control. The audio does not load or play when the site opens. The player persists across research navigation. The server streams audio with appropriate MIME types, caching and byte ranges.
+
+Validation: all eighteen data, backend, HTTP and scene-link tests passed. Browser checks verified the black/electric-blue palette, no initial audio request, playback, loop rollover, mute/unmute, zero-volume recovery, playback across views, external pause synchronization, remembered preferences without autoplay, and graceful audio-load failure. The sound controls fit a 320px viewport and scroll within a short landscape viewport. Browser overrides were reset. Real iOS hardware was not available for testing.
