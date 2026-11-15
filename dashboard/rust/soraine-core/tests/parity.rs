@@ -141,3 +141,24 @@ fn missing_evidence_never_becomes_a_numerical_comparison() {
     assert!(reading_summary(&[], "Ultem 1000", "Moon").contains("No matching published"));
     assert_eq!(number(None, 1), "Not reported");
 }
+
+/// Index and surroundings of the first difference, so a markup mismatch is quick to find.
+fn first_difference(actual: &str, expected: &str) -> String {
+    let at = actual.chars().zip(expected.chars()).position(|(a, b)| a != b).unwrap_or(actual.chars().count().min(expected.chars().count()));
+    let around = |text: &str| text.chars().skip(at.saturating_sub(40)).take(90).collect::<String>();
+    format!("differs at char {at}:\n  rust: {:?}\n  js:   {:?}", around(actual), around(expected))
+}
+
+#[test]
+fn specimen_markup_matches_javascript() {
+    use soraine_core::specimen::{numeric, specimen_html, Specimen};
+    let golden = golden();
+    let cases = golden["specimens"].as_array().unwrap();
+    assert!(cases.len() > 40);
+    for case in cases {
+        let specimen = Specimen { material: s(&case["material"]), world: s(&case["world"]), uloi: numeric(case.get("uloi")), moc: numeric(case.get("moc")), record_id: case["recordId"].as_str() };
+        let actual = specimen_html(&specimen, case["instance"].as_u64().unwrap() as u32);
+        let expected = s(&case["html"]);
+        assert!(actual == expected, "{} / {} / {} / {}: {}", case["material"], case["world"], case["uloi"], case["moc"], first_difference(&actual, expected));
+    }
+}

@@ -6,6 +6,7 @@ import {MATERIALS, WORLDS, TYPES, joinResearch, getLimits, filterRows, csv, comp
 import {sourcesByResults, originalFilesByRelevance} from '../../dist/discovery.mjs';
 import {readingSummary, comparisonContext} from '../../dist/reading.mjs';
 import {researchUrl} from '../../dist/scene-link.mjs';
+import {specimenHTML} from '../../dist/specimen.mjs';
 const read = async path => JSON.parse((await readFile(new URL(path, import.meta.url), 'utf8')).replace(/^﻿/, ''));
 const bundle = await read('../../dist/data/research.json'), original = await read('../../dist/data/original-data.json');
 const rows = joinResearch(bundle), id = r => r?.measurement_id ?? null;
@@ -17,6 +18,15 @@ const links = [[{}], [{world: 'Lunar', material: 'Nomex HT90-40', record: 'E014'
   [{record: '<script>'}], [{record: 'E01'}], [{record: 'E014 '}], [{}, 'javascript:alert(1)'], [{}, 'not a url'], [{world: 'moon'}, 'https://example.org/a b/?x=1']];
 const numbers = [[null], [''], ['0'], ['0.000016', 6], ['1234567.891'], ['1234567.891', 2], ['2.5', 0], ['1.5', 0], ['0.5', 0], ['0.05'], ['-0.04'], ['-1234.5', 0], ['19.95'], ['1.005', 2],
   ['21.1'], ['999.95'], ['0.125', 2], ['abc'], ['1e21'], ['70.3'], [' 42 '], ['1.1000000000000014'], ['1000'], ['-0.06']];
+const specimens = [];
+let specimenCase = 0;
+for (const material of [...MATERIALS, 'Kapton', `<b>&"x"'`, '']) for (const world of [...WORLDS, '']) {
+  for (const [uloi, moc, recordId] of [[null, null, null], ['23.5', '23', 'E002'], [21, 19.9, ''], ['', 'abc', 'E014'], [35, -1, null], ['0.125', 30, '<E>'], [30.004, 0, 'E100'], [' 7.5 ', '29.999', undefined]]) {
+    if (specimenCase++ % 3) continue;   // a spread of cases, not the full product
+    const html = specimenHTML({material, world, uloi, moc, recordId});
+    specimens.push({material, world, uloi, moc, recordId: recordId ?? null, instance: Number(/specimen-(\d+)/.exec(html)[1]), html});
+  }
+}
 const golden = {
   rowCount: rows.length,
   joined: rows.map(r => [r.measurement_id, r.kind.name, r.kind.color, r.experiment?.experiment_id ?? null, r.source?.source_id ?? null]),
@@ -29,6 +39,7 @@ const golden = {
   sources: sourcesByResults(bundle.sources, bundle.measurements).map(s => s.source_id),
   files: originalFilesByRelevance(original.datasets).map(d => d.id),
   links: links.map(([args, base]) => { try { return {args, base: base ?? null, out: base ? researchUrl(args, base) : researchUrl(args)}; } catch (error) { return {args, base: base ?? null, error: error.message}; } }),
+  specimens,
   numbers: numbers.map(([value, digits]) => [value, digits ?? null, digits === undefined ? number(value) : number(value, digits)]),
   esc: ['', 'plain', `<a href="x">Tom & 'Jerry'</a>`, 'é ✓ 月'].map(s => [s, esc(s)]),
   safeUrl: ['https://ntrs.nasa.gov/citations/20130010991', 'http://example.org/a b', 'javascript:alert(1)', 'data:text/html,x', 'ftp://example.org/', '/relative', '', 'HTTPS://EXAMPLE.org'].map(s => [s, safeUrl(s)]),

@@ -8,3 +8,4 @@ pub mod discovery;
 pub mod gesture;
 pub mod reading;
 pub mod scene_link;
+pub mod specimen;
