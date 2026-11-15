@@ -107,7 +107,7 @@ export function enableMeadowWind(root, { SWEEP, SWEEP_GLSL, SWEEP_FN, roleU, kee
     root.updateWorldMatrix(true, false); off.setFromMatrixPosition(root.matrixWorld);
     let seed = ((ix + 44) * 73856093 ^ (iz + 32) * 19349663) >>> 0;
     const rand = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
-    const side = 39, mesh = new THREE.InstancedMesh(tuft, leaves, side * side); let count = 0;
+        const side = 39, mesh = new THREE.InstancedMesh(tuft, leaves, side * side); let count = 0;
     for (let a = 0; a < side; a++) for (let b = 0; b < side; b++) {
       const x = (ix + (a + rand()) / side) * 6, z = (iz + (b + rand()) / side) * 6;
       const r1 = rand(), r2 = rand(), r3 = rand();

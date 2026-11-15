@@ -193,7 +193,7 @@
     },
     {
       "slug": "iss",
-      "label": "ISS",
+      "label": "Orbital cabin",
       "g": 0.0,
       "sky": [
         0,
@@ -228,12 +228,12 @@
         {
           "k": "Flame shape",
           "v": "spherical, dim blue",
-          "src": "NASA FLEX/ACME"
+          "src": "schematic"
         },
         {
           "k": "Hot gas rises",
-          "v": "no — diffusion only",
-          "src": "NASA FLEX/ACME"
+          "v": "buoyancy suppressed; local oxygen injection in this demonstration",
+          "src": "schematic"
         }
       ],
       "ground": [

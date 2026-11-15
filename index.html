@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flame in Freefall</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="kitchen/style.css?v=meadow-20261114">
+<link rel="stylesheet" href="kitchen/style.css?v=lab-controls-3">
 <script type="importmap">
 { "imports": { "three": "./vendor/three.module.js", "cannon-es": "./vendor/cannon-es.js", "three/addons/": "./vendor/addons/" } }
 </script>
 </head>
 <body>
 <canvas id="gl"></canvas>
+<p id="combustion-status" role="status" hidden>Drag the oil dispenser to release fuel · mechanism demonstration</p>
 
 <nav id="dots" aria-label="Pages" hidden>
   <button data-page="observe" class="on" aria-label="Observe"><i></i><span>observe</span></button>
@@ -37,12 +38,14 @@
 <section id="about" class="page" hidden>
   <article class="card">
     <h2>About</h2>
-    <p>A kitchen with no walls, sitting in a field, so the only thing that changes between scenes is the gravity the flame feels.</p>
+    <p>A controlled combustion demonstration. Planet landscapes provide context for the selected gravity. The orbital scene takes place inside a pressurized cabin.</p>
+    <p>Drag the oil dispenser to release fuel droplets near the burner. Press the metal O2 SUPPLY button on the worktop, or use the O key, to inject oxygen. The orbital experiment supplies oxygen automatically while fuel remains available.</p>
     <p>Each scenario pulses a wave out from the flame. What the wave has passed is already living under the new gravity; what it has not reached is still under the old one. The closer the wavefront is to you, the harder the camera shakes.</p>
     <p class="muted">Flame shapes here are schematic: height and colour follow a simple buoyancy heuristic, not a combustion model. Figures in the detail page are labelled with their source or marked unverified.</p>
   </article>
 </section>
 
-<script type="module" src="kitchen/main.js?v=meadow-20261114"></script>
+<script type="module" src="kitchen/main.js?v=lab-controls-3"></script>
 </body>
 </html>
+
