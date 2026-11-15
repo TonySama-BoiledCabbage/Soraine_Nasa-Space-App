@@ -281,6 +281,8 @@
             renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null);
             // The screen output encoding also has its own material variants.
             renderer.render(scene, camera);
+            // Shadow materials pick up the active world's lights after the first pass.
+            renderer.shadowMap.needsUpdate = true; renderer.render(scene, camera);
             // Warm the full-size depth/scan target and screen shader, not just the small upload target.
             dof = 1; renderWave(0, performance.now() / 1000); dof = 0;
           } finally {
