@@ -3,6 +3,8 @@ name: Rust
 # Builds and tests the Rust port (dashboard/rust), including the WebAssembly
 # target, on every push to the rust-rewrite branch.
 on:
+  pull_request:
+    paths: ['dashboard/rust/**', 'dashboard/dist/**', '.github/workflows/rust.yml']
   push:
     branches: [rust-rewrite]
     paths:
@@ -53,3 +55,12 @@ jobs:
         run: cargo build -p soraine-server && node --test tools/check-server.mjs
       - name: WebAssembly build
         run: cargo build -p soraine-web --target wasm32-unknown-unknown --release
+      - name: Package browser bindings
+        run: |
+          curl --fail --location --retry 3 https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.130/wasm-bindgen-0.2.130-x86_64-unknown-linux-musl.tar.gz -o /tmp/wasm-bindgen.tar.gz
+          tar -xzf /tmp/wasm-bindgen.tar.gz -C /tmp
+          /tmp/wasm-bindgen-0.2.130-x86_64-unknown-linux-musl/wasm-bindgen --target web --out-dir pkg target/wasm32-unknown-unknown/release/soraine_web.wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: soraine-browser-wasm
+          path: dashboard/rust/pkg/

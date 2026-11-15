@@ -112,7 +112,7 @@ async function render(){
  const seq=++renderSequence;
  originalDataCleanup?.();originalDataCleanup=null;
  // Changing the material keeps the planet's renderer, textures and camera state.
- const retained=state.view==='overview'&&globe&&globeWorld===state.world?document.querySelector('#globe'):null;
+ const retained=state.view==='overview'&&globe?document.querySelector('#globe'):null;
  if(!retained){globe?.dispose();globe=null;}
  const retainedMaterial=state.view==='overview'&&materialView?.host.dataset.modelState!=='fallback'?materialView?.host:null;
  if(!retainedMaterial)disposeMaterialView();
@@ -134,7 +134,7 @@ async function render(){
   await Promise.all([
    syncMaterialView(view.querySelector('[data-material-model]')),
    (async()=>{
-    if(retained){document.querySelector('#globe').replaceWith(retained);syncRotationButton();return;}
+    if(retained){document.querySelector('#globe').replaceWith(retained);globe.setWorld(state.world);globeWorld=state.world;syncRotationButton();return;}
     try{const {createGlobe}=await import('./globe.mjs');if(seq!==renderSequence)return;globe=createGlobe(document.querySelector('#globe'),state.world);globeWorld=state.world;syncRotationButton();document.querySelector('#globe').addEventListener('rotationchange',syncRotationButton)}catch(e){console.warn('Globe fallback:',e.message)}
    })()
   ]);

@@ -26,6 +26,22 @@ try {
     await page.getByRole('button',{name:'Reset globe',exact:true}).click();
     checks.push(world+' renders and zooms without shader errors');
   }
+  // A cached environment switch must keep the actual canvas/context and perform
+  // no further image requests. Exercise both planetary and orbital contexts.
+  await page.evaluate(()=>{window.planetCanvas=document.querySelector('#globe canvas');window.planetContextLosses=0;window.planetCanvas.addEventListener('webglcontextlost',()=>window.planetContextLosses++)});
+  for(const world of ['Earth','Moon','Mars','Microgravity']){
+    await page.getByRole('button',{name:world,exact:true}).click();
+    await page.locator(`#globe[data-globe-world="${world}"][data-globe-state="ready"]`).waitFor();
+  }
+  const resourceCount=await page.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/assets/')).length);
+  for(const world of ['Moon','Mars','Earth','Microgravity','Moon','Mars']){
+    await page.getByRole('button',{name:world,exact:true}).click();
+    await page.locator(`#globe[data-globe-world="${world}"][data-globe-state="ready"]`).waitFor();
+    assert.equal(await page.evaluate(()=>window.planetCanvas===document.querySelector('#globe canvas')),true);
+  }
+  assert.equal(await page.evaluate(()=>window.planetContextLosses),0);
+  assert.equal(await page.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/assets/')).length),resourceCount);
+  checks.push('all four environments reuse one canvas without repeat asset requests or context loss');
   assert.deepEqual(failedAssets,[]);
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({checks,errors,failedAssets},null,2));

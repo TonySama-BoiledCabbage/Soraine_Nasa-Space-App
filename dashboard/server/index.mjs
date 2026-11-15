@@ -28,7 +28,7 @@ async function request(url){
 }
 const research = createResearchCache({snapshot,refresh:()=>readPublicBundle({request,project,dataset,snapshot}).catch(error=>{console.warn('Research refresh:',error.message);throw error})});
 const originalData = createResearchCache({snapshot:originalSnapshot,refresh:()=>readOriginalBundle({request,project,dataset,snapshot:originalSnapshot}).catch(error=>{console.warn('Original data refresh:',error.message);throw error})});
-const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
+const types={'.html':'text/html; charset=utf-8','.mjs':'text/javascript','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
 // Ignore malformed or multipart requests; a valid range outside the file is 416.
 function audioRange(header,size){
   const match=/^bytes=(\d*)-(\d*)$/i.exec((header||'').trim());
