@@ -172,3 +172,8 @@ Validation: all 41 Node tests pass, including 10 new search and basket tests. Ch
 
 
 Coordination follow-up: verified Ethan's c122c56 search output against the frontend response validator for seven representative queries. Renamed the frontend test to material-search-client.test.mjs to avoid the backend test-path collision. The local Moon fallback now retains explicitly labelled Earth-to-Moon model records and explains that they are estimates, matching the agreed backend behaviour. All 42 frontend/base tests pass. Neither PR was merged or deployed.
+## 2026-11-15: Material search backend
+
+At Ethan's request, following Hogan's shared plan, super intelligence (Claude) added `POST /api/material-search` to the Node server (`server/material-search.mjs`, wired in `server/index.mjs`). It maps English and Chinese names, shelf objects and broad words to the nine agreed material IDs, applies gravity, platform, combustion-mode and metric conditions without relaxing them, and returns research records, sources and separate original-CSV row references copied from the existing cached collections. Keyword mode only: no AI provider is configured; the summary hook and its evidence checks are tested with stand-ins. `dashboard/vercel.json`, the frontend and the Rust server were not changed. Contract, examples, configuration and open decisions: `docs/MATERIAL-SEARCH-API.md`; real sample responses: `docs/material-search-samples/`.
+
+Validation: 48 Node tests passed (31 existing, 17 new). The live BigQuery path and a real AI provider were not tested. Not merged or deployed.

@@ -1,0 +1,270 @@
+{
+  "query": "梳子",
+  "mode": "keyword",
+  "dataSource": "snapshot",
+  "summary": "Found 1 material with 11 matching records.",
+  "appliedFilters": {
+    "gravity": null,
+    "materialId": null
+  },
+  "results": [
+    {
+      "materialId": "ultem-1000",
+      "title": "Ultem 1000",
+      "summary": "10 of 11 matching records shown. Matched through the shelf object \"梳子\". The object helps find the material; the records describe Ultem 1000 test specimens, not the object.",
+      "evidenceIds": [
+        "E002",
+        "E005",
+        "E008",
+        "E011",
+        "E014",
+        "E017",
+        "E020",
+        "E023",
+        "E026",
+        "E029"
+      ],
+      "totalEvidenceCount": 11,
+      "evidence": [
+        {
+          "measurementId": "E002",
+          "experimentId": "CTX-18fa040a1726a99a824e23d8",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Earth",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "ULOI",
+          "value": "23.5",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "23.5",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "ground normal gravity",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E005",
+          "experimentId": "CTX-199c5d277e48fc9a46bdbabe",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Earth",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "MOC",
+          "value": "23.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "23.0",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "ground normal gravity",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E008",
+          "experimentId": "CTX-71f23e3d83f6120d39c2e016",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Mars",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "ULOI*",
+          "value": "22.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "22.0",
+            "flowSpeedCmS": null,
+            "durationS": "5.18",
+            "platform": "drop tower centrifuge",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E011",
+          "experimentId": "CTX-40e98742a28ff55a568c41e5",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Mars",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "MOC*",
+          "value": "21.1",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "21.1",
+            "flowSpeedCmS": null,
+            "durationS": "5.18",
+            "platform": "drop tower centrifuge",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E014",
+          "experimentId": "CTX-98e2337d1a800e0c70e75453",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "ULOI*",
+          "value": "21.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "21.0",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "drop tower centrifuge",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E017",
+          "experimentId": "CTX-55440b587ff90b96ce0c972e",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "MOC*",
+          "value": "19.9",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "19.9",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "drop tower centrifuge",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E020",
+          "experimentId": "CTX-ef2f536a98797287ce3afa08",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Microgravity",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "ULOI*",
+          "value": "24.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "24.0",
+            "flowSpeedCmS": "30.0",
+            "durationS": null,
+            "platform": "microgravity with imposed flow",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E023",
+          "experimentId": "CTX-c22fe77a7de178954279e11b",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Microgravity",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "MOC*",
+          "value": "23.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": "23.0",
+            "flowSpeedCmS": "30.0",
+            "durationS": null,
+            "platform": "microgravity with imposed flow",
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E026",
+          "experimentId": "CTX-9d7db920328308a8f37be7eb",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Mars",
+          "gravityBasis": "nominal category",
+          "metric": "reported_delta_O2_vs_1g",
+          "value": "-1.7",
+          "unit": "O2 percentage points",
+          "evidenceType": "source_derived_from_limit_aggregates",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.",
+          "pdfPage": "6",
+          "locator": "Table I, lower three rows"
+        },
+        {
+          "measurementId": "E029",
+          "experimentId": "CTX-10571a06403e92c7f0b69e34",
+          "sourceId": "NTRS-20130010991",
+          "material": "Ultem 1000",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category",
+          "metric": "reported_delta_O2_vs_1g",
+          "value": "-2.8",
+          "unit": "O2 percentage points",
+          "evidenceType": "source_derived_from_limit_aggregates",
+          "conditions": {
+            "pressureKpa": "70.326524",
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "10 mil PEI film"
+          },
+          "limitation": "Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.",
+          "pdfPage": "6",
+          "locator": "Table I, lower three rows"
+        }
+      ],
+      "originalRecords": [],
+      "sources": [
+        {
+          "sourceId": "NTRS-20130010991",
+          "title": "Evaluating Material Flammability in Microgravity and Martian Gravity Compared to the NASA Standard Normal Gravity Test",
+          "url": "https://ntrs.nasa.gov/citations/20130010991"
+        }
+      ]
+    }
+  ]
+}
