@@ -84,6 +84,8 @@ const METRIC_TERMS = [
 const EVIDENCE_ORDER = ['reported_experimental_summary', 'reported_experimental_limit_aggregate',
   'reported_fit_to_experimental_data', 'source_derived_from_limit_aggregates',
   'model_derived_compensation_from_experiments'];
+// "All materials" lists every shelf material that has records.
+const ALL_TERMS = ['all materials', 'all material', 'every material', 'all shelf materials', 'everything', '所有材料', '全部材料', '所有物料'];
 const STOP_WORDS = new Set(('find show list give tell what which where when how have has does did are was were the and for with ' +
   'about from into that this these those research record records data result results study studies material materials ' +
   'compare across between any all please test tests tested').split(' '));
@@ -226,7 +228,7 @@ export function searchBundles({query, filters, limit}, research, original) {
   else if (!matches.size) {
     candidates = new Map(MATERIAL_IDS.map(id => [id, {tier: 0, kind: 'condition', term: null}]));
     // With no material and no condition, fall back to plain words in the records.
-    if (!conditioned) {
+    if (!conditioned && !has(text, ALL_TERMS)) {
       words = text.split(' ').filter((word, index, all) => /^[a-z0-9]{3,}$/.test(word) && !STOP_WORDS.has(word) && all.indexOf(word) === index);
       if (!words.length) candidates = new Map();
     }

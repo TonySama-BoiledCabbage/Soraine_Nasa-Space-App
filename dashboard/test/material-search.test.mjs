@@ -54,6 +54,15 @@ test('English names, broad words and Chinese objects find the agreed materials',
   assert.ok(nomex[1].evidence.every(record => record.material === 'Nomex Velcro'));
 });
 
+test('"all materials" lists the nine evidence-backed groups', () => {
+  for (const query of ['all materials', 'All materials', '所有材料']) {
+    assert.deepEqual(ids(run(query, undefined, 10)).sort(), [...MATERIAL_IDS].sort());
+  }
+  assert.equal(run('all materials').results.length, 5, 'the default limit still applies');
+  assert.match(run('all materials').summary, /4 more matching materials/);
+  assert.ok(run('all materials on Mars', undefined, 10).results.every(r => r.evidence.every(e => e.gravity === 'Mars')));
+});
+
 test('an exact name ranks above a broad candidate', () => {
   assert.deepEqual(ids(run('PMMA and other fabrics')).slice(0, 1), ['pmma']);
 });

@@ -69,6 +69,7 @@ Details worth knowing when connecting the interface:
 - `moon` also returns records labelled `Earth-to-Moon model`. They keep that label, sort last and are flagged in the result summary.
 - Flaming/明火 and smolder/阴燃 are conditions on the record's own label. They never select cotton by themselves.
 - "Oxygen limits" (ULOI, MOC, 氧极限) and "flame spread" (火焰传播) narrow the metrics.
+- "All materials" (所有材料, 全部材料) returns every shelf material that has records, up to `limit`; send `limit: 10` to get all nine.
 - Conditions are never relaxed to produce results. With no material and no condition, plain English words are matched against record text.
 - Original rows are attached only for `pmma` and `sibal`, where the CSV's material column names the material, and only when the search sets no gravity, platform, mode or metric condition (the rows have no such fields).
 
@@ -115,7 +116,7 @@ Data: the research tables `sources`, `experiments`, `measurements` and the origi
 
 ## Tests
 
-`npm test` in `dashboard/`: 48 tests pass (31 existing, 17 new in `test/material-search.test.mjs` and `test/material-search-http.test.mjs`). Not tested: the live BigQuery path on Cloud Run, and any real AI provider.
+`npm test` in `dashboard/`: 49 tests pass (31 existing, 18 new in `test/material-search.test.mjs` and `test/material-search-http.test.mjs`). Not tested: the live BigQuery path on Cloud Run, and any real AI provider.
 
 ## Decisions for the team
 
