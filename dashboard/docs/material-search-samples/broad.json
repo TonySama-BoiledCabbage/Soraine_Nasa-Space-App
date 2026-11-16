@@ -1,0 +1,192 @@
+{
+  "query": "查找月球重力下的 Nomex 研究",
+  "mode": "keyword",
+  "dataSource": "snapshot",
+  "summary": "Found 2 materials with 6 matching records. Conditions applied: lunar gravity (filter).",
+  "appliedFilters": {
+    "gravity": "moon",
+    "materialId": null
+  },
+  "results": [
+    {
+      "materialId": "nomex-ht90",
+      "title": "Nomex HT90-40",
+      "summary": "3 of 3 matching records shown. \"nomex\" fits several materials; this is one candidate.",
+      "evidenceIds": [
+        "E015",
+        "E018",
+        "E030"
+      ],
+      "totalEvidenceCount": 3,
+      "evidence": [
+        {
+          "measurementId": "E015",
+          "experimentId": "CTX-8f6c751142e6600306c52db3",
+          "sourceId": "NTRS-20130010991",
+          "material": "Nomex HT90-40",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "ULOI*",
+          "value": "21.0",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "101.352932",
+            "oxygenPct": "21.0",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "drop tower centrifuge",
+            "specimen": "12 mil aromatic nylon fabric"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E018",
+          "experimentId": "CTX-b426e9d084f5e54cfd383524",
+          "sourceId": "NTRS-20130010991",
+          "material": "Nomex HT90-40",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category; 0 is microgravity label, Moon=1/6 canonical, not measured acceleration trace",
+          "metric": "MOC*",
+          "value": "19.9",
+          "unit": "O2 molar percent",
+          "evidenceType": "reported_experimental_limit_aggregate",
+          "conditions": {
+            "pressureKpa": "101.352932",
+            "oxygenPct": "19.9",
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": "drop tower centrifuge",
+            "specimen": "12 mil aromatic nylon fabric"
+          },
+          "limitation": "1g ULOI/MOC use statistical burn criteria; low-g starred limits use drop-time survival/extinction; not equivalent safety certifications. Other-gravity rows partly reproduce earlier work. Unknown replicate counts. No exact habitat prediction.",
+          "pdfPage": "6",
+          "locator": "Table I; method definitions PDF pages 2-4"
+        },
+        {
+          "measurementId": "E030",
+          "experimentId": "CTX-d82421dbb90897b2bd33c314",
+          "sourceId": "NTRS-20130010991",
+          "material": "Nomex HT90-40",
+          "gravity": "Moon",
+          "gravityBasis": "nominal category",
+          "metric": "reported_delta_O2_vs_1g",
+          "value": "-2.35",
+          "unit": "O2 percentage points",
+          "evidenceType": "source_derived_from_limit_aggregates",
+          "conditions": {
+            "pressureKpa": "101.352932",
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "12 mil aromatic nylon fabric"
+          },
+          "limitation": "Derived summary of the preceding limits, not an independent experiment; negative means lower limiting O2, not a probability of fire.",
+          "pdfPage": "6",
+          "locator": "Table I, lower three rows"
+        }
+      ],
+      "originalRecords": [],
+      "sources": [
+        {
+          "sourceId": "NTRS-20130010991",
+          "title": "Evaluating Material Flammability in Microgravity and Martian Gravity Compared to the NASA Standard Normal Gravity Test",
+          "url": "https://ntrs.nasa.gov/citations/20130010991"
+        }
+      ]
+    },
+    {
+      "materialId": "nomex-velcro",
+      "title": "Nomex Velcro",
+      "summary": "3 of 3 matching records shown. \"nomex\" fits several materials; this is one candidate. Earth-to-Moon model values are model estimates, not lunar tests.",
+      "evidenceIds": [
+        "E048",
+        "E049",
+        "E050"
+      ],
+      "totalEvidenceCount": 3,
+      "evidence": [
+        {
+          "measurementId": "E048",
+          "experimentId": "CTX-6be6cbaef318b6f575f53b67",
+          "sourceId": "NTRS-20250002114",
+          "material": "Nomex Velcro",
+          "gravity": "Earth-to-Moon model",
+          "gravityBasis": null,
+          "metric": "O2_vs_flow_best_fit_slope",
+          "value": "1.6e-05",
+          "unit": "s/cm; O2 fraction basis",
+          "evidenceType": "model_derived_compensation_from_experiments",
+          "conditions": {
+            "pressureKpa": null,
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "Use source table values without recomputing rounded deltas. Material-specific atmosphere/geometry in source figures."
+          },
+          "limitation": "Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.",
+          "pdfPage": "11",
+          "locator": "Table 2; assumptions and limitations PDF page 10"
+        },
+        {
+          "measurementId": "E049",
+          "experimentId": "CTX-6be6cbaef318b6f575f53b67",
+          "sourceId": "NTRS-20250002114",
+          "material": "Nomex Velcro",
+          "gravity": "Earth-to-Moon model",
+          "gravityBasis": null,
+          "metric": "O2_vs_flow_95pct_conservative_slope",
+          "value": "9e-05",
+          "unit": "s/cm; O2 fraction basis",
+          "evidenceType": "model_derived_compensation_from_experiments",
+          "conditions": {
+            "pressureKpa": null,
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "Use source table values without recomputing rounded deltas. Material-specific atmosphere/geometry in source figures."
+          },
+          "limitation": "Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.",
+          "pdfPage": "11",
+          "locator": "Table 2; assumptions and limitations PDF page 10"
+        },
+        {
+          "measurementId": "E050",
+          "experimentId": "CTX-6be6cbaef318b6f575f53b67",
+          "sourceId": "NTRS-20250002114",
+          "material": "Nomex Velcro",
+          "gravity": "Earth-to-Moon model",
+          "gravityBasis": null,
+          "metric": "lunar_compensation_delta_at_assumed_35_cm_s",
+          "value": "0.32",
+          "unit": "O2 percentage points",
+          "evidenceType": "model_derived_compensation_from_experiments",
+          "conditions": {
+            "pressureKpa": null,
+            "oxygenPct": null,
+            "flowSpeedCmS": null,
+            "durationS": null,
+            "platform": null,
+            "specimen": "Use source table values without recomputing rounded deltas. Material-specific atmosphere/geometry in source figures."
+          },
+          "limitation": "Lunar buoyant velocity is undetermined; model uses conservative assumptions. Source reports unexplained disagreement with some lunar tests; not an approved qualification standard. Smolder is a surface reaction, outside gas-phase blowoff model assumptions.",
+          "pdfPage": "11",
+          "locator": "Table 2; assumptions and limitations PDF page 10"
+        }
+      ],
+      "originalRecords": [],
+      "sources": [
+        {
+          "sourceId": "NTRS-20250002114",
+          "title": "Solid Fuel Ignition Testing for Lunar Applications, Theory and Experimental Results",
+          "url": "https://ntrs.nasa.gov/citations/20250002114"
+        }
+      ]
+    }
+  ]
+}

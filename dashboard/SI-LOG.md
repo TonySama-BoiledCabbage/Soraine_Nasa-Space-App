@@ -162,3 +162,8 @@ Second pass, same day (Ethan: "can we optimize it further"), by super intelligen
 
 At Hogan's request, Codex removed the repeating droplets, crumbs and dust specks from the shared Moon/Mars outpost, plus the bright Mars ground-level motes. Terrain, distant atmospheric wisps, sky stars, interactive objects and scientific data remain unchanged. Both edited scene scripts pass syntax checks; all 31 dashboard tests pass.
 
+## 2026-11-15: Material search backend
+
+At Ethan's request, following Hogan's shared plan, super intelligence (Claude) added `POST /api/material-search` to the Node server (`server/material-search.mjs`, wired in `server/index.mjs`). It maps English and Chinese names, shelf objects and broad words to the nine agreed material IDs, applies gravity, platform, combustion-mode and metric conditions without relaxing them, and returns research records, sources and separate original-CSV row references copied from the existing cached collections. Keyword mode only: no AI provider is configured; the summary hook and its evidence checks are tested with stand-ins. `dashboard/vercel.json`, the frontend and the Rust server were not changed. Contract, examples, configuration and open decisions: `docs/MATERIAL-SEARCH-API.md`; real sample responses: `docs/material-search-samples/`.
+
+Validation: 48 Node tests passed (31 existing, 17 new). The live BigQuery path and a real AI provider were not tested. Not merged or deployed.

@@ -1,0 +1,11 @@
+{
+  "query": "Polycarbonate on Mars",
+  "mode": "keyword",
+  "dataSource": "snapshot",
+  "summary": "No matching records. Try a material name such as Nomex or PMMA, or a broader condition. Conditions applied: Mars gravity.",
+  "appliedFilters": {
+    "gravity": "mars",
+    "materialId": null
+  },
+  "results": []
+}
