@@ -1,4 +1,8 @@
 import {connectHost} from './host-connection.mjs';
+import {CameraMotion} from './motion.js';
+import {mountResearchBrowser} from './research-db/browser.js';
+import {registerMaterialLibrary} from './material-search/bridge.js';
+import {createShelfAdapter} from './library-adapter.mjs';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { fitPropModel } from './prop-models.js?v=model-swap-1';
@@ -195,10 +199,10 @@ const RIG = {
   // SORAINE: the worktop the basket is tipped onto (flame stays in frame). Shelf, product and basket views: shelf3d.js.
   bench:   { pos: new THREE.Vector3(1.55, 1.78, 2.25), look: new THREE.Vector3(0.82, 0.96, 0.32), fov: 46 }
 };
-const cam = { pos: RIG.landing.pos.clone(), look: RIG.landing.look.clone(), fov: RIG.landing.fov, from: null, to: RIG.landing, t: 1, dur: 1 };
-function snap(rig) { cam.pos.copy(rig.pos); cam.look.copy(rig.look); cam.fov = rig.fov; cam.t = 1; cam.to = rig; }
-function goTo(rig, dur = 1.6) { cam.from = { pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }; cam.to = rig; cam.t = 0; cam.dur = dur; }
-const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const cam = new CameraMotion(THREE, RIG.landing);
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+function snap(rig) { cam.snap(rig); }
+function goTo(rig, dur = 1.6) { reducedMotion.matches ? cam.snap(rig) : cam.goTo(rig, dur); }
 
 // ---------- scenarios / environment ----------
 let scenarios = [], current = null, target = null, blend = 1;   // env blends when the wave reaches the camera
@@ -256,15 +260,19 @@ function selectScenario(slug, immediate = false) {
 wave.onSweep = () => { /* environment crossfade begins when the front reaches the camera */ };
 
 // ---------- pages ----------
-let inspector = null, shop = null;
+let inspector = null, shop = null, researchBrowser = null;
 const shopOpen = document.getElementById('shop-open');
 const pages = new Pages({
   onPage: (p) => {
     inspector?.close({ restore: false });
+    document.body.dataset.page = p;
+    const atmosphereControl = document.getElementById('sample-atmosphere');
+    if (atmosphereControl && p !== 'observe') atmosphereControl.hidden = true;
+    if (p === 'detail') researchBrowser?.show(); else researchBrowser?.hide();
     if (p === 'shop') shop.enter();
     else { if (shop?.active) shop.exit(); goTo(RIG[p] || (isSpace(target) ? RIG.orbital : RIG.cook), 1.5); }
     shopOpen.hidden = p !== 'observe';
-    document.getElementById('combustion-status').hidden = p === 'shop';
+    document.getElementById('combustion-status').hidden = p !== 'observe';
     pass.uniforms.uDof.value = 0;
   },
   onScenario: (slug) => selectScenario(slug)
@@ -333,22 +341,19 @@ function govern(rawDt) {
 
 // ---------- loop ----------
 let hostActive = parent === window;
-const clock = new THREE.Clock(); let time = 0, burn = 1;
+const clock = new THREE.Clock(); let time = 0, burn = 1, drift = 0;
 const viewShift = { x: 0, y: 0 };
 const tmpUp = new THREE.Vector3(0, 1, 0);
 function frame() {
-  if (!hostActive || document.hidden) { clock.getDelta(); requestAnimationFrame(frame); return; }
+  if (!hostActive || document.hidden || (pages.page === 'detail' && !cam.moving)) { clock.getDelta(); requestAnimationFrame(frame); return; }
   const rawDt = clock.getDelta(); govern(rawDt);
   const dt = Math.min(rawDt, 0.05);
-  const paused = !!inspector.active || shop.paused;
+  const paused = !!inspector.active || shop.paused || pages.page === 'detail';
   if (!paused) time += dt;
-  // camera tween
-  if (cam.t < 1) {
-    cam.t = Math.min(1, cam.t + dt / cam.dur); const k = ease(cam.t);
-    cam.pos.lerpVectors(cam.from.pos, cam.to.pos, k); cam.look.lerpVectors(cam.from.look, cam.to.look, k); cam.fov = THREE.MathUtils.lerp(cam.from.fov, cam.to.fov, k);
-  }
-  // idle drift (breathing) in cook view
-  const drift = inspector.active || pages.page === 'shop' ? 0 : pages.page === 'observe' ? 1 : 0.4;   // shop: hotspots track a still camera
+  // Continuous camera arcs; the reviewed sample controller and controls stay intact.
+  cam.update(dt);
+  const driftTo = reducedMotion.matches || inspector.active || pages.page !== 'observe' ? 0 : 1;
+  drift += (driftTo - drift) * (1 - Math.exp(-dt * 4));
   camera.position.copy(cam.pos); camera.position.x += Math.sin(time * 0.45) * 0.012 * drift; camera.position.y += Math.sin(time * 0.7) * 0.008 * drift;
   camera.fov = cam.fov;
   // Store on a phone: shift the projection so the product sits above the text panel.
@@ -418,6 +423,16 @@ window.__kitchen = { basket, shop, shelf, research, inspector, combustion, orbit
 
 
 const readyForHost = Promise.all([appReady, shelfReady, basket.ready, propVisualsReady, surfaceMaterialsReady]);
+// Parent dashboard and in-scene search both use the physical basket as authority.
+registerMaterialLibrary(createShelfAdapter({basket,shop,products:PRODUCTS,openShelf:async()=>{
+  await readyForHost;
+  if(wave.active || basket.busy) throw Error('Wait for the current scene animation to finish.');
+  pages.show('shop');
+  if(!shop.active) shop.enter();
+}})).catch(error=>console.error('Research basket connection failed',error));
+researchBrowser = mountResearchBrowser(document.getElementById('material-search'), {
+  searchOptions: {onOpenShelf:()=>pages.show('shop')}
+});
 connectHost({ready:readyForHost,basket,shop,products:PRODUCTS,setActive:active=>{hostActive=active;},
   openShelf:async({allowBusy=false}={})=>{
     await readyForHost;

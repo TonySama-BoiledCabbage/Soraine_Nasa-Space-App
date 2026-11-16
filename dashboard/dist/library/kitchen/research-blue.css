@@ -1,0 +1,55 @@
+/* Soraine research shares the dashboard's black and electric-blue palette. */
+body[data-page=detail] #detail{background:#060b13;z-index:6}
+body[data-page=detail] #dots{z-index:8}
+body[data-page=detail] #object-tools{display:none}
+#detail .rdb{--ink:#e6f1ff;--muted:#a7bacf;--accent:#35b9ff;--line:#53b5ff30;--soft:#1b80c51a;--paper:#080f1c;inset:62px 14px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(130deg,#0b1625,#070c15 68%);color-scheme:dark;font-size:15px;line-height:1.55;backdrop-filter:none}
+.rdb .ms-panel{--ink:#e6f1ff;--muted:#a7bacf;--accent:#35b9ff;--line:#53b5ff30;--soft:#1b80c51a;--paper:#080f1c}
+.rdb-excerpt,.rdb-block,.rdb-terms>div{background:#102237}.rdb-terms dd{color:#b9ccdf}
+.rdb-chain>li{border-left-color:#35b9ff55}.rdb-lim{background:#12344c66}
+.rdb-fields,.rdb-mlist,.rdb-excerpt{font-size:14px}.rdb-chain h4{font-size:12px}
+.rdb-head{padding:22px 24px 16px;align-items:start;flex-shrink:0}
+.rdb-head h2{font-size:clamp(21px,2vw,28px);line-height:1.2;color:#eef7ff}
+.rdb-eyebrow{color:#79cdff;font-size:11px;letter-spacing:.12em}
+.rdb-prov{font-size:13px;line-height:1.5;max-width:490px}
+.rdb-dot.live{background:#35b9ff;box-shadow:0 0 0 3px #35b9ff20}
+.rdb-tabs{padding:0 18px;gap:10px;scrollbar-width:thin;scrollbar-color:#327fab #09121e}
+.rdb-tabs button{min-height:44px;font-size:14px}
+.rdb-tabs span:not(:empty),.ms-tabs span,.ms-evidence-kind{background:#14304b;color:#b5e2ff}
+.rdb-record,.rdb-table-wrap{background:#0c1826}
+.rdb-view{padding:20px 24px;scrollbar-color:#39789e #09121e}
+.rdb-table{font-size:14px;line-height:1.55}
+.rdb-table th{background:#112237;color:#baddf3;font-size:12px;padding:12px}
+.rdb-table td{padding:12px}.rdb-table td small{font-size:12px}
+.rdb-table tr[data-go]:hover td,.rdb-table tr[aria-current=true] td{background:#16334c}
+.rdb-filters input[type=search],.rdb-filters select,.ms-form input,.ms-form select{background:#0a1524;border-radius:8px;min-height:44px;color:#edf7ff;font-size:15px}
+.rdb-filters input:focus,.rdb-filters select:focus,.ms-form input:focus,.ms-form select:focus{background:#102338;border-color:#35b9ff;box-shadow:0 0 0 2px #35b9ff20}
+.rdb-export button,.rdb-actions button,.rdb-record-bar button,.rdb-pager button,.rdb-ds button,.ms-actions button,.ms-basket-heading button,.ms-basket-row button,.ms-empty button,.ms-examples button,.ms-chain{background:#11263b;color:#e8f4ff;border:1px solid #4ab6ff38;min-height:44px;border-radius:8px}
+.rdb-export button:hover,.rdb-actions button:hover,.rdb-record-bar button:hover,.rdb-pager button:hover,.rdb-ds button:hover,.ms-actions button:hover:not(:disabled),.ms-basket-row button:hover,.ms-empty button:hover,.ms-examples button:hover,.ms-basket-heading button:hover,.ms-chain:hover{background:#1b3d59}
+.ms-submit,.ms-actions button:first-child{background:#36b7ff;color:#03121d!important;border-radius:8px}
+.ms-submit:hover,.ms-actions button:first-child:hover:not(:disabled){background:#76d1ff}
+.ms-result-list>button[aria-pressed=true]{background:#132d43;box-shadow:inset 3px 0 #35b9ff}
+.ms-summary{background:#102237;border-radius:6px}.ms-object{color:#8bd5ff}
+.ms-evidence-kind,.rdb-chip{background:#14314a;color:#b6e4ff}
+.rdb-chip.amber{background:#392b16;color:#f1ce91}
+.ms-limitation{background:#12426538}.rdb-warn{background:#352819;color:#f4d8ac}
+.rdb-record h3,.rdb-record h4,.rdb-block{color:#ecf6ff}
+.rdb-fields dt,.rdb-na{color:#9db2c6}.rdb-fields dd{color:#e6f1ff;overflow-wrap:anywhere}
+.rdb-link,.rdb-record a,.rdb-intro a{color:#71ccff}.rdb-chain>li:before{background:#14314a;color:#9addff}
+.rdb-ds button[aria-pressed=true]{background:#14314a;border-color:#35b9ff;color:#dff3ff}
+.rdb-intro,.ms-status,.ms-specimen-note,.ms-footnote{font-size:14px;line-height:1.6}
+.rdb-record-bar{background:#0c1826;position:sticky;top:-12px;z-index:2;padding-block:10px}
+.ms-results,.rdb-fields{overflow-wrap:anywhere}.rdb-filters input{min-width:0}
+@media(max-width:700px){
+  #detail .rdb{inset:58px 6px 6px;border-radius:9px}
+  .rdb-head{padding:14px 16px 10px;gap:8px}.rdb-head h2{font-size:21px}
+  .rdb-prov{font-size:12px;line-height:1.45}.rdb-eyebrow{font-size:10px}
+  .rdb-tabs{padding:0 10px;gap:4px}.rdb-view{padding:16px}
+  .rdb-filters select{max-width:100%;flex:1 1 130px}
+  .rdb-record{background:#0c1826}.rdb-body{position:relative}
+  .rdb.has-record .rdb-record{position:absolute;inset:0;width:100%;max-height:none;border:0;z-index:3;padding:12px 16px 24px}
+  .rdb.has-record .rdb-view{visibility:hidden}
+  .ms-actions button{flex:1 1 135px}.rdb-export{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){.rdb *,.ms-panel *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.rdb-file,.rdb-statement{background:#102237;color:#e6f1ff}.rdb-statement:hover,.rdb-statement[aria-current=true]{background:#18364f}
