@@ -47,6 +47,7 @@ export function buildKitchen(scene) {
   const burner = cyl(0.13, 0.14, 0.02, M.pan, WORLD.flame.x, H + 0.045, WORLD.flame.z);
   root.add(burner);
   const trivet = new THREE.Group();
+  trivet.name = 'Trivet';
   for (let i = 0; i < 4; i++) {
     const a = cyl(0.008, 0.008, 0.34, M.dark, 0, 0, 0, 8); a.rotation.z = Math.PI / 2; a.rotation.y = i * Math.PI / 4;
     a.position.set(WORLD.flame.x, H + 0.125, WORLD.flame.z); trivet.add(a);
@@ -71,7 +72,7 @@ export function buildKitchen(scene) {
   const yolk = new THREE.Mesh(new THREE.SphereGeometry(0.038, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.yolk); yolk.scale.y = 0.55; yolk.position.set(0.0, 0.014, 0.0); yolk.castShadow = true; pan.add(yolk);
 
   // loose props live in props.js (physics-driven)
-  return { root, pan, yolk, white };
+  return { root, pan, yolk, white, trivet };
 }
 
 // Flame: a cone (buoyant) that morphs toward a sphere (microgravity). Emissive + point light.

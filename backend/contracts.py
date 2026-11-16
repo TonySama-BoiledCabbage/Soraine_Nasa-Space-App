@@ -42,6 +42,30 @@ def validate(source):
     for ref in re.findall(r'"[\w-]+":\s*"\./(vendor/[^"]+)"', html):
         require((root / ref).is_file(), f"import map points at missing {ref}")
     for script in (root / "kitchen").glob("*.js"):
-        for ref in re.findall(r"""(?:from\s+|import\s*\(\s*)['"](\.[^'"?]+)""", script.read_text(encoding="utf-8")):
+        text = script.read_text(encoding="utf-8")
+        for ref in re.findall(r"""(?:from\s+|import\s*\(\s*)['"](\.[^'"?]+)""", text):
             require((script.parent / ref).is_file(), f"{script.name} imports missing {ref}")
+        # literal asset paths (models, textures, data) must ship with the page
+        for ref in re.findall(r"""['"`]((?:models|textures|dashboard/data|data)/[\w./-]+\.(?:glb|png|jpg|json))['"`]""", text):
+            require((root / ref).is_file(), f"{script.name} references missing asset {ref}")
+    validate_shelf(root, require)
     return len(scenarios)
+
+
+def validate_shelf(root, require):
+    """SORAINE shelf: every research record maps to exactly one product, and every product id is unique."""
+    catalog = root / "kitchen/catalog.js"
+    research = root / "dashboard/data/research.json"
+    if not catalog.is_file():
+        return
+    text = catalog.read_text(encoding="utf-8")
+    ids = re.findall(r"\{\s*id:\s*'([\w-]+)'", text)
+    lists = [re.findall(r"'(E\d{3})'", block) for block in re.findall(r"measurementIds:\s*\[([^\]]*)\]", text)]
+    require(len(ids) == len(set(ids)) and len(ids) == len(lists), "catalog.js: product ids must be unique, one measurementIds list each")
+    used = [m for block in lists for m in block]
+    rows = json.loads(research.read_text(encoding="utf-8"))["evidence"]
+    known = {r["measurement_id"] for r in rows}
+    require(len(used) == len(set(used)), "catalog.js: a measurement_id is mapped to more than one product")
+    require(set(used) == known, f"catalog.js: unmapped {sorted(known - set(used))}, unknown {sorted(set(used) - known)}")
+    for url in re.findall(r"url:\s*'([\w./-]+\.glb)'", text):
+        require((root / url).is_file(), f"catalog.js: model missing {url}")

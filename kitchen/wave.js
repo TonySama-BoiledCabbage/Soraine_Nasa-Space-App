@@ -11,22 +11,26 @@ export class WavePass {
     const size = renderer.getDrawingBufferSize(new THREE.Vector2());
     this.target = new THREE.WebGLRenderTarget(size.x, size.y, { depthTexture: new THREE.DepthTexture(size.x, size.y, THREE.UnsignedIntType), samples: 0 });
     this.target.texture.colorSpace = THREE.LinearSRGBColorSpace;
+    this.focusTarget = new THREE.WebGLRenderTarget(size.x, size.y);
+    this.focusMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, fog: false });
+    this.focusObject = null;
     this.uniforms = {
       tDiffuse: { value: this.target.texture }, tDepth: { value: this.target.depthTexture },
+      tFocusMask: { value: this.focusTarget.texture }, uHasFocusMask: { value: 0 },
       uInvProj: { value: new THREE.Matrix4() }, uCamWorld: { value: new THREE.Matrix4() },
       uNear: { value: 0.1 }, uFar: { value: 200 },
       uCenter: { value: new THREE.Vector3() }, uRadius: { value: -1 }, uTrail: { value: 4 }, uSpacing: { value: 0.35 }, uStrength: { value: 0 },
       uLine: { value: new THREE.Color(0.45, 0.82, 1.0) }, uFront: { value: new THREE.Color(1, 1, 1) },
       uTexel: { value: new THREE.Vector2(1 / size.x, 1 / size.y) },
-      uFocus: { value: 1.0 }, uDof: { value: 0 }, uVignette: { value: 0.25 }, uExposure: { value: 1.0 }, uDebug: { value: 0 }
+      uFocus: { value: 1.0 }, uFocusRange: { value: .02 }, uBlurRadius: { value: 9 }, uDof: { value: 0 }, uVignette: { value: 0.25 }, uExposure: { value: 1.0 }, uDebug: { value: 0 }
     };
     this.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
       uniforms: this.uniforms, depthTest: false, depthWrite: false,
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy,0.,1.); }`,
       fragmentShader: `
         precision highp float;
-        uniform sampler2D tDiffuse, tDepth; uniform mat4 uInvProj, uCamWorld; uniform vec3 uCenter, uLine, uFront;
-        uniform float uNear, uFar, uRadius, uTrail, uSpacing, uStrength, uFocus, uDof, uVignette, uExposure, uDebug; uniform vec2 uTexel;
+        uniform sampler2D tDiffuse, tDepth, tFocusMask; uniform float uHasFocusMask; uniform mat4 uInvProj, uCamWorld; uniform vec3 uCenter, uLine, uFront;
+        uniform float uNear, uFar, uRadius, uTrail, uSpacing, uStrength, uFocus, uFocusRange, uBlurRadius, uDof, uVignette, uExposure, uDebug; uniform vec2 uTexel;
         varying vec2 vUv;
         vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.,1.); }
         vec3 toSRGB(vec3 c){ return mix(c*12.92, 1.055*pow(c,vec3(1./2.4))-0.055, step(0.0031308,c)); }
@@ -40,12 +44,17 @@ export class WavePass {
 
           // depth of field (detail page)
           vec3 col;
-          float coc = uDof * clamp(abs(linDepth(d) - uFocus) / max(uFocus,0.2), 0.0, 1.0);
+          float coc = uDof * clamp(max(0.0, abs(linDepth(d) - uFocus) - uFocusRange) / max(uFocus * 0.5, 0.12), 0.0, 1.0);
+          // Transparent GLB surfaces can expose background depth. A silhouette
+          // mask keeps the inspected object sharp without blurring its glass body.
+          coc *= 1.0 - uHasFocusMask * step(0.5, texture2D(tFocusMask, vUv).r);
           if (coc > 0.002) {
-            col = vec3(0.); const int N = 12; float R = coc * 9.0;
+            col = vec3(0.); float totalWeight = 0.; const int N = 12; float R = coc * uBlurRadius;
             for (int i=0;i<N;i++){ float a = float(i)*2.399963; float r = sqrt(float(i)+0.5)/sqrt(float(N));
-              col += texture2D(tDiffuse, vUv + vec2(cos(a),sin(a))*r*R*uTexel).rgb; }
-            col /= float(N);
+              vec2 sampleUV = vUv + vec2(cos(a),sin(a))*r*R*uTexel;
+              float weight = 1.0 - uHasFocusMask * step(0.01, texture2D(tFocusMask, sampleUV).r);
+              col += texture2D(tDiffuse, sampleUV).rgb * weight; totalWeight += weight; }
+            col = totalWeight > 0.001 ? col / totalWeight : texture2D(tDiffuse, vUv).rgb;
           } else col = texture2D(tDiffuse, vUv).rgb;
 
           // ---- scan ----
@@ -80,12 +89,30 @@ export class WavePass {
     this.quadScene = new THREE.Scene(); this.quadScene.add(this.quad);
     this.quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   }
-  setSize(w, h) { this.target.setSize(w, h); this.uniforms.uTexel.value.set(1 / w, 1 / h); }
+  setSize(w, h) { this.target.setSize(w, h); this.focusTarget.setSize(w, h); this.uniforms.uTexel.value.set(1 / w, 1 / h); }
   render(scene, camera) {
     const r = this.renderer, u = this.uniforms;
     u.uInvProj.value.copy(camera.projectionMatrixInverse); u.uCamWorld.value.copy(camera.matrixWorld);
     u.uNear.value = camera.near; u.uFar.value = camera.far;
     r.setRenderTarget(this.target); r.render(scene, camera);
+    u.uHasFocusMask.value = this.focusObject ? 1 : 0;
+    if (this.focusObject) {
+      const layers = [], cameraMask = camera.layers.mask, override = scene.overrideMaterial, background = scene.background;
+      const clearColor = r.getClearColor(new THREE.Color()), clearAlpha = r.getClearAlpha();
+      const shadowAutoUpdate = r.shadowMap.autoUpdate, shadowNeedsUpdate = r.shadowMap.needsUpdate;
+      try {
+        this.focusObject.traverse(object => { if (object.isMesh) { layers.push([object, object.layers.mask]); object.layers.set(31); } });
+        camera.layers.set(31);
+        scene.overrideMaterial = this.focusMaterial; scene.background = null;
+        r.shadowMap.autoUpdate = false; r.shadowMap.needsUpdate = false;
+        r.setClearColor(0x000000, 1); r.setRenderTarget(this.focusTarget); r.clear(); r.render(scene, camera);
+      } finally {
+        for (const [object, mask] of layers) object.layers.mask = mask;
+        camera.layers.mask = cameraMask; scene.overrideMaterial = override; scene.background = background;
+        r.setClearColor(clearColor, clearAlpha);
+        r.shadowMap.autoUpdate = shadowAutoUpdate; r.shadowMap.needsUpdate = shadowNeedsUpdate;
+      }
+    }
     r.setRenderTarget(null); r.render(this.quadScene, this.quadCam);
   }
 }

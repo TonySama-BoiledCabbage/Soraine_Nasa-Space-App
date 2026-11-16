@@ -8,11 +8,17 @@ from .contracts import validate
 FILES = [
     "index.html",
     "kitchen/style.css", "kitchen/main.js", "kitchen/scene.js", "kitchen/wave.js", "kitchen/pages.js", "kitchen/props.js", "kitchen/terrain.js", "kitchen/meadow.js", "kitchen/stars.js",
+    "kitchen/combustion.js", "kitchen/inspect.js", "kitchen/inspect.css", "kitchen/object-info.js", "kitchen/materials.js", "kitchen/prop-models.js",
+    "kitchen/research-source.js", "kitchen/catalog.js", "kitchen/shop-shapes.js", "kitchen/basket.js", "kitchen/shelf3d.js", "kitchen/shop.js", "kitchen/shop.css",
+    # SORAINE store models: listed one by one so retired assets in models/shop/ (the old cart) stay out of releases
+    "models/shop/shelf.glb", "models/shop/shopping-basket.glb", "models/shop/nomex-glove.glb", "models/shop/polycarbonate-goggles.glb",
+    "models/shop/nomex-velcro-strap.glb", "models/shop/beefy-t-shirt.glb", "models/shop/mylar-sleeve.glb", "models/shop/ultem-comb.glb",
+    "models/shop/sibal-cloth.glb", "models/shop/pmma-ruler.glb", "models/shop/p213-tape.glb",
     "vendor/three.module.js", "vendor/LICENSE-three", "vendor/cannon-es.js", "vendor/LICENSE-cannon-es", "vendor/addons/loaders/GLTFLoader.js", "vendor/addons/utils/BufferGeometryUtils.js",
     "data/scenarios.json",
     "dashboard/index.html", "dashboard/style.css", "dashboard/app.js", "dashboard/data/research.json",
 ]
-GLOBS = ["models/*.glb", "models/planet_surfaces/*.glb"]
+GLOBS = ["models/*.glb", "models/planet_surfaces/*.glb", "models/landing/*.glb", "models/soraine_props/*.glb", "textures/*.png"]
 
 def _write(source, target, host):
     files = list(FILES)

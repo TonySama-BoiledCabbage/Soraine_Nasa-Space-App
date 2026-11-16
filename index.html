@@ -6,12 +6,14 @@
 <title>Flame in Freefall</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="kitchen/style.css?v=lab-controls-3">
+<link rel="stylesheet" href="kitchen/inspect.css?v=object-inspect-1">
+<link rel="stylesheet" href="kitchen/shop.css?v=basket-1">
 <script type="importmap">
 { "imports": { "three": "./vendor/three.module.js", "cannon-es": "./vendor/cannon-es.js", "three/addons/": "./vendor/addons/" } }
 </script>
 </head>
 <body>
-<canvas id="gl"></canvas>
+<canvas id="gl" role="img" aria-label="3D flame experiment and material shelf"></canvas>
 <p id="combustion-status" role="status" hidden>Drag the oil dispenser to release fuel · mechanism demonstration</p>
 
 <nav id="dots" aria-label="Pages" hidden>
@@ -19,6 +21,9 @@
   <button data-page="detail" aria-label="Detail"><i></i><span>detail</span></button>
   <button data-page="about" aria-label="About"><i></i><span>about</span></button>
 </nav>
+
+<button id="shop-open" class="shop-link" type="button" aria-label="Browse materials" hidden><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m3 9 2 11h14l2-11H3Zm4 0 3-6m7 6-3-6M9 12v5m6-5v5"/></svg></button>
+<section id="shop" class="page" aria-label="SORAINE material shelf" hidden></section>
 
 <section id="landing">
   <h1>Flame in Freefall</h1>
@@ -45,7 +50,7 @@
   </article>
 </section>
 
-<script type="module" src="kitchen/main.js?v=lab-controls-3"></script>
+<script type="module" src="kitchen/main.js?v=basket-1"></script>
 </body>
 </html>
 
