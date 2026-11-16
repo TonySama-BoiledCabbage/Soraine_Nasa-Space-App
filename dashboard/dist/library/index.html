@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="kitchen/style.css?v=lab-controls-3">
 <link rel="stylesheet" href="kitchen/inspect.css?v=object-inspect-1">
 <link rel="stylesheet" href="kitchen/shop.css?v=basket-1">
+<link rel="stylesheet" href="kitchen/material-search.css?v=research-1">
+<link rel="stylesheet" href="kitchen/research-db.css?v=research-1">
+<link rel="stylesheet" href="kitchen/research-blue.css?v=research-1">
 <script type="importmap">
 { "imports": { "three": "./vendor/three.module.js", "cannon-es": "./vendor/cannon-es.js", "three/addons/": "./vendor/addons/" } }
 </script>
@@ -37,7 +40,7 @@
 </section>
 
 <section id="detail" class="page" hidden>
-  <article class="card" id="detailCard"></article>
+  <div id="material-search"></div>
 </section>
 
 <section id="about" class="page" hidden>
@@ -46,11 +49,11 @@
     <p>A controlled combustion demonstration. Planet landscapes provide context for the selected gravity. The orbital scene takes place inside a pressurized cabin.</p>
     <p>Drag the oil dispenser to release fuel droplets near the burner. Press the metal O2 SUPPLY button on the worktop, or use the O key, to inject oxygen. The orbital experiment supplies oxygen automatically while fuel remains available.</p>
     <p>Each scenario pulses a wave out from the flame. What the wave has passed is already living under the new gravity; what it has not reached is still under the old one. The closer the wavefront is to you, the harder the camera shakes.</p>
-    <p class="muted">Flame shapes here are schematic: height and colour follow a simple buoyancy heuristic, not a combustion model. Figures in the detail page are labelled with their source or marked unverified.</p>
+    <p class="muted">Flame shapes here are schematic: height and colour follow a simple buoyancy heuristic, not a combustion model. Research records retain their reported values, test conditions and scientific sources.</p>
   </article>
 </section>
 
-<script type="module" src="kitchen/main.js?v=basket-1"></script>
+<script type="module" src="kitchen/main.js?v=research-1"></script>
 </body>
 </html>
 
