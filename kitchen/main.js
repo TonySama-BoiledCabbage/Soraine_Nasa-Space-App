@@ -14,7 +14,7 @@ import { Pages } from './pages.js?v=basket-1';
 import { research } from './research-source.js?v=basket-1';
 import { Basket } from './basket.js?v=basket-1';
 import { Shop } from './shop.js?v=basket-1';
-import { mountResearchBrowser } from './research-db/browser.js?v=rdb-1';
+import { mountResearchBrowser } from './research-db/browser.js?v=mobile-1';
 import { registerMaterialLibrary } from './material-search/bridge.js';   // same URL as ui.js imports: one basket bridge
 import { PRODUCTS } from './catalog.js?v=basket-1';
 import { Shelf } from './shelf3d.js?v=basket-1';
@@ -206,9 +206,18 @@ const workView = { active: false, requested: false, lastInput: 0, idleMs: 7000 }
 const workRay = new THREE.Raycaster(), workPointer = new THREE.Vector2(), workHit = new THREE.Vector3();
 const workPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -.98);
 function restRig() { return isSpace(target) && !chamber.visible ? RIG.orbital : RIG.cook; }
+// Narrow screens need more width: widen the lens first (up to 75°), then pull back for the rest. Inside the lab /
+// orbital cabin the pull-back stops below the ceiling (shell top 4.13 m); pulling 2x on a phone put the camera
+// outside the cabin, which rendered as an empty dark screen.
+const WORK_ASPECT = .95, WORK_FOV_MAX = 75, WORK_CEILING = 3.75;
 function workRig() {
-  const scale = Math.max(1, Math.min(2.2, .95 / camera.aspect));
-  return { pos: RIG.work.look.clone().add(RIG.work.pos.clone().sub(RIG.work.look).multiplyScalar(scale)), look: RIG.work.look, fov: RIG.work.fov };
+  const half = (deg) => Math.tan(THREE.MathUtils.degToRad(deg) / 2);
+  const need = half(RIG.work.fov) * WORK_ASPECT / Math.max(.2, camera.aspect);           // tan(vfov/2) that keeps the width
+  const fov = Math.min(WORK_FOV_MAX, Math.max(RIG.work.fov, THREE.MathUtils.radToDeg(2 * Math.atan(need))));
+  const offset = RIG.work.pos.clone().sub(RIG.work.look);
+  const roof = labShell.visible ? (WORK_CEILING - RIG.work.look.y) / offset.y : 2.2;
+  const scale = Math.max(1, Math.min(roof, need / half(fov)));
+  return { pos: RIG.work.look.clone().add(offset.multiplyScalar(scale)), look: RIG.work.look, fov };
 }
 function resetWorkView() { workView.active = workView.requested = false; }
 function requestWorkView() {

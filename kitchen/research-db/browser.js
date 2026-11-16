@@ -28,6 +28,7 @@ export function mountResearchBrowser(host, { searchOptions }) {
 <div class="rdb-body"><section class="rdb-view" data-view="search"><div class="rdb-search-host"></div></section>${TABS.slice(1).map(([id]) => `<section class="rdb-view" data-view="${id}" hidden></section>`).join('')}<aside class="rdb-record" aria-label="Evidence chain" hidden></aside></div>`;
   const $ = (s) => host.querySelector(s), views = Object.fromEntries(TABS.map(([id]) => [id, host.querySelector(`[data-view="${id}"]`)]));
   const recordEl = $('.rdb-record'), prov = $('.rdb-prov');
+  prov.addEventListener('click', () => prov.classList.toggle('full'));   // phones clamp the provenance line; tap to read it all
   // Search falls back to the same full database bundle (live BigQuery or the saved export) the other tabs use.
   const search = mountMaterialSearch($('.rdb-search-host'), { ...searchOptions, loadBundle: () => loadResearch().then((r) => r.data) });
   const st = { tab: 'search', record: null, trail: [], f: { measurements: { q: '', material: '', gravity: '', type: '', page: 0 }, experiments: { q: '', material: '', gravity: '', page: 0 }, sources: { q: '', type: '', used: false, page: 0 }, statements: { q: '', page: 0 }, original: { ds: null, q: '', kind: '', page: 0 } } };

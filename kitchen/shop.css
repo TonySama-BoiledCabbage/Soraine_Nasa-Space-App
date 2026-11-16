@@ -70,7 +70,7 @@
 @media (max-width:700px){
   .sh-info{left:0;right:0;top:auto;bottom:0;transform:none;width:auto;max-height:46vh;border-radius:16px 16px 0 0;padding:14px 16px 18px}
   .sh-info h2{font-size:20px}
-  .sh-qty{right:12px;top:auto;bottom:calc(46vh + 14px);transform:none}
+  .sh-qty{right:max(12px,env(safe-area-inset-right));top:max(18px,env(safe-area-inset-top));bottom:auto;transform:none}   /* level with ↩, never over the item or its tag */
   .sh-qty > button,.sh-qty output{width:50px;height:48px;font-size:22px}
   .sh-qty small{display:none}
   .sh-arrow{width:44px;height:58px;top:30%}
