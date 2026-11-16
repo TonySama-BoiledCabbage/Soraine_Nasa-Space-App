@@ -6,6 +6,7 @@ import {resolve, extname, sep, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createResearchCache, readPublicBundle} from './research.mjs';
 import {readOriginalBundle} from './original-data.mjs';
+import {createMaterialSearch} from './material-search.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
 const snapshot = JSON.parse((await readFile(resolve(root,'data/research.json'),'utf8')).replace(/^\uFEFF/,''));
@@ -28,6 +29,10 @@ async function request(url){
 }
 const research = createResearchCache({snapshot,refresh:()=>readPublicBundle({request,project,dataset,snapshot}).catch(error=>{console.warn('Research refresh:',error.message);throw error})});
 const originalData = createResearchCache({snapshot:originalSnapshot,refresh:()=>readOriginalBundle({request,project,dataset,snapshot:originalSnapshot}).catch(error=>{console.warn('Original data refresh:',error.message);throw error})});
+// Keyword mode: no summariser is configured. Allowed origins are for a separately hosted frontend.
+const materialSearch = createMaterialSearch({loadResearch:research,loadOriginal:originalData,snapshots:{research:snapshot,original:originalSnapshot},
+  ratePerMinute:Number(process.env.SEARCH_RATE_PER_MINUTE)||30,
+  allowedOrigins:(process.env.SEARCH_ALLOWED_ORIGINS||'').split(',').map(v=>v.trim()).filter(Boolean)});
 const types={'.html':'text/html; charset=utf-8','.m4a':'audio/mp4','.mjs':'text/javascript','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.wav':'audio/wav','.ogg':'audio/ogg','.mp3':'audio/mpeg'};
 // Ignore malformed or multipart requests; a valid range outside the file is 416.
 function audioRange(header,size){
@@ -48,6 +53,8 @@ const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+  // The one route that accepts POST. Every other route stays GET and HEAD only.
+  if((req.url||'').split('?')[0]==='/api/material-search'){await materialSearch.handle(req,res);return;}
   if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{Allow:'GET, HEAD'}).end();return;}
   try{
     const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
