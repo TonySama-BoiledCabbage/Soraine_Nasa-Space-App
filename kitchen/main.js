@@ -298,8 +298,18 @@ const pages = new Pages({
   },
   onScenario: (slug) => selectScenario(slug)
 });
+// The flame is not a physics body: an invisible, unscaled pick volume makes it hoverable and clickable.
+const flamePick = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .2, 12), new THREE.MeshBasicMaterial({ visible: false }));
+flamePick.position.y = .09; flame.group.add(flamePick);
+const pct = v => `${Math.round(v * 100)}% · demo scale`;
+const flameExtra = { name: 'flame', mesh: flame.group, extra: true, hint: () => ({
+  fields: { state: burn > .01 ? (flameState.sphere > .5 ? 'Burning · rounded' : 'Burning') : 'Out',
+    heat: pct(combustion.fuel), temperature: 'Not modelled', thermal: pct(combustion.oxygen),
+    change: `${Math.round(flameState.height * 100)}% height · ${Math.round(flameState.width * 100)}% width` },
+  labels: { heat: 'Fuel', thermal: 'Oxygen', change: 'Shape vs Earth' },
+  note: 'Mechanism demo · not a combustion simulation' }) };
 inspector = new ObjectInspector({
-  props, canvas, camera, reactions: reactionSystem.reactions, research,
+  props, canvas, camera, reactions: reactionSystem.reactions, research, extras: [flameExtra],
   getRig: () => ({ pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }),
   moveCamera: (rig, duration) => goTo(rig, duration),
   getScenario: () => target || current,

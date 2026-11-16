@@ -8,13 +8,15 @@ const damageText = s => [['Softening / melt', s.damage.melted], ['Charring', s.d
   .filter(([, v]) => v >= 0.01).map(([name, v]) => `${name} ${Math.round(v * 100)}%`).join(' · ') || 'No lasting change';
 
 export class ObjectInspector {
-  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research }) {
+  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research, extras = [] }) {
     Object.assign(this, { props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research });
+    // Non-physics objects (the flame): { name, mesh, extra: true, hint() } — hoverable and openable like props.
+    this.extras = extras.filter(o => OBJECT_INFO[o.name]);
     this.active = null;
     this.focus = new THREE.Vector3();
     this.focusRange = .03;
     this.motion = matchMedia('(prefers-reduced-motion: reduce)');
-    this.objects = props.bodies.filter(body => OBJECT_INFO[body.name]);
+    this.objects = [...this.extras, ...props.bodies.filter(body => OBJECT_INFO[body.name])];
     this.tools = document.createElement('div');
     this.tools.id = 'object-tools';
     this.tools.hidden = true;
@@ -72,10 +74,21 @@ export class ObjectInspector {
     canvas.addEventListener('pointerleave', () => this.clearHover());
     canvas.addEventListener('pointerdown', event => {
       this.setMenu(false);
-      if (!this.active) return;
+      if (!this.active) {
+        // Extras are not physics bodies, so Props never reports a click on them. Claim the press when
+        // an extra is the nearest object under the pointer; a short press without movement opens it.
+        const extra = event.button === 0 && this.canOpen() && !this.props.held && !this.props.pending && this.extraAt(event.clientX, event.clientY);
+        if (extra) { event.preventDefault(); event.stopImmediatePropagation(); this.extraPress = { body: extra, x: event.clientX, y: event.clientY, id: event.pointerId }; }
+        return;
+      }
       event.preventDefault(); event.stopImmediatePropagation();
       this.close();
     }, true);
+    addEventListener('pointerup', event => {
+      const press = this.extraPress; this.extraPress = null;
+      if (press && event.pointerId === press.id && Math.hypot(event.clientX - press.x, event.clientY - press.y) < (event.pointerType === 'touch' ? 9 : 6)) this.open(press.body);
+    });
+    addEventListener('pointercancel', () => { this.extraPress = null; });
     document.addEventListener('pointerdown', event => { if (!this.tools.contains(event.target)) this.setMenu(false); });
     window.addEventListener('keydown', event => this.keydown(event), true);
     addEventListener('resize', () => { this.hintSignature = null; if (this.active) this.frameObject(.25); });
@@ -88,6 +101,13 @@ export class ObjectInspector {
   }
 
   allObjects() { return [...this.objects, ...this.props.bodies.filter(b => b.sample && b.state === 'released')]; }
+  pick(clientX, clientY) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.ray.setFromCamera(new THREE.Vector2((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2), this.camera);
+    const objects = this.allObjects(), hit = this.ray.intersectObjects(objects.map(body => body.mesh), true)[0];
+    return hit && objects.find(body => body.mesh === hit.object || body.mesh.getObjectById(hit.object.id));
+  }
+  extraAt(clientX, clientY) { const body = this.pick(clientX, clientY); return body?.extra ? body : null; }
   infoFor(body) {
     if (!body.sample) return OBJECT_INFO[body.name];
     const p = body.product, s = this.reactions?.getState(body.instanceId);
@@ -238,8 +258,8 @@ export class ObjectInspector {
   updateHint(body) {
     const s = body.sample && this.reactions?.getState(body.instanceId);
     const ref = THERMAL_REFERENCES[body.product?.id];
-    const speed = body.body.velocity.length();
-    const fields = { state: s ? stateText(s) : speed < .02 ? 'At rest' : 'Moving',
+    const x = body.extra ? body.hint() : null, speed = x ? 0 : body.body.velocity.length();
+    const fields = x ? x.fields : { state: s ? stateText(s) : speed < .02 ? 'At rest' : 'Moving',
       heat: s ? `${Math.round(s.heatLevel * 100)}% · demo` : `${speed.toFixed(2)} m/s · simulated`,
       temperature: 'Not modelled', thermal: ref?.value || 'Not verified for this object',
       change: s ? damageText(s) : `${Math.round(body.body.mass * 1000)} g · demo` };
@@ -249,25 +269,21 @@ export class ObjectInspector {
     this.hint.dataset.instance = body.instanceId || body.name;
     this.hint.querySelector('strong').textContent = this.infoFor(body).title;
     for (const [key, value] of Object.entries(fields)) this.hintFields[key].textContent = value;
-    this.hint.querySelector('[data-label="heat"]').textContent = s ? 'Heat load' : 'Speed';
-    this.hint.querySelector('[data-label="thermal"]').textContent = ref?.label || 'Thermal reference';
-    this.hint.querySelector('[data-label="change"]').textContent = s ? 'Changes' : 'Mass';
-    this.hint.querySelector('small').textContent = ref?.sourceLabel ? `${ref.sourceLabel} reference · ${ref.note || 'Not an ignition threshold.'}` : 'Mechanism demo · temperature is not calculated';
+    const labels = x ? x.labels : { heat: s ? 'Heat load' : 'Speed', thermal: ref?.label || 'Thermal reference', change: s ? 'Changes' : 'Mass' };
+    for (const key of ['heat', 'thermal', 'change']) this.hint.querySelector(`[data-label="${key}"]`).textContent = labels[key];
+    this.hint.querySelector('small').textContent = x ? x.note : ref?.sourceLabel ? `${ref.sourceLabel} reference · ${ref.note || 'Not an ignition threshold.'}` : 'Mechanism demo · temperature is not calculated';
     this.hintSize = this.hint.getBoundingClientRect();
   }
 
   update() {
-    if (this.active && !this.props.bodies.includes(this.active)) this.close();
+    if (this.active && !this.active.extra && !this.props.bodies.includes(this.active)) this.close();
     this.tools.hidden = !this.isObserve() || !!this.active;
     this.toggle.disabled = !this.canOpen();
     if (this.active || !this.canOpen() || this.props.held || this.props.pending || !this.pointer) {
       this.hint.hidden = true;
       return;
     }
-    const rect = this.canvas.getBoundingClientRect();
-    this.ray.setFromCamera(new THREE.Vector2((this.pointer.x - rect.left) / rect.width * 2 - 1, 1 - (this.pointer.y - rect.top) / rect.height * 2), this.camera);
-    const objects = this.allObjects(), hit = this.ray.intersectObjects(objects.map(body => body.mesh), true)[0];
-    const body = hit && objects.find(body => body.mesh === hit.object || body.mesh.getObjectById(hit.object.id));
+    const body = this.pick(this.pointer.x, this.pointer.y);
     this.hint.hidden = !body;
     this.canvas.style.cursor = body ? 'pointer' : '';
     if (body) {
