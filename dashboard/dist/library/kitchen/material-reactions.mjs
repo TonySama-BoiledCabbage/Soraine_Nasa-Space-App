@@ -57,7 +57,8 @@ export class MaterialReactions {
   #snapshot(sample) {
     return {instanceId: sample.instanceId, productId: sample.productId, thermalState: sample.thermalState,
       combustionState: sample.combustionState, heatLevel: sample.heatLevel, damage: {...sample.damage},
-      gravityMps2: sample.gravityMps2, capabilities: {...this.#profiles[sample.productId].capabilities}, evidenceMode: 'schematic'};
+      gravityMps2: sample.gravityMps2, capabilities: {...this.#profiles[sample.productId].capabilities},
+      support: this.#profiles[sample.productId].support ?? null, evidenceMode: 'schematic'};
   }
   #emit(type, sample) {
     const event = {type, instanceId: sample.instanceId, state: type === 'removed' ? null : this.#snapshot(sample)};

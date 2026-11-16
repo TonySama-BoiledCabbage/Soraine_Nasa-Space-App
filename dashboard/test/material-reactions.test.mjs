@@ -11,12 +11,30 @@ const allStates = store => store.getStates();
 test('profiles cover exactly the nine shelf products and hold no research numbers', () => {
   assert.deepEqual([...PRODUCT_IDS].sort(), [...MATERIAL_IDS].sort());
   for (const id of PRODUCT_IDS) {
-    const {capabilities, basis} = PROFILES[id];
+    const {capabilities, basis, support, specimen, notTested, productId} = PROFILES[id];
+    assert.equal(productId, id);
     assert.deepEqual(Object.keys(capabilities).sort(), ['charring', 'flaming', 'melting', 'smoldering']);
     assert.ok(Object.values(capabilities).every(value => value === 'illustrative' || value === 'unsupported'));
     assert.equal(capabilities.melting, 'unsupported'); assert.equal(capabilities.charring, 'unsupported');
     assert.equal(capabilities.smoldering, id === 'beefy-t' ? 'illustrative' : 'unsupported');
-    assert.doesNotMatch(JSON.stringify({capabilities, basis}), /\d/, 'no numeric values in a profile'); assert.ok(basis.length > 20);
+    assert.doesNotMatch(JSON.stringify({capabilities, basis, support, specimen, notTested}), /\d/, 'no numeric values in a profile');
+    assert.ok(['flame-spread records', 'oxygen-limit records', 'model-derived values only'].includes(support));
+    assert.match(basis, /schematic/); assert.match(notTested, /everyday object was not tested/); assert.match(notTested, /not a prediction/);
+  }
+});
+
+test('each profile states the support level the research collection actually gives', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const data = JSON.parse((await readFile(new URL('../dist/data/research.json', import.meta.url), 'utf8')).replace(/^\uFEFF/, ''));
+  const experiments = new Map(data.experiments.map(e => [e.experiment_id, e]));
+  for (const id of PRODUCT_IDS) {
+    const {material, support} = PROFILES[id];
+    const rows = data.measurements.filter(m => experiments.get(m.experiment_id).material.startsWith(material));
+    assert.ok(rows.length > 0, `${material} has records`);
+    const measured = rows.filter(m => !m.evidence_type.startsWith('model_derived'));
+    const expected = measured.some(m => m.metric.startsWith('flame_')) ? 'flame-spread records'
+      : measured.some(m => /^(ULOI|MOC)/.test(m.metric)) ? 'oxygen-limit records' : 'model-derived values only';
+    assert.equal(support, expected, material);
   }
 });
 
@@ -24,7 +42,8 @@ test('a new sample starts ambient, undamaged and schematic; snapshots are copies
   const store = new MaterialReactions();
   const first = store.register({instanceId: 'sample-1', productId: 'pmma'});
   assert.deepEqual(first, {instanceId: 'sample-1', productId: 'pmma', thermalState: 'ambient', combustionState: 'none', heatLevel: 0,
-    damage: {melted: 0, charred: 0, consumed: 0}, gravityMps2: null, capabilities: {...PROFILES.pmma.capabilities}, evidenceMode: 'schematic'});
+    damage: {melted: 0, charred: 0, consumed: 0}, gravityMps2: null, capabilities: {...PROFILES.pmma.capabilities},
+    support: 'flame-spread records', evidenceMode: 'schematic'});
   first.heatLevel = 9; first.damage.consumed = 9; first.capabilities.melting = 'illustrative';
   assert.equal(store.getState('sample-1').heatLevel, 0); assert.equal(store.getState('sample-1').damage.consumed, 0);
   assert.equal(store.getState('sample-1').capabilities.melting, 'unsupported');
