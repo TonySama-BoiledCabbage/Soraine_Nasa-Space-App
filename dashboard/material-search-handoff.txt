@@ -1,0 +1,143 @@
+SORAINE MATERIAL SEARCH: FRONTEND HANDOFF
+
+Branch: codex/material-search-ui
+Base: codex/mission-control-cloud at b52e606
+
+WHAT IS READY
+
+The dashboard now has a material search dialog and research basket. Enter a
+material in the main search box or select Search materials. The dialog supports
+English and Chinese object aliases, gravity filters, material details, original
+source links and adding/removing a material from the basket.
+
+The nine stable material IDs are mylar-g, ultem-1000, nomex-ht90, sibal, pmma,
+polycarbonate, nomex-velcro, p213 and beefy-t. See dist/material-catalog.mjs for
+the exact research names and aliases. Nomex fabric and Nomex Velcro have separate
+groups. Beefy-T flaming and smoldering records keep their original labels.
+
+The object names are visual representations. A comb does not inherit the tested
+performance of a thin Ultem film. Every record keeps its specimen, conditions,
+evidence category, source, locator and limitation. Missing values remain missing.
+The saved collection includes published aggregates, fitted and derived results;
+it is not a collection of independent raw trials.
+
+ETHAN / CLAUDE: CONNECT THE BACKEND
+
+The UI posts JSON to /api/material-search. dashboard/vercel.json contains the
+rewrite to the existing Cloud Run host. The route must accept POST there; the
+current Node server only accepts GET/HEAD and does not yet implement this route.
+This branch does not change your backend or add AI credentials to the browser.
+
+Request:
+  {"query":"Nomex on Moon","filters":{"gravity":"moon","materialId":null},"limit":9}
+
+query: trimmed string, 1-500 characters.
+filters.gravity: earth, moon, mars, iss or null. The iss filter denotes the
+Microgravity category, not proof that an experiment happened aboard the ISS.
+filters.materialId: one of the nine IDs or null.
+limit: integer 1-10, material groups, not evidence rows.
+Explicit filters take priority over inferred query conditions.
+
+Return the agreed response shape from ETHAN-MATERIAL-SEARCH-PLAN.txt:
+query, mode (ai/keyword), dataSource (bigquery/snapshot), summary, results.
+Each group: materialId, title, summary, evidenceIds, evidence, sources.
+Optional extensions: appliedFilters, totalEvidenceCount, originalRecords.
+
+Evidence fields:
+measurementId, experimentId, sourceId, material, gravity, gravityBasis, metric,
+value, unit, evidenceType, conditions, limitation, pdfPage and locator.
+conditions contains pressureKpa, oxygenPct, flowSpeedCmS, durationS, platform
+and specimen. Unknown values use null. Preserve decimal strings if supplied.
+Source fields: sourceId, title, url.
+originalRecords entries: datasetId, recordId, rowIndex, sourceUrl, locator.
+Only include originalRecords when a real raw-record association exists.
+
+The client validates IDs, material/source joins and evidence references before
+rendering. It rejects mismatched groups rather than displaying plausible-looking
+but unrelated numbers. It escapes text and permits only HTTP(S) source links.
+Do not return HTML. AI summaries must be supported by returned records.
+
+On service failure, invalid output or a 12-second timeout, the client searches
+dist/data/research.json locally and visibly labels the saved-data fallback.
+HTTP 400 stays an input error. Closing or replacing a search cancels it and stops
+old responses overwriting newer results. Original CSV rows remain in the existing
+Original data view; the local fallback does not invent raw-row matches.
+
+Actual snapshot request/response pairs are in examples/material-search-snapshot.json.
+They are generated from the current research file, not fabricated API examples.
+For a different backend, pass endpoint to createSearchClient in the UI module
+and configure CORS on that backend. The default same-origin route needs no CORS.
+
+JOHNSON: CONNECT YOUR SHELF AND BASKET
+
+Import the shared bridge in the same top-level browser document:
+
+  import {registerMaterialLibrary} from './material-library-bridge.mjs';
+
+Register one adapter after your shelf store is ready. It must provide:
+
+  getBasket()                  -> current array of stable material IDs
+  addToBasket(materialId)       -> void or Promise; deduplicate by material ID
+  removeFromBasket(materialId)  -> void or Promise
+  selectMaterial(materialId)    -> open/zoom your existing product detail
+  subscribe(callback)          -> unsubscribe function; notify on basket changes
+
+  const disconnect = await registerMaterialLibrary(yourShelfAdapter);
+
+Use your existing store and camera handlers. Do not create another renderer or
+rebuild the scene. Before registration, the search panel has a small in-memory
+basket. Registration transfers those selections once, then your store becomes
+the single authority. The search panel listens to changes from your store.
+Call disconnect during shelf teardown to retain the current IDs locally.
+Concurrent basket actions are locked until the current action completes.
+
+Locate on shelf appears only when an adapter is connected. It calls your
+selectMaterial handler and closes the dialog after that handler succeeds.
+Search itself does not route the dashboard or remount its Canvas.
+
+If the shelf is in a separate iframe/document, this module singleton is not
+shared. Add a same-origin message adapter with origin checks and acknowledgements
+on the shelf side, or mount the shelf in this document. Keep the same method
+contract; do not silently maintain two independent baskets.
+
+To open search from your shelf:
+  import {openMaterialSearch} from './material-search-ui.mjs';
+  openMaterialSearch('Ultem on Moon');
+
+The compact shopping basket asset is already exported separately as
+soraine-shopping-basket.glb. Its root is ShoppingBasket. HandleFrontPivot and
+HandleBackPivot rotate about local X. The file uses metres, GLB Y-up, 3 meshes
+and 4,400 triangles. Use it as a visual container for the shared basket state.
+
+RUN AND VERIFY
+
+From dashboard:
+  npm start
+  npm test
+
+To choose a local port in PowerShell:
+  $env:PORT='4329'
+  npm start
+
+Current verification: 41 Node tests pass, including 10 new tests for aliases,
+gravity precedence, evidence integrity, fallback, cancellation and basket transfer.
+Chromium checks covered Enter search, source expansion, basket add/remove,
+Chinese object names, gravity filters and nine material results. Layout was
+checked at desktop, 390px and 320px widths; no dialog horizontal overflow after
+the narrow-width correction. A physical phone and the combined shelf/backend
+deployment still need the team integration check.
+
+BEFORE MERGING
+
+1. Deploy Ethan's endpoint and validate its live response with this client.
+2. Register Johnson's real shelf adapter and confirm changes work both ways.
+3. Check that selecting a material moves the existing camera and keeps its scene.
+4. Test service unavailable, empty results and a slow/cancelled search.
+5. Confirm the production route serves the backend response rather than HTML.
+6. Review the combined PR before merging to the Vercel production branch.
+
+This branch does not modify the team scenes, physics engine, NASA datasets,
+scientific citations, Rust binary or database. It does not merge or deploy them.
+
+COORDINATION UPDATE
+Ethan's backend is draft PR #8 at c122c56. Seven real backend search responses pass this frontend's validator, including both all-material queries (nine groups at limit 9). Our test is now material-search-client.test.mjs to preserve both suites when combined. Moon fallback includes Earth-to-Moon model records with their original labels and a visible estimate note. Current frontend/base test count: 42 passing.
