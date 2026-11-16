@@ -404,12 +404,15 @@ const appReady = Promise.all([fetch('data/scenarios.json').then(r => r.json()), 
 window.__kitchen = { basket, shop, shelf, research, inspector, combustion, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
 
 
-const readyForHost = Promise.all([appReady, shelfReady, basket.ready]);
+const readyForHost = Promise.all([appReady, shelfReady, basket.ready, propVisualsReady, surfaceMaterialsReady]);
 connectHost({ready:readyForHost,basket,shop,products:PRODUCTS,setActive:active=>{hostActive=active;},
-  openShelf:async()=>{
+  openShelf:async({allowBusy=false}={})=>{
     await readyForHost;
     if(!current)throw Error('The scene is not ready.');
-    if(wave.active || basket.busy)throw Error('Wait for the current scene animation to finish.');
+    if(wave.active || basket.busy){
+      if(allowBusy)return; // Reopening resumes the existing animation without changing its page or basket.
+      throw Error('Wait for the current scene animation to finish.');
+    }
     chamber.visible=false;terrain.plane.visible=true;setTerrain(current,target);
     document.getElementById('landing').classList.add('gone');
     document.getElementById('dots').hidden=false;pages.show('shop');

@@ -11,7 +11,7 @@ export function connectHost({ready,basket,shop,products,openShelf,setActive}) {
       await ready;
       switch(data.action){
         case 'getBasket':break;
-        case 'open':await openShelf();break;
+        case 'open':await openShelf({allowBusy:true});break;
         case 'add':await adapter.addToBasket(data.materialId);break;
         case 'remove':await adapter.removeFromBasket(data.materialId);break;
         case 'select':await adapter.selectMaterial(data.materialId);break;
