@@ -3,7 +3,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { fitPropModel } from './prop-models.js?v=model-swap-1';
 import { ObjectInspector } from './inspect.js?v=object-inspect-1';
 import { applySurfaceMaterials } from './materials.js?v=surface-textures-2';
-import { Combustion } from './combustion.js?v=object-inspect-1';
+import { Combustion } from './combustion.js?v=motion-1';
+import { CameraMotion } from './motion.js?v=motion-1';
 import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=lab-controls-3';
 import { buildStars } from './stars.js?v=lab-controls-3';
 import { buildTerrain } from './terrain.js?v=lab-controls-3';
@@ -13,8 +14,11 @@ import { Pages } from './pages.js?v=basket-1';
 import { research } from './research-source.js?v=basket-1';
 import { Basket } from './basket.js?v=basket-1';
 import { Shop } from './shop.js?v=basket-1';
+import { mountResearchBrowser } from './research-db/browser.js?v=rdb-1';
+import { registerMaterialLibrary } from './material-search/bridge.js';   // same URL as ui.js imports: one basket bridge
 import { PRODUCTS } from './catalog.js?v=basket-1';
 import { Shelf } from './shelf3d.js?v=basket-1';
+import { ReactionSystem } from './reaction-visuals.js';
 
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -48,6 +52,7 @@ const props = new Props(scene, camera, canvas, WORLD.flame, kitchen);
 const combustion = new Combustion(scene,camera,canvas,WORLD.flame,props);
 const modelLoader = new GLTFLoader();
 const basket = new Basket({ scene, props, loader: modelLoader, getGravity: () => props.gNew, canAct: () => !wave.active });
+const reactionSystem = new ReactionSystem({ basket, props, origin: WORLD.flame });
 const shelf = new Shelf(scene, modelLoader);
 
 // Replace only the visual placeholders; the existing physics bodies and controls stay in place.
@@ -187,15 +192,39 @@ const RIG = {
   landing: { pos: WORLD.pan.clone().add(new THREE.Vector3(-.035,1.38,.046)), look: WORLD.pan.clone(), fov: 38 },
   orbital: { pos: new THREE.Vector3(.03,1.24,2.25), look: new THREE.Vector3(.04,1.46,0), fov: 52 },
   cook:    { pos: new THREE.Vector3(0.55, 1.40, 2.35), look: WORLD.flame.clone().add(new THREE.Vector3(0,.06,0)), fov: 48 },
+  work:    { pos: new THREE.Vector3(.48, 2.95, 1.45), look: new THREE.Vector3(.15, .98, .08), fov: 58 },
   detail:  { pos: new THREE.Vector3(0.42, 1.18, 0.55), look: new THREE.Vector3(0.05, 0.94, 0.08), fov: 34 },
   about:   { pos: new THREE.Vector3(-2.6, 1.5, 3.4), look: new THREE.Vector3(0.6, 0.8, 0.2), fov: 44 },
   // SORAINE: the worktop the basket is tipped onto (flame stays in frame). Shelf, product and basket views: shelf3d.js.
   bench:   { pos: new THREE.Vector3(1.55, 1.78, 2.25), look: new THREE.Vector3(0.82, 0.96, 0.32), fov: 46 }
 };
-const cam = { pos: RIG.landing.pos.clone(), look: RIG.landing.look.clone(), fov: RIG.landing.fov, from: null, to: RIG.landing, t: 1, dur: 1 };
-function snap(rig) { cam.pos.copy(rig.pos); cam.look.copy(rig.look); cam.fov = rig.fov; cam.t = 1; cam.to = rig; }
-function goTo(rig, dur = 1.6) { cam.from = { pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }; cam.to = rig; cam.t = 0; cam.dur = dur; }
-const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// Arc moves that keep their speed when a new goTo() interrupts them (motion.js).
+const cam = new CameraMotion(THREE, RIG.landing);
+const snap = (rig) => cam.snap(rig);
+const goTo = (rig, dur = 1.6) => cam.goTo(rig, dur);
+const workView = { active: false, requested: false, lastInput: 0, idleMs: 7000 };
+const workRay = new THREE.Raycaster(), workPointer = new THREE.Vector2(), workHit = new THREE.Vector3();
+const workPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -.98);
+function restRig() { return isSpace(target) && !chamber.visible ? RIG.orbital : RIG.cook; }
+function workRig() {
+  const scale = Math.max(1, Math.min(2.2, .95 / camera.aspect));
+  return { pos: RIG.work.look.clone().add(RIG.work.pos.clone().sub(RIG.work.look).multiplyScalar(scale)), look: RIG.work.look, fov: RIG.work.fov };
+}
+function resetWorkView() { workView.active = workView.requested = false; }
+function requestWorkView() {
+  if (pages.page !== 'observe' || inspector.active || wave.active || inspector.motion.matches) return;
+  workView.lastInput = performance.now();
+  if (!workView.active) workView.requested = true;
+}
+function updateWorkView() {
+  if (pages.page !== 'observe' || wave.active) { resetWorkView(); return; }
+  if (inspector.active) { workView.requested = false; workView.lastInput = performance.now(); return; }
+  if (inspector.motion.matches) { if (workView.active) { resetWorkView(); snap(restRig()); } return; }
+  if (props.held || props.pending) { workView.lastInput = performance.now(); return; }
+  if (workView.requested) { workView.requested = false; workView.active = true; goTo(workRig(), .9); }
+  else if (workView.active && cam.moving) workView.lastInput = performance.now();
+  else if (workView.active && performance.now() - workView.lastInput >= workView.idleMs) { resetWorkView(); goTo(restRig(), 1.4); }
+}
 
 // ---------- scenarios / environment ----------
 let scenarios = [], current = null, target = null, blend = 1;   // env blends when the wave reaches the camera
@@ -242,6 +271,7 @@ function setTerrain(a, b) {
 function selectScenario(slug, immediate = false) {
   const s = scenarios.find(x => x.slug === slug); if (!s || (current && s === current && !immediate)) return;
   inspector?.close({ restore: false });
+  resetWorkView();
   if (immediate || !current) { current = target = s; blend = 1; Object.assign(flameTarget, s.flame); Object.assign(flameState, s.flame); applyEnv(s, s, 1); setTerrain(s, s); SWEEP.uRadius.value = 1e5; props.setGravity(s.g, s.g, -1); }
   else { if (wave.active) { current = mixScenario(current, target, blend); } target = s; blend = 0; Object.assign(flameTarget, s.flame); flameSwept = false; setTerrain(current, target); wave.fire(); props.fire(current.g, target.g); }
   pages.setScenario(s);
@@ -257,17 +287,19 @@ let inspector = null, shop = null;
 const shopOpen = document.getElementById('shop-open');
 const pages = new Pages({
   onPage: (p) => {
+    resetWorkView();
     inspector?.close({ restore: false });
     if (p === 'shop') shop.enter();
     else { if (shop?.active) shop.exit(); goTo(RIG[p] || (isSpace(target) ? RIG.orbital : RIG.cook), 1.5); }
     shopOpen.hidden = p !== 'observe';
+    if (p === 'detail') materialSearch?.show(); else materialSearch?.hide();
     document.getElementById('combustion-status').hidden = p === 'shop';
     pass.uniforms.uDof.value = 0;
   },
   onScenario: (slug) => selectScenario(slug)
 });
 inspector = new ObjectInspector({
-  props, canvas, camera,
+  props, canvas, camera, reactions: reactionSystem.reactions, research,
   getRig: () => ({ pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }),
   moveCamera: (rig, duration) => goTo(rig, duration),
   getScenario: () => target || current,
@@ -283,11 +315,36 @@ shop = new Shop({
 research.load().catch(() => {}).then(() => shelf.ready).then(() => shelf.populate(PRODUCTS, (p) => basket.template(p),
   (p) => research.byId ? research.byIds(p.measurementIds).length : 0, shelf.shelfRig(16 / 10).pos)).catch(e => console.error('Shelf display failed', e));
 shopOpen.addEventListener('click', () => pages.show('shop'));
+// ---------- detail page: team research database + material search (kitchen/research-db/, kitchen/material-search/) ----------
+const productById = (id) => PRODUCTS.find(p => p.id === id);
+const until = (ok, ms) => new Promise((res, rej) => { const t0 = performance.now(); (function poll() { if (ok()) res(); else if (performance.now() - t0 > ms) rej(new Error('The basket is not ready yet.')); else setTimeout(poll, 50); })(); });
+// The basket only takes samples while it is held at the shelf, so adding from search opens the product there and adds one.
+async function showOnShelf(id) { pages.show('shop'); await shop.openProduct(productById(id)); }
+const materialSearch = mountResearchBrowser(document.getElementById('material-search'), { searchOptions: { onOpenShelf: () => pages.show('shop') } });
+registerMaterialLibrary({
+  getBasket: () => [...new Set(basket.inCart().map(r => r.product.id))],
+  addToBasket: async (id) => { await showOnShelf(id); await until(() => basket.mode === 'held', 4000); await shop.setQty(1); },
+  removeFromBasket: (id) => { basket.removeOne(id); },
+  selectMaterial: showOnShelf,
+  subscribe: (fn) => basket.onChange(fn)
+}).catch(e => console.error('Material search basket link failed', e));
 props.canInteract = () => pages.page === 'observe' && !inspector.active;
-// Released SORAINE samples open their product view at the shelf instead of the object inspector.
-const openObject = props.onInspect;
-props.onInspect = (b) => { if (!b.sample) return openObject(b); pages.show('shop'); shop.openSample(b); };
 combustion.canInteract = () => !inspector.active;
+// Reframe before a manipulation; keep the lens fixed from pointer-down to pointer-up.
+const onWorkPointer = e => {
+  if (e.type === 'pointermove' && !(e.movementX || e.movementY) && !props.held) return;
+  if (pages.page !== 'observe' || inspector.active || wave.active) return;
+  const rect = canvas.getBoundingClientRect();
+  workPointer.set((e.clientX - rect.left) / rect.width * 2 - 1, 1 - (e.clientY - rect.top) / rect.height * 2);
+  workRay.setFromCamera(workPointer, camera);
+  if (props.held || (workRay.ray.intersectPlane(workPlane, workHit) && workHit.x > -1.9 && workHit.x < 1.75 && Math.abs(workHit.z) < .8)) requestWorkView();
+};
+canvas.addEventListener('pointermove', onWorkPointer);
+canvas.addEventListener('pointerup', onWorkPointer);
+document.addEventListener('keydown', e => {
+  if (!e.repeat && e.key.toLowerCase() === 'o' && !e.ctrlKey && !e.metaKey && !e.altKey &&
+      !e.target.closest('input, textarea, select, [contenteditable="true"]')) requestWorkView();
+});
 
 document.getElementById('start').addEventListener('click', () => {
   chamber.visible = false;
@@ -303,6 +360,7 @@ document.getElementById('start').addEventListener('click', () => {
 function resize() {
   const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   const s = renderer.getDrawingBufferSize(new THREE.Vector2()); pass.setSize(s.x, s.y);
+  if (workView.active && !inspector.active) workView.requested = true;
 }
 addEventListener('resize', resize); resize();
 // governor: average real frame time over ~1.5 s windows. Down a step when slower than ~45 fps,
@@ -321,20 +379,24 @@ function govern(rawDt) {
 }
 
 // ---------- loop ----------
-const clock = new THREE.Clock(); let time = 0, burn = 1;
+const clock = new THREE.Clock(); let time = 0, burn = 1, drift = 0;
 const viewShift = { x: 0, y: 0 };
 const tmpUp = new THREE.Vector3(0, 1, 0);
+const heldCameraPosition = new THREE.Vector3(); let holdingCamera = false;
 function frame() {
   const rawDt = clock.getDelta(); govern(rawDt);
   const dt = Math.min(rawDt, 0.05); time += dt;
+  updateWorkView();
+  const holdCamera = !!(props.pending || props.held) && !inspector.active;
+  if (holdCamera && !holdingCamera) heldCameraPosition.copy(camera.position);
+  holdingCamera = holdCamera;
   // camera tween
-  if (cam.t < 1) {
-    cam.t = Math.min(1, cam.t + dt / cam.dur); const k = ease(cam.t);
-    cam.pos.lerpVectors(cam.from.pos, cam.to.pos, k); cam.look.lerpVectors(cam.from.look, cam.to.look, k); cam.fov = THREE.MathUtils.lerp(cam.from.fov, cam.to.fov, k);
-  }
-  // idle drift (breathing) in cook view
-  const drift = inspector.active || pages.page === 'shop' ? 0 : pages.page === 'observe' ? 1 : 0.4;   // shop: hotspots track a still camera
+  if (!holdCamera) cam.update(dt);
+  // idle drift (breathing) in cook view, faded in and out so page changes never jump
+  const driftTo = inspector.active || workView.active || holdCamera || pages.page === 'shop' ? 0 : pages.page === 'observe' ? 1 : 0.4;
+  drift += (driftTo - drift) * (1 - Math.exp(-dt * 4)); if (!driftTo && drift < .02) drift = 0;   // still camera for inspector/shop
   camera.position.copy(cam.pos); camera.position.x += Math.sin(time * 0.45) * 0.012 * drift; camera.position.y += Math.sin(time * 0.7) * 0.008 * drift;
+  if (holdCamera) camera.position.copy(heldCameraPosition);
   camera.fov = cam.fov;
   // Store on a phone: shift the projection so the product sits above the text panel.
   const ins = shop.insets(), sv = viewShift;
@@ -358,8 +420,9 @@ function frame() {
   if (!flameSwept && wave.active) flameSwept = true;
   const fk = 1 - Math.exp(-dt * 2.2);
   for (const key in flameState) flameState[key] += (flameTarget[key] - flameState[key]) * fk;
-  if (!inspector.active) burn=combustion.update(dt);
+  if (!paused) burn=combustion.update(dt);
   else combustion.frameArm();
+  reactionSystem.update(dt, { paused, burn, oxygenAvailability: Math.min(1, combustion.oxygen) });
   if (oxygenCap) oxygenCap.position.y=oxygenCapRest-(combustion.buttonTravel>0?.004:0);
   flame.group.visible=burn>.01;
   flame.uniforms.uTime.value = time; flame.uniforms.uBlue.value = flameState.blue; flame.uniforms.uSphere.value = flameState.sphere; flame.uniforms.uFlicker.value = flameState.flicker;
@@ -398,5 +461,5 @@ Promise.all([fetch('data/scenarios.json').then(r => r.json()), landingModels]).t
   scenarios = d.scenarios; terrain.preload(scenarios); pages.setScenarios(scenarios); selectScenario('earth', true); frame();
 }).catch(e => { console.error(e); document.body.insertAdjacentHTML('beforeend', `<pre style="position:fixed;left:12px;bottom:12px;color:#fff">${e}</pre>`); });
 
-window.__kitchen = { basket, shop, shelf, research, inspector, combustion, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
+window.__kitchen = { basket, shop, shelf, research, inspector, combustion, reactionSystem, workView, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
 

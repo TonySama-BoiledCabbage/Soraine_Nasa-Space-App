@@ -4,8 +4,38 @@
   "buildCommand": "",
   "installCommand": "",
   "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/api/material-search",
+      "destination": "https://soraine-dashboard-334840303039.us-central1.run.app/api/material-search"
+    },
+    {
+      "source": "/api/research",
+      "destination": "https://soraine-dashboard-334840303039.us-central1.run.app/api/research"
+    },
+    {
+      "source": "/api/original-data",
+      "destination": "https://soraine-dashboard-334840303039.us-central1.run.app/api/original-data"
+    }
+  ],
   "headers": [
-    { "source": "/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/vendor/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/vendor/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }

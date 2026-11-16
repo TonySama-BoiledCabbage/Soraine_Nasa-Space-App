@@ -69,7 +69,7 @@ export class Shop {
     $('sh-info').addEventListener('click', e => {
       const t = e.target.closest('[data-mat]'); if (t) return this.showMaterial(t.dataset.mat);
       const r = e.target.closest('#sh-rec-toggle');
-      if (r) { const open = r.getAttribute('aria-expanded') !== 'true'; r.setAttribute('aria-expanded', open); this.$('sh-recs').hidden = !open; }
+      if (r) { const open = r.getAttribute('aria-expanded') !== 'true'; r.setAttribute('aria-expanded', open); this.$('sh-recs').hidden = !open; if (open) this.loadSearchSummary(); }
     });
     $('sh-summary').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) this.openProduct(PRODUCTS.find(p => p.id === b.dataset.id)); });
     $('sh-clear').addEventListener('click', () => { this.basket.clearReleased(); this.say('Worktop samples removed.'); });
@@ -195,7 +195,6 @@ export class Shop {
     if (!this.shelf.items.has(p.id)) { await this.shelf.setPage(Math.floor(PRODUCTS.indexOf(p) / 9)); this.renderHotspots(); }
     this.focus = p; this.renderProduct(); this.setView('product');
   }
-  openSample(rec) { this.openProduct(rec.product); }
   step(d) { const i = PRODUCTS.indexOf(this.focus); this.openProduct(PRODUCTS[(i + d + PRODUCTS.length) % PRODUCTS.length]); }
   renderProduct() {
     const p = this.focus; if (!p) return;
@@ -208,12 +207,28 @@ export class Shop {
       <p class="sh-spec"><b>Tested as</b> ${esc(p.specimen.replace(/^Tested as /, ''))}</p>
       ${rows.length ? `<button type="button" id="sh-rec-toggle" class="sh-rec-toggle" aria-expanded="false" aria-controls="sh-recs">${rows.length} research records · ${srcs} NASA source${srcs === 1 ? '' : 's'}</button>` : `<p class="sh-fine">${this.research.error ? 'Research unavailable.' : 'Loading research…'}</p>`}
       <div id="sh-recs" class="sh-recs" hidden>
+        <p id="sh-search-summary" class="sh-fine" role="status" aria-live="polite"></p>
         ${mats.length > 1 ? `<div class="sh-mtabs" role="tablist" aria-label="Burning mode">${mats.map((m, k) => `<button type="button" role="tab" data-mat="${esc(m)}" aria-selected="${k === 0}">${esc(m.replace(/^.*\((.*)\)$/, '$1'))}</button>`).join('')}</div>` : ''}
         <ol id="sh-d-rows"></ol>
         <p class="sh-fine">${this.research.meta ? `Local research snapshot ${esc(this.research.meta.date || '')}.` : ''} Each value keeps its own test conditions; the flame in the scene is a mechanism demonstration.</p>
       </div>
       <p class="sh-fine">Demo physics: ${Math.round(p.phys.mass * 1000)} g, “${esc(p.phys.surface)}” surface (estimates for the animation).</p>`;
     this.showMaterial(mats[0]); this.renderQty();
+  }
+  async loadSearchSummary() {
+    const p = this.focus, el = this.$('sh-search-summary');
+    if (!p || !el || el.dataset.loaded) return;
+    el.textContent = 'Looking up research…';
+    try {
+      const d = await this.research.search('all materials', { filters: { materialId: p.id }, limit: 1 });
+      if (!el.isConnected || this.focus !== p) return;
+      const result = d.results.find(r => r.materialId === p.id);
+      el.textContent = `${d.mode === 'ai' ? 'AI-assisted' : 'Keyword'} search · ${d.dataSource === 'bigquery' ? 'BigQuery' : 'Server snapshot'} · ${result?.summary || d.summary}`;
+      el.dataset.loaded = 'true';
+    } catch (e) {
+      if (!el.isConnected || this.focus !== p) return;
+      el.textContent = e.status === 429 ? 'Search limit reached. Local records remain available; try again in a minute.' : 'Search unavailable. Showing local research records below.';
+    }
   }
   showMaterial(m) {
     const p = this.focus; if (!p || !this.$('sh-d-rows')) return;

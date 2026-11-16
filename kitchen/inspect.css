@@ -10,9 +10,12 @@
 #object-menu button{appearance:none;width:100%;display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;min-height:44px;border:0;border-radius:7px;background:none;color:#f5f7f9;font:inherit;font-size:13px;text-align:left;padding:9px 10px;cursor:pointer}
 #object-menu button:hover{background:#ffffff12}
 .object-menu-index{font:10px ui-monospace,monospace;color:#9aa8ba}
-#object-hover{position:fixed;z-index:9;pointer-events:none;max-width:232px;padding:10px 14px;border-radius:9px;border:1px solid #ffffff2b;background:#131b22e8;color:#fff;box-shadow:0 4px 20px #0002}
+#object-hover{position:fixed;z-index:9;pointer-events:none;width:286px;max-width:calc(100vw - 24px);box-sizing:border-box;padding:12px 14px;border-radius:9px;border:1px solid #ffffff2b;background:#131b22f5;color:#fff;box-shadow:0 4px 20px #0002}
 #object-hover strong{display:block;font-size:13px;font-weight:500}
-#object-hover span{display:block;margin-top:2px;font-size:10px;color:#b8c4ce}
+#object-hover dl{display:grid;gap:6px;margin:9px 0;font-size:12px;line-height:1.4}
+#object-hover dl>div{display:grid;grid-template-columns:100px 1fr;gap:9px}
+#object-hover dt{color:#b8c4ce}#object-hover dd{margin:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#object-hover small{display:block;border-top:1px solid #ffffff24;padding-top:7px;font-size:11px;line-height:1.4;color:#b8c4ce}
 #object-inspector{--detail-white:#f7f8fa;--detail-muted:#b5c1cc;position:fixed;inset:0;z-index:10;color:var(--detail-white);pointer-events:none}
 .object-scrim{position:absolute;inset:0;background:linear-gradient(90deg,#10171d05 25%,#10171d40 49%,#10171de0 67%,#10171df2);pointer-events:none}
 #object-close{position:absolute;left:28px;top:24px;display:flex;align-items:center;gap:12px;border:1px solid #ffffff36;border-radius:99px;background:#111820b8;backdrop-filter:blur(12px);padding:0 17px;font-size:13px;pointer-events:auto}
@@ -32,6 +35,7 @@
 .object-facts>div{display:grid;grid-template-columns:95px 1fr;gap:8px}
 .object-facts dt{color:#95a5b6}
 .object-facts dd{margin:0;color:#e1e8ef}
+.object-facts a{color:#e1e8ef;text-underline-offset:3px;font-size:11px}
 .object-copy h3{font-size:11px;font-weight:600;letter-spacing:.045em;color:#fff;margin:0 0 6px}
 #object-note{font-size:11px;line-height:1.65;color:#95a5b6;border-left:1px solid #ffffff38;padding-left:12px;margin-top:23px}
 #object-research{display:inline-flex;align-items:center;gap:12px;min-height:36px;color:#f0f3f7;font-size:12px;text-decoration:none;border-bottom:1px solid #ffffff45;margin-bottom:5px}
