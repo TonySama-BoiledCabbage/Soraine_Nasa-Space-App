@@ -31,6 +31,7 @@ export class ObjectInspector {
           <h3>What to try</h3><p id="object-action"></p><h3>What to watch</h3><p id="object-observe"></p>
           <section id="sample-state" hidden aria-label="Selected sample reaction">
             <p class="sample-mode">Schematic reaction · observation paused</p>
+            <p id="sample-support" class="sample-note"></p>
             <dl class="sample-facts"><div><dt>Heat cue</dt><dd id="sample-heat"></dd></div><div><dt>Consumed cue</dt><dd id="sample-consumed"></dd></div><div><dt>Sample oxygen</dt><dd id="sample-oxygen"></dd></div></dl>
             <p class="sample-note">Cue levels are animation progress, not measured temperatures or burn rates. Moon and Mars scenery sets gravity; this demonstration assumes supplied oxygen, not outdoor air.</p>
             <button type="button" id="sample-reset">Reset this sample</button>
@@ -138,6 +139,7 @@ export class ObjectInspector {
     this.panel.querySelector('#sample-state').hidden = !state;
     if (!state) return;
     this.panel.querySelector('.sample-mode').textContent = `Schematic · ${sampleDescription(rec, state).role}`;
+    this.panel.querySelector('#sample-support').textContent = `Related evidence: ${sampleDescription(rec, state).support}.`;
     this.panel.querySelector('#sample-heat').textContent = `${Math.round(state.heatLevel * 100)} / 100`;
     this.panel.querySelector('#sample-consumed').textContent = `${Math.round(state.damage.consumed * 100)} / 100`;
     this.panel.querySelector('#sample-oxygen').textContent = this.samples.oxygenSupplied ? 'Supplied' : 'Off';

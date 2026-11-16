@@ -19,6 +19,8 @@ Heat, consumed amount and oxygen availability are unitless animation inputs. No 
 
 All sample reaction times use the core's common display tuning. Material-specific ignition temperatures, melting points and quantitative gravity laws are not supplied by this feature. Melting and charring remain disabled in the initial profiles. Measured, fitted and model-derived research records retain their original conditions and source links. The everyday objects remain representations of materials, rather than replicas of the tested specimens.
 
+The inspector displays each profile's collection support: flame-spread records, oxygen-limit records or model-derived values only. The specimen note explicitly distinguishes the everyday object from the laboratory specimen. These categories describe the linked evidence, not validation of the animation.
+
 ## Checks
 
 Run `node --test test/*.test.mjs` from `dashboard/`. Integration tests use the repository's actual Three.js modules without a GPU. They cover independent instances, unchanged shared materials, pause, cooling, retained damage, individual reset, removal/disposal, fresh replacements, distinct IDs and the total sample limit. Browser checks additionally cover physical selection, zoom, keyboard navigation, research routing and phone layout.

@@ -89,6 +89,10 @@ test('inspector content identifies the physical sample and separates cues from m
   assert.match(sampleDescription(b, f.controller.getState(b)).kind, /sample-2/);
   assert.match(sampleDescription(a).observe, /do not predict/);
   assert.match(sampleDescription(a).note, /Tested as film/);
+  assert.equal(sampleDescription(a, f.controller.getState(a)).support, 'oxygen-limit records');
+  assert.match(sampleDescription(a).note, /everyday object was not tested/);
+  const modelOnly = { ...a, product: { ...a.product, id: 'polycarbonate' } };
+  assert.equal(sampleDescription(modelOnly).support, 'model-derived values only');
   f.controller.dispose();
 });
 
