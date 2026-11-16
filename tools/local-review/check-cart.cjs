@@ -12,6 +12,13 @@ const IDS = ['mylar-g', 'ultem-1000', 'nomex-ht90', 'sibal', 'pmma', 'polycarbon
 async function prepare(page, errors) {
   await page.route('**/*', async route => {
     const url = new URL(route.request().url()); let file = path.resolve(base, '.' + decodeURIComponent(url.pathname));
+    if (url.hostname === 'fixture.test' && url.pathname === '/api/material-search') {
+      const { filters } = route.request().postDataJSON();
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+        mode: 'keyword', dataSource: 'snapshot', summary: 'Fixture lookup.',
+        results: [{ materialId: filters.materialId, summary: 'Fixture research records.' }]
+      }) });
+    }
     if (file === base) file = path.join(base, 'index.html');
     if (url.hostname !== 'fixture.test' || !file.startsWith(base + path.sep) || !fs.existsSync(file)) return route.fulfill({ status: 404, body: '' });
     await route.fulfill({ status: 200, contentType: ({ '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json', '.glb': 'model/gltf-binary', '.png': 'image/png' })[path.extname(file)] || 'application/octet-stream', body: fs.readFileSync(file) });
@@ -99,6 +106,7 @@ async function trip(page, gravity) {
     await open(page, 'beefy-t');
     await page.waitForFunction(() => __kitchen.shop.view === 'product' && __kitchen.shop.focus?.id === 'beefy-t');
     await page.click('#sh-rec-toggle');
+    await page.waitForFunction(() => document.getElementById('sh-search-summary').textContent.includes('Keyword search · Server snapshot'));
     assert.equal(await page.locator('#sh-d-rows > li').count(), 3);
     await page.click('.sh-mtabs [data-mat="Beefy-T (smolder)"]');
     assert.deepEqual(await page.locator('#sh-d-rows .sh-rec-id').allTextContents(), ['E057', 'E058', 'E059']);

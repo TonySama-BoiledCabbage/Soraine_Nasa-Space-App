@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Channel, spring, easeInCubic, easeInOutSine, kick } from './motion.js?v=motion-1';
 
 // ponytail: illustrative resource budgets and ballistic droplets, replace with validated
 // transport/combustion data before interpreting sizes or times as measurements.
@@ -24,8 +25,12 @@ export class Combustion {
     this.scene = scene;
     this.dropGeo = new THREE.SphereGeometry(.012,8,6);
     this.dropMat = new THREE.MeshStandardMaterial({color:0xc68820,roughness:.25});
-    this.reach=0;
+    this.reach=0;          // slide-in progress (eased; briefly > 1 during the settle overshoot)
     this.pending=false;
+    // Arm choreography: slide in, unfold the swivel, then aim the gun, each overlapping the last
+    // and settling with a small overshoot. Stowing runs the other way round.
+    this.slide=new Channel(0); this.unfold=new Channel(0); this.aim=new Channel(0);
+    this.deploying=false; this.kickT=Infinity;
     this.buttonTravel=0;
     props.onSpill = () => { this.spillTimer = 1.8; };
     this.status = document.getElementById('combustion-status');
@@ -69,8 +74,7 @@ export class Combustion {
     for (const plane of this.frustum.planes) {
       if (plane.normal.x<0) exit=Math.min(exit,(plane.distanceToPoint(anchor)+.17)/-plane.normal.x);
     }
-    const t=THREE.MathUtils.smoothstep(this.reach,0,1);
-    this.arm.position.x=(1-t)*(Math.max(0,exit)+1.6);
+    this.arm.position.x=(1-this.reach)*(Math.max(0,exit)+1.6)+this.recoilX();
     // Keep even the front edge of the rear plug beyond the lens boundary.
     this.sleeve.scale.x=Math.max(1,(exit-this.arm.position.x)/.28);
   }
@@ -87,31 +91,51 @@ export class Combustion {
     if (auto) this.autoCount++; else this.manualCount++;
     this.status.textContent = auto ? 'Automatic oxygen supply' : 'Oxygen requested';
   }
+  // Timings (s): deploy is done by ~0.85 so a press or an orbital pulse flows within 0.9;
+  // stowing takes ~0.75 after the 1 s pulse. Overshoot: slide ~3 % (a few cm), swivel ~12 %, gun ~16 %.
+  planArm(deploy) {
+    const {slide,unfold,aim}=this;
+    if (deploy) {
+      slide.go(1,{dur:.5,curve:spring(.72)});
+      unfold.go(1,{delay:.2*(1-Math.min(1,slide.v)),dur:.5,curve:spring(.56)});
+      aim.go(1,{delay:.2*(1-Math.min(1,slide.v))+.15*(1-Math.min(1,unfold.v)),dur:.5,curve:spring(.5)});
+    } else {
+      aim.go(0,{dur:.3,curve:easeInOutSine});
+      unfold.go(0,{delay:.1*Math.min(1,aim.v),dur:.35,curve:easeInOutSine});
+      slide.go(0,{delay:.25*Math.min(1,Math.max(aim.v,unfold.v)),dur:.5,curve:easeInCubic});
+    }
+  }
+  recoilX() { return .014*kick(this.kickT,18,9); }
   updateArm(dt) {
     if (!this.arm) return;
     this.buttonTravel=Math.max(0,this.buttonTravel-dt);
     this.pulse=Math.max(0,this.pulse-dt);
-    const previous=this.reach;
-    this.reach=THREE.MathUtils.clamp(previous+(this.pending || this.pulse>0 ? dt : -dt)/.85,0,1);
-    this.arm.visible=this.reach>0;
-    if (previous!==this.reach) {
-      const t=THREE.MathUtils.smoothstep(this.reach,0,1);
-      this.swivel.rotation.y=THREE.MathUtils.degToRad(-77*(1-t));
-      this.hinge.rotation.z=THREE.MathUtils.degToRad(-48+63.5*t);
-    }
+    this.kickT+=dt;
+    const want=this.pending || this.pulse>0;
+    if (want!==this.deploying) { this.deploying=want; this.planArm(want); }
+    this.reach=this.slide.update(dt);
+    const unfold=this.unfold.update(dt), aim=this.aim.update(dt);
+    this.arm.visible=want || this.reach>1e-3;
+    this.swivel.rotation.y=THREE.MathUtils.degToRad(-77*(1-unfold));
+    this.hinge.rotation.z=THREE.MathUtils.degToRad(-48+63.5*aim-5*kick(this.kickT));
     this.frameArm();
-    if (this.pending && this.reach===1 && this.pulse===0) {
+    const deployed=this.slide.done && this.unfold.done && this.aim.done;
+    if (this.pending && deployed && this.pulse===0) {
       this.pending=false;
       this.oxygen=Math.min(1.6,this.oxygen+.75);
       this.pulse=1;
+      this.kickT=0;
+      this.status.textContent='Oxygen injected';
+    }
+    this.jet.visible=this.pulse>0;
+    // The gun recoils while it fires, so re-aim the jet at the flame every frame.
+    if (this.jet.visible) {
       const target=this.origin.clone();
       target.y+=.045;
       this.outlet.worldToLocal(target);
       this.jet.scale.y=target.length();
       this.jet.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),target.normalize());
-      this.status.textContent='Oxygen injected';
     }
-    this.jet.visible=this.pulse>0;
   }
   release(oil, g, scripted) {
     if (this.drops.length>=48) return;

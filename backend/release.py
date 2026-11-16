@@ -8,8 +8,9 @@ from .contracts import validate
 FILES = [
     "index.html",
     "kitchen/style.css", "kitchen/main.js", "kitchen/scene.js", "kitchen/wave.js", "kitchen/pages.js", "kitchen/props.js", "kitchen/terrain.js", "kitchen/meadow.js", "kitchen/stars.js",
-    "kitchen/combustion.js", "kitchen/inspect.js", "kitchen/inspect.css", "kitchen/object-info.js", "kitchen/materials.js", "kitchen/prop-models.js",
+    "kitchen/combustion.js", "kitchen/motion.js", "kitchen/material-search.css", "kitchen/material-search/catalog.js", "kitchen/material-search/client.js", "kitchen/material-search/bridge.js", "kitchen/material-search/ui.js", "kitchen/research-db.css", "kitchen/research-db/data.js", "kitchen/research-db/glossary.js", "kitchen/research-db/browser.js", "data/research-db/research.json", "data/research-db/original-data.json", "kitchen/inspect.js", "kitchen/inspect.css", "kitchen/object-info.js", "kitchen/materials.js", "kitchen/prop-models.js",
     "kitchen/research-source.js", "kitchen/catalog.js", "kitchen/shop-shapes.js", "kitchen/basket.js", "kitchen/shelf3d.js", "kitchen/shop.js", "kitchen/shop.css",
+    "kitchen/material-profiles.js", "kitchen/material-reactions.js", "kitchen/reaction-visuals.js",
     # SORAINE store models: listed one by one so retired assets in models/shop/ (the old cart) stay out of releases
     "models/shop/shelf.glb", "models/shop/shopping-basket.glb", "models/shop/nomex-glove.glb", "models/shop/polycarbonate-goggles.glb",
     "models/shop/nomex-velcro-strap.glb", "models/shop/beefy-t-shirt.glb", "models/shop/mylar-sleeve.glb", "models/shop/ultem-comb.glb",
