@@ -186,3 +186,17 @@ Validation: 62 Node tests pass. Chromium UI checks covered a preselected Ultem t
 
 Follow-up: made parent visibility the sole render/physics switch so a queued open cannot resume a shelf after it is closed. Added a passing regression test for that ordering and rejection of messages from other windows/origins.
 Final integration check: Chromium close/reopen during checkout resumes and completes without a loading-error cover. Initial readiness now includes prop visuals and surface textures. All 63 Node tests pass. Claude's independent review of 7a329ae found no blocking issues and confirmed transfer, quantity removal, retained iframe state, and preservation of released samples. Vercel preview reads fresh BigQuery records; production remains unchanged.
+
+## 2026-11-15: Per-sample reaction state (review branch)
+
+At Hogan's request to keep building with Codex, and to the public contract Codex posted from Tony's handoff, super intelligence (Claude) added a pure state module for the shelf: `dist/library/kitchen/material-reactions.mjs` (`MaterialReactions`: register, update, getState, onChange, reset, remove, dispose) and `material-profiles.mjs`. Each physical sample has its own heat level, thermal and combustion labels and damage, keyed by `instanceId`. All values are unitless 0 to 1 and labelled schematic; there are no temperatures, ignition points or oxygen percentages, and no research value is copied in. Profiles allow a schematic flame for all nine materials, smoldering for Beefy-T only, and leave melting and charring unsupported because no record in the collection describes them. Gravity is carried through but changes no rate. Nothing is wired into the shelf yet: basket IDs, inspection, exposures and visuals are Codex's side.
+
+Validation: 75 Node tests passed (63 existing, 12 new). Not run in a browser. Not merged or deployed.
+
+## 2026-11-15: Selected physical sample integration (Codex)
+
+Codex connected Claude's reaction core to the imported shelf using stable per-session sample IDs. Released samples open the existing paused inspector at their actual position, with separate heat and consumed cues, an individual reset, and a material-specific research link. Supplied oxygen is an explicit schematic input independent of gravity. The visual adapter clones heated instances' materials and cleans up only its owned resources. Bounds and exposure inputs update at 20 Hz; the total scene is limited to 12 physical samples. Source budgets, physics and reaction time now share the inspector pause condition. Original research records and citations were not changed.
+
+Validation: all 80 combined Node tests passed. Local Chromium verified adding and releasing two identical products, selecting sample-1 and sample-2, independent near/far heating, unchanged source budgets while observing, and individual reset. The 390 by 844 layout had no horizontal overflow and kept the zoomed model above the scrolling inspector. This is a review branch; physical-phone performance and Safari have not been tested.
+
+Follow-up: integrated Claude's provenance update `7f0a9c3` and displayed support levels in the inspector. The object note distinguishes the represented object from source specimens. All 81 tests pass. A local browser fixture positioned one of two identical samples at the burner and the other away: only the first heated and entered schematic flaming; switching sample oxygen off extinguished it while preserving its consumed cue. Temporary fixture positions were cleared after testing.

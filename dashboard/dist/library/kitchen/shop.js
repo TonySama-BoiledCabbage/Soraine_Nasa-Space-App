@@ -229,12 +229,12 @@ export class Shop {
   }
   renderQty() {
     const p = this.focus; if (!p) return;
-    const n = this.basket.count(p.id), total = this.basket.inCart().length, here = this.basket.mode === 'held' && !this.basket.busy;
+    const n = this.basket.count(p.id), total = this.basket.items.length, here = this.basket.mode === 'held' && !this.basket.busy;
     this.$('sh-n').textContent = n;
     const [minus, plus] = this.$('sh-qty').querySelectorAll('button');
     minus.disabled = !n || !here; plus.disabled = !here || total >= MAX_ITEMS || this.busyAdd;
     minus.setAttribute('aria-label', `One fewer ${p.label || p.name}`); plus.setAttribute('aria-label', `One more ${p.label || p.name}`);
-    this.$('sh-cap').textContent = total >= MAX_ITEMS ? `Basket full (${MAX_ITEMS})` : `in basket`;
+    this.$('sh-cap').textContent = total >= MAX_ITEMS ? `Scene full (${MAX_ITEMS}); clear worktop to add more` : `in basket`;
   }
   async setQty(d) {
     const p = this.focus; if (!p) return;

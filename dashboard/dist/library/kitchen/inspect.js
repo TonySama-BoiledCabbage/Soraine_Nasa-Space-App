@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { OBJECT_INFO } from './object-info.js?v=object-inspect-1';
+import { sampleDescription } from './sample-exposure.mjs';
 
 export class ObjectInspector {
-  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve }) {
-    Object.assign(this, { props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve });
+  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, samples }) {
+    Object.assign(this, { props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, samples });
     this.active = null;
     this.focus = new THREE.Vector3();
     this.focusRange = .03;
@@ -28,11 +29,19 @@ export class ObjectInspector {
           <h2 id="object-title"></h2><p id="object-kind"></p><p id="object-intro"></p>
           <dl class="object-facts"><div><dt>Surface shown</dt><dd id="object-surface"></dd></div><div><dt>Scene role</dt><dd id="object-role"></dd></div></dl>
           <h3>What to try</h3><p id="object-action"></p><h3>What to watch</h3><p id="object-observe"></p>
-          <p id="object-note"></p><a id="object-research" href="dashboard/">Explore the research <span aria-hidden="true">↗</span></a>
+          <section id="sample-state" hidden aria-label="Selected sample reaction">
+            <p class="sample-mode">Schematic reaction · observation paused</p>
+            <p id="sample-support" class="sample-note"></p>
+            <dl class="sample-facts"><div><dt>Heat cue</dt><dd id="sample-heat"></dd></div><div><dt>Consumed cue</dt><dd id="sample-consumed"></dd></div><div><dt>Sample oxygen</dt><dd id="sample-oxygen"></dd></div></dl>
+            <p class="sample-note">Cue levels are animation progress, not measured temperatures or burn rates. Moon and Mars scenery sets gravity; this demonstration assumes supplied oxygen, not outdoor air.</p>
+            <button type="button" id="sample-reset">Reset this sample</button>
+          </section>
+          <p id="object-note"></p><a id="object-research" href="/" target="_top">Explore the research <span aria-hidden="true">↗</span></a>
         </div>
         <nav class="object-nav" aria-label="Object details"><button id="object-prev" type="button" aria-label="Previous object">← <span>Previous</span></button><span id="object-counter" aria-live="polite"></span><button id="object-next" type="button" aria-label="Next object"><span>Next</span> →</button></nav>
       </aside>`;
     this.hint = document.createElement('div');
+    this.panel.querySelector('.object-facts').before(this.panel.querySelector('#sample-state'));
     this.hint.id = 'object-hover';
     this.hint.hidden = true;
     this.hint.innerHTML = '<strong></strong><span>Click to inspect · drag to move</span>';
@@ -43,6 +52,9 @@ export class ObjectInspector {
     this.toggle.addEventListener('click', () => this.setMenu(this.menu.hidden));
     this.menu.querySelectorAll('[data-object]').forEach(button => button.addEventListener('click', () => this.open(this.objects.find(body => body.name === button.dataset.object))));
     this.closeButton.addEventListener('click', () => this.close());
+    this.panel.querySelector('#sample-reset').addEventListener('click', () => {
+      if (this.active?.sample) { this.samples.reset(this.active); this.renderSample(); }
+    });
     this.panel.querySelector('#object-prev').addEventListener('click', () => this.step(-1));
     this.panel.querySelector('#object-next').addEventListener('click', () => this.step(1));
     this.props.onInspect = body => this.open(body);
@@ -61,6 +73,7 @@ export class ObjectInspector {
   }
 
   setMenu(open) {
+    if (open) this.refreshObjects();
     this.menu.hidden = !open;
     this.toggle.setAttribute('aria-expanded', String(open));
   }
@@ -72,7 +85,9 @@ export class ObjectInspector {
   }
 
   open(body) {
-    if (!body || !OBJECT_INFO[body.name] || (!this.active && !this.canOpen())) return false;
+    if (!body || !this.info(body) || (!this.active && !this.canOpen())) return false;
+    if (body.sample && body.state !== 'released') return false;
+    this.refreshObjects();
     if (!this.active) {
       this.savedRig = this.getRig();
       this.savedNear = this.camera.near;
@@ -86,17 +101,49 @@ export class ObjectInspector {
     this.panel.hidden = false;
     document.body.classList.add('inspecting-object');
     for (const id of ['observe', 'dots']) document.getElementById(id).inert = true;
-    const info = OBJECT_INFO[body.name], index = this.objects.indexOf(body), scenario = this.getScenario();
+    const info = this.info(body), index = this.objects.indexOf(body), scenario = this.getScenario();
     const text = (id, value) => { this.panel.querySelector(id).textContent = value; };
-    text('#object-number', `OBJECT ${String(index + 1).padStart(2, '0')}`);
+    text('#object-number', body.sample ? body.instanceId.toUpperCase() : `OBJECT ${String(index + 1).padStart(2, '0')}`);
     text('#object-context', scenario ? `${scenario.label} · ${scenario.g.toFixed(2)} m/s²` : 'Scene observation');
     for (const key of ['title', 'kind', 'intro', 'surface', 'role', 'action', 'observe', 'note']) text(`#object-${key}`, info[key]);
     text('#object-counter', `${String(index + 1).padStart(2, '0')} / ${String(this.objects.length).padStart(2, '0')}`);
-    this.panel.querySelector('#object-research').href = `dashboard/?gravity=${encodeURIComponent(scenario?.slug === 'iss' ? 'Microgravity' : scenario?.label || 'Earth')}`;
+    const query = new URLSearchParams({ gravity: scenario?.slug === 'iss' ? 'Microgravity' : scenario?.label || 'Earth' });
+    if (body.sample) query.set('material', body.product.materials[0]);
+    this.panel.querySelector('#object-research').href = `/?${query}`;
+    this.renderSample();
     this.panel.querySelector('.object-copy-scroll').scrollTop = 0;
     this.frameObject(this.motion.matches ? .08 : .9);
     this.closeButton.focus({ preventScroll: true });
     return true;
+  }
+
+  info(body) { return body?.sample ? sampleDescription(body, this.samples?.getState(body)) : OBJECT_INFO[body?.name]; }
+
+  refreshObjects() {
+    this.objects = this.props.bodies.filter(body => body.sample ? body.state === 'released' : OBJECT_INFO[body.name]);
+    this.toggle.querySelector('span').textContent = String(this.objects.length).padStart(2, '0');
+    if (this.menuCount === this.objects.length && this.menuBodies?.every((body, i) => body === this.objects[i])) return;
+    this.menuCount = this.objects.length; this.menuBodies = [...this.objects];
+    this.menu.replaceChildren();
+    const title = document.createElement('p'); title.textContent = 'Choose an object to inspect'; this.menu.append(title);
+    this.objects.forEach((body, i) => {
+      const button = document.createElement('button'); button.type = 'button';
+      const number = document.createElement('span'); number.className = 'object-menu-index'; number.textContent = String(i + 1).padStart(2, '0');
+      const label = document.createElement('span'); label.textContent = body.sample ? `${body.product.label} · ${body.instanceId}` : this.info(body).title;
+      button.append(number, label); button.addEventListener('click', () => this.open(body)); this.menu.append(button);
+    });
+  }
+
+  renderSample() {
+    const rec = this.active, state = this.samples?.getState(rec);
+    this.panel.querySelector('#sample-state').hidden = !state;
+    if (!state) return;
+    this.panel.querySelector('.sample-mode').textContent = `Schematic · ${sampleDescription(rec, state).role}`;
+    this.panel.querySelector('#sample-support').textContent = `Related evidence: ${sampleDescription(rec, state).support}.`;
+    this.panel.querySelector('#sample-heat').textContent = `${Math.round(state.heatLevel * 100)} / 100`;
+    this.panel.querySelector('#sample-consumed').textContent = `${Math.round(state.damage.consumed * 100)} / 100`;
+    this.panel.querySelector('#sample-oxygen').textContent = this.samples.oxygenSupplied ? 'Supplied' : 'Off';
+    this.panel.querySelector('#object-role').textContent = sampleDescription(rec, state).role;
   }
 
   frameObject(duration) {
@@ -171,6 +218,9 @@ export class ObjectInspector {
   }
 
   update() {
+    const now = performance.now();
+    if (!this.nextListRefresh || now >= this.nextListRefresh) { this.refreshObjects(); this.nextListRefresh = now + 250; }
+    if (this.active && !this.props.bodies.includes(this.active)) this.close();
     this.tools.hidden = !this.isObserve() || !!this.active;
     this.toggle.disabled = !this.canOpen();
     if (this.active || !this.canOpen() || this.props.held || this.props.pending || !this.pointer) {
@@ -184,7 +234,7 @@ export class ObjectInspector {
     this.hint.hidden = !body;
     this.canvas.style.cursor = body ? 'pointer' : '';
     if (body) {
-      this.hint.querySelector('strong').textContent = OBJECT_INFO[body.name].title;
+      this.hint.querySelector('strong').textContent = body.sample ? `${body.product.label} · ${body.instanceId}` : this.info(body).title;
       this.hint.style.left = `${Math.min(innerWidth - 245, Math.max(12, this.pointer.x + 18))}px`;
       this.hint.style.top = `${Math.min(innerHeight - 72, this.pointer.y + 18)}px`;
     }
