@@ -20,7 +20,7 @@ export function searchSnapshot(bundle,input) {
     const matches=bundle.measurements.filter(m=>{
       const e=experiments.get(m.experiment_id);
       return e&&sources.has(m.source_id)&&material.names.includes(e.material)
-        &&(!worlds.length||worlds.some(w=>GRAVITIES[w]===e.gravity_label))
+        &&(!worlds.length||worlds.some(w=>GRAVITIES[w]===e.gravity_label||(w==='moon'&&e.gravity_label==='Earth-to-Moon model')))
         &&(!intent.issOnly||request.filters.gravity&&request.filters.gravity!=='iss'||/\bISS\b|international space station/i.test(e.platform||''))
         &&(!intent.modes.length||intent.modes.some(mode=>new RegExp(mode==='smolder'?'smolder|smoulder':'flaming','i').test(e.material+' '+m.metric)));
     });
@@ -29,7 +29,7 @@ export function searchSnapshot(bundle,input) {
       const e=experiments.get(m.experiment_id);
       return {measurementId:m.measurement_id,experimentId:m.experiment_id,sourceId:m.source_id,material:e.material,gravity:e.gravity_label??null,gravityBasis:e.gravity_basis??null,metric:m.metric,value:m.value??null,unit:m.unit??null,evidenceType:m.evidence_type,conditions:{pressureKpa:e.pressure_kpa??null,oxygenPct:e.oxygen_pct??null,flowSpeedCmS:e.flow_speed_cm_s??null,durationS:e.duration_s??null,platform:e.platform??null,specimen:e.conditions??null},limitation:m.limitation??e.limitation??null,pdfPage:m.pdf_page??null,locator:m.locator??null};
     });
-    results.push({materialId:material.id,title:material.title,summary:null,evidenceIds:evidence.map(e=>e.measurementId),totalEvidenceCount:matches.length,evidence,originalRecords:[],sources:[...new Set(evidence.map(e=>e.sourceId))].map(id=>{const s=sources.get(id);return {sourceId:id,title:s.title,url:s.url};})});
+    results.push({materialId:material.id,title:material.title,summary:evidence.some(e=>e.gravity==='Earth-to-Moon model')?'Earth-to-Moon model values are estimates, not measured lunar tests.':null,evidenceIds:evidence.map(e=>e.measurementId),totalEvidenceCount:matches.length,evidence,originalRecords:[],sources:[...new Set(evidence.map(e=>e.sourceId))].map(id=>{const s=sources.get(id);return {sourceId:id,title:s.title,url:s.url};})});
   }
   return {query:request.query,mode:'keyword',dataSource:'snapshot',summary:null,appliedFilters:request.filters,results:results.slice(0,request.limit)};
 }

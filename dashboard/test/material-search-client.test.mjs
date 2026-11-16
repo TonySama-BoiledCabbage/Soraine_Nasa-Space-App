@@ -29,6 +29,14 @@ test('explicit gravity takes precedence while a multi-gravity query preserves bo
   const iss=searchSnapshot(bundle,{query:'Ultem ISS'});
   assert.ok(iss.results.every(g=>g.evidence.every(e=>/ISS|international space station/i.test(e.conditions.platform))));
 });
+test('Moon fallback retains labelled model estimates without relabelling them as measured tests',()=>{
+  const data=searchSnapshot(bundle,{query:'Polycarbonate on Moon'});
+  assert.equal(data.results.length,1);
+  assert.ok(data.results[0].evidence.every(e=>e.gravity==='Earth-to-Moon model'));
+  assert.match(data.results[0].summary,/estimates, not measured lunar tests/);
+  assert.equal(searchSnapshot(bundle,{query:'Polycarbonate on Mars'}).results.length,0);
+});
+
 test('flaming and smoldering remain separate and no-match does not invent results',()=>{
   for(const mode of ['flaming','smolder']) {
     const data=searchSnapshot(bundle,{query:'Beefy-T '+mode});

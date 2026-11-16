@@ -138,3 +138,6 @@ BEFORE MERGING
 
 This branch does not modify the team scenes, physics engine, NASA datasets,
 scientific citations, Rust binary or database. It does not merge or deploy them.
+
+COORDINATION UPDATE
+Ethan's backend is draft PR #8 at c122c56. Seven real backend search responses pass this frontend's validator, including both all-material queries (nine groups at limit 9). Our test is now material-search-client.test.mjs to preserve both suites when combined. Moon fallback includes Earth-to-Moon model records with their original labels and a visible estimate note. Current frontend/base test count: 42 passing.

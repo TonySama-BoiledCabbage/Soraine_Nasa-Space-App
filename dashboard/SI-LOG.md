@@ -170,3 +170,5 @@ The object aliases are distinguished from actual research specimens. Numeric str
 
 Validation: all 41 Node tests pass, including 10 new search and basket tests. Chromium checks covered desktop and 390px/320px layouts, English/Chinese queries, gravity filtering, evidence expansion, basket add/remove and all nine material results. A 6px overflow at 320px was corrected and rechecked. No browser errors or warnings appeared during the check. The live backend and real shelf adapter still require combined integration testing. No production merge or deployment was performed for this contribution.
 
+
+Coordination follow-up: verified Ethan's c122c56 search output against the frontend response validator for seven representative queries. Renamed the frontend test to material-search-client.test.mjs to avoid the backend test-path collision. The local Moon fallback now retains explicitly labelled Earth-to-Moon model records and explains that they are estimates, matching the agreed backend behaviour. All 42 frontend/base tests pass. Neither PR was merged or deployed.
