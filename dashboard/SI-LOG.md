@@ -184,3 +184,4 @@ At Hogan's request, Codex connected Tony's shelf from commit 5989aaa to the dash
 
 Validation: 62 Node tests pass. Chromium UI checks covered a preselected Ultem transfer, two Nomex samples reduced to one from research, state retained on close/reopen, product evidence, and checkout. Desktop, 390px and 320px layouts were checked; added header overflow at 320px was fixed. No browser warnings or errors appeared in the final check. This entry describes branch validation, not a production deployment.
 
+Follow-up: made parent visibility the sole render/physics switch so a queued open cannot resume a shelf after it is closed. Added a passing regression test for that ordering and rejection of messages from other windows/origins.

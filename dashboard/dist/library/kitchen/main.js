@@ -407,7 +407,7 @@ window.__kitchen = { basket, shop, shelf, research, inspector, combustion, orbit
 const readyForHost = Promise.all([appReady, shelfReady, basket.ready]);
 connectHost({ready:readyForHost,basket,shop,products:PRODUCTS,setActive:active=>{hostActive=active;},
   openShelf:async()=>{
-    hostActive=true;await readyForHost;
+    await readyForHost;
     if(!current)throw Error('The scene is not ready.');
     if(wave.active || basket.busy)throw Error('Wait for the current scene animation to finish.');
     chamber.visible=false;terrain.plane.visible=true;setTerrain(current,target);

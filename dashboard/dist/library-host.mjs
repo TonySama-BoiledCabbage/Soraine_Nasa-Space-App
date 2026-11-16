@@ -37,7 +37,7 @@ async function open(){
   show();if(opening)return opening;
   opening=(async()=>{try{
     status.hidden=false;status.textContent='Loading models and preparing the shelf…';await load();if(!dialog.open)return;
-    await command('open');
+    send({type:'visibility',active:true});await command('open');
     if(!connected){await registerMaterialLibrary({getBasket:()=>ids,subscribe:fn=>{listeners.add(fn);return()=>listeners.delete(fn);},
       addToBasket:async id=>{show();await command('add',id);},removeFromBasket:async id=>{show();await command('remove',id);},selectMaterial:async id=>{show();await command('select',id);}});connected=true;}
     status.hidden=true;
