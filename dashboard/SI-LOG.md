@@ -177,3 +177,10 @@ Coordination follow-up: verified Ethan's c122c56 search output against the front
 At Ethan's request, following Hogan's shared plan, super intelligence (Claude) added `POST /api/material-search` to the Node server (`server/material-search.mjs`, wired in `server/index.mjs`). It maps English and Chinese names, shelf objects and broad words to the nine agreed material IDs, applies gravity, platform, combustion-mode and metric conditions without relaxing them, and returns research records, sources and separate original-CSV row references copied from the existing cached collections. Keyword mode only: no AI provider is configured; the summary hook and its evidence checks are tested with stand-ins. `dashboard/vercel.json`, the frontend and the Rust server were not changed. Contract, examples, configuration and open decisions: `docs/MATERIAL-SEARCH-API.md`; real sample responses: `docs/material-search-samples/`.
 
 Validation: 48 Node tests passed (31 existing, 17 new). The live BigQuery path and a real AI provider were not tested. Not merged or deployed.
+
+## 2026-11-15: Dashboard and material shelf integration
+
+At Hogan's request, Codex connected Tony's shelf from commit 5989aaa to the dashboard through a lazy, retained same-origin iframe. Research selections transfer to the shelf basket; quantity removal preserves other copies and released worktop samples. The iframe pauses physics and rendering when closed. The existing scene implementation is unchanged. Claude independently reviewed the research adapter and identified the relative API URL, flat snapshot dependency and delivery provenance corrections applied here. All 59 reported records and source links remain unchanged. Models and animations remain illustrative.
+
+Validation: 62 Node tests pass. Chromium UI checks covered a preselected Ultem transfer, two Nomex samples reduced to one from research, state retained on close/reopen, product evidence, and checkout. Desktop, 390px and 320px layouts were checked; added header overflow at 320px was fixed. No browser warnings or errors appeared in the final check. This entry describes branch validation, not a production deployment.
+
