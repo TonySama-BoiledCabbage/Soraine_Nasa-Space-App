@@ -16,6 +16,7 @@ import { Basket } from './basket.js?v=basket-1';
 import { Shop } from './shop.js?v=basket-1';
 import { PRODUCTS } from './catalog.js?v=basket-1';
 import { Shelf } from './shelf3d.js?v=basket-1';
+import { SampleController } from './sample-controller.js';
 
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -50,6 +51,7 @@ const combustion = new Combustion(scene,camera,canvas,WORLD.flame,props);
 const modelLoader = new GLTFLoader();
 const basket = new Basket({ scene, props, loader: modelLoader, getGravity: () => props.gNew, canAct: () => !wave.active });
 const shelf = new Shelf(scene, modelLoader);
+const samples = new SampleController({ basket, props, scene, origin: WORLD.flame });
 
 // Replace only the visual placeholders; the existing physics bodies and controls stay in place.
 async function replacePropVisuals() {
@@ -273,7 +275,7 @@ inspector = new ObjectInspector({
   moveCamera: (rig, duration) => goTo(rig, duration),
   getScenario: () => target || current,
   canOpen: () => pages.page === 'observe' && !wave.active,
-  isObserve: () => pages.page === 'observe'
+  isObserve: () => pages.page === 'observe', samples
 });
 shop = new Shop({
   basket, research, shelf, rigs: RIG, getScenario: () => target || current, isWorldBusy: () => wave.active,
@@ -285,10 +287,18 @@ const shelfReady = research.load().catch(() => {}).then(() => shelf.ready).then(
   (p) => research.byId ? research.byIds(p.measurementIds).length : 0, shelf.shelfRig(16 / 10).pos)).catch(e => console.error('Shelf display failed', e));
 shopOpen.addEventListener('click', () => pages.show('shop'));
 props.canInteract = () => pages.page === 'observe' && !inspector.active;
-// Released SORAINE samples open their product view at the shelf instead of the object inspector.
-const openObject = props.onInspect;
-props.onInspect = (b) => { if (!b.sample) return openObject(b); pages.show('shop'); shop.openSample(b); };
-combustion.canInteract = () => !inspector.active;
+// Keep the selected physical instance, rather than opening a different shelf copy.
+shop.openSample = rec => { if (pages.page !== 'observe') pages.show('observe'); return inspector.open(rec); };
+combustion.canInteract = () => pages.page === 'observe' && !inspector.active && !shop.paused;
+const sampleAtmosphere = document.createElement('div');
+sampleAtmosphere.id = 'sample-atmosphere'; sampleAtmosphere.hidden = true;
+sampleAtmosphere.innerHTML = '<button type="button" aria-pressed="true">Sample oxygen: supplied</button><span>Schematic test · scenery sets gravity, not air</span>';
+document.body.append(sampleAtmosphere);
+sampleAtmosphere.querySelector('button').addEventListener('click', event => {
+  samples.oxygenSupplied = !samples.oxygenSupplied;
+  event.currentTarget.setAttribute('aria-pressed', String(samples.oxygenSupplied));
+  event.currentTarget.textContent = `Sample oxygen: ${samples.oxygenSupplied ? 'supplied' : 'off'}`;
+});
 
 document.getElementById('start').addEventListener('click', () => {
   chamber.visible = false;
@@ -329,7 +339,9 @@ const tmpUp = new THREE.Vector3(0, 1, 0);
 function frame() {
   if (!hostActive || document.hidden) { clock.getDelta(); requestAnimationFrame(frame); return; }
   const rawDt = clock.getDelta(); govern(rawDt);
-  const dt = Math.min(rawDt, 0.05); time += dt;
+  const dt = Math.min(rawDt, 0.05);
+  const paused = !!inspector.active || shop.paused;
+  if (!paused) time += dt;
   // camera tween
   if (cam.t < 1) {
     cam.t = Math.min(1, cam.t + dt / cam.dur); const k = ease(cam.t);
@@ -349,20 +361,21 @@ function frame() {
   camera.updateProjectionMatrix();
   camera.lookAt(cam.look);
   // wave + shake
-  if (!inspector.active) wave.update(dt, camera.position);
-  const sh = inspector.active ? null : wave.shake(camera.position, time);
+  if (!paused) wave.update(dt, camera.position);
+  const sh = paused ? null : wave.shake(camera.position, time);
   if (sh) { camera.position.add(new THREE.Vector3(sh.x, sh.y, 0).applyQuaternion(camera.quaternion)); camera.rotateZ(sh.roll); }
   SWEEP.uRadius.value = wave.active ? wave.R : 1e5; SWEEP.uSweepW.value = wave.trail() * 0.8; props.R = wave.active ? wave.R : 1e5;
-  const paused = inspector.active || shop.paused;
   if (!paused) { basket.update(dt); props.update(dt, time); } else basket.sync();
   pass.uniforms.uRadius.value = wave.R; pass.uniforms.uStrength.value = wave.strength(); pass.uniforms.uCenter.value.copy(wave.center);
   pass.uniforms.uTrail.value = wave.trail(); pass.uniforms.uSpacing.value = 0.25 + Math.max(wave.R, 0) * 0.045;   // lines ride with the front, so spacing can grow
   // flame morphs as soon as the wave leaves it (it is the origin)
   if (!flameSwept && wave.active) flameSwept = true;
-  const fk = 1 - Math.exp(-dt * 2.2);
+  const fk = paused ? 0 : 1 - Math.exp(-dt * 2.2);
   for (const key in flameState) flameState[key] += (flameTarget[key] - flameState[key]) * fk;
-  if (!inspector.active) burn=combustion.update(dt);
+  if (!paused) burn=combustion.update(dt);
   else combustion.frameArm();
+  samples.update(dt, { paused, burnerIntensity: burn });
+  sampleAtmosphere.hidden = pages.page !== 'observe' || !!inspector.active || !basket.released().length;
   if (oxygenCap) oxygenCap.position.y=oxygenCapRest-(combustion.buttonTravel>0?.004:0);
   flame.group.visible=burn>.01;
   flame.uniforms.uTime.value = time; flame.uniforms.uBlue.value = flameState.blue; flame.uniforms.uSphere.value = flameState.sphere; flame.uniforms.uFlicker.value = flameState.flicker;

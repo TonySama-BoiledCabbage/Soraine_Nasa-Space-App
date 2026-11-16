@@ -23,6 +23,7 @@ export const BENCH = { x: 1.1, y: 1.0, z: 0.48, yaw: 0, tilt: 0 };
 const POUR_TILT = THREE.MathUtils.degToRad(125);
 const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const rand = (a, b) => a + Math.random() * (b - a);
+let nextSampleId = 1; // Unique for the page session, including after removal or basket reset.
 
 function poseMatrix(p, m = new THREE.Matrix4()) {
   const t = new THREE.Matrix4();
@@ -185,16 +186,16 @@ export class Basket {
   async add(product) {
     if (this.mode !== 'held' || this.busy === 'pouring') throw new Error('The basket is not here.');
     if (!this.canAct()) throw new Error('Wait for the gravity scan to finish.');
-    if (this.inCart().length >= MAX_ITEMS) throw new Error(`The basket holds up to ${MAX_ITEMS} samples.`);
+    if (this.items.length >= MAX_ITEMS) throw new Error(`The scene holds ${MAX_ITEMS} samples. Clear released samples before adding more.`);
     const tpl = await this.template(product);
-    if (this.mode !== 'held' || this.inCart().length >= MAX_ITEMS) throw new Error('The basket is full or away.');
+    if (this.mode !== 'held' || this.items.length >= MAX_ITEMS) throw new Error('The scene is full or the basket is away.');
     const loading = this.items.filter(r => r.state === 'loading').length;
     const { kind, list } = this.colliders(product), g = this.getGravity();
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rand(-0.5, 0.5) + (product.collider.dims[2] > 0.25 ? Math.PI / 2 : 0), 0));
     const rec = this.props.addBody({
       name: 'sample:' + product.id, mesh: tpl.clone(true), colliders: list, kind, mass: product.phys.mass, phys: product.phys.surface,
       position: this.spawnPoint(loading), quaternion: q, velocity: new CANNON.Vec3(0, g < 0.5 ? -0.45 : -0.15, 0),
-      extra: { product, state: 'loading', born: performance.now(), outside: 0, locked: true, noRecover: true, sample: true }
+      extra: { product, instanceId: `sample-${nextSampleId++}`, state: 'loading', born: performance.now(), outside: 0, locked: true, noRecover: true, sample: true }
     });
     rec.mesh.userData.sample = true;
     this.items.push(rec); this.emit();
