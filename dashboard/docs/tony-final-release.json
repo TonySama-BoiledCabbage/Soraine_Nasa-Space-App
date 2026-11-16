@@ -1,0 +1,310 @@
+{
+  "source": "https://github.com/TonySama-BoiledCabbage/Soraine_Nasa-Space-App/pull/7",
+  "commit": "e751a296e6ca81ef8122cf396a75ae5a62150b40",
+  "files": [
+    {
+      "path": "dashboard/app.js",
+      "sha256": "0f3c57eff4c82334a905e9e03a3548178ca0c7e97d39ef7489cb9644210eaa1e"
+    },
+    {
+      "path": "dashboard/data/research.json",
+      "sha256": "4be46df5c2b27dd53a523c6288d98ea4e615595472730594ade640e0f1e919b5"
+    },
+    {
+      "path": "dashboard/index.html",
+      "sha256": "eb931d681c9c6c6ee85a52766f2c2e1f8d571323ee727af9810e3eb7343457dc"
+    },
+    {
+      "path": "dashboard/style.css",
+      "sha256": "c8e03cb252bbca0f0d4296569f5d95f6f37d68679b98d98af2f6a81afb4fedcd"
+    },
+    {
+      "path": "data/research-db/original-data.json",
+      "sha256": "0dbb9eb8f105ba704c9c459d43dc1a4d5cecbc5b2b2d451031048531c551c44f"
+    },
+    {
+      "path": "data/research-db/research.json",
+      "sha256": "f8958d54f4da21de141bc2a0f4805645c353adb471148ca513bf7e29e1884709"
+    },
+    {
+      "path": "data/scenarios.json",
+      "sha256": "91a6a32e8221dcb34c1c5aa69bd68f44829f7c889c422ed7b6cb148603fcd83a"
+    },
+    {
+      "path": "index.html",
+      "sha256": "8bf62892a1b17a35b2968e608950043ba74cdf0a345e594481ea81afcc2dd529"
+    },
+    {
+      "path": "kitchen/basket.js",
+      "sha256": "9fb2cb24e2294eca2c497c498353a197927ec1aa4312a3ce51d023d458c44441"
+    },
+    {
+      "path": "kitchen/catalog.js",
+      "sha256": "07f5cb5cb05ab3023ff19f725d0f0003a5e05e4862e8d60984ed9860096a5b63"
+    },
+    {
+      "path": "kitchen/combustion.js",
+      "sha256": "18f94d407bde64256e5ca64edd1ab224340ff21573ae730d33bd1626943fa9d4"
+    },
+    {
+      "path": "kitchen/inspect.css",
+      "sha256": "11b15cfdbd4af065599e7030c9a2f5f11287584804b471344bf986ba4795c5f4"
+    },
+    {
+      "path": "kitchen/inspect.js",
+      "sha256": "216b256d9fbde636f2d96858b69be72c974e652940af648eef0ba9e9b32109e9"
+    },
+    {
+      "path": "kitchen/main.js",
+      "sha256": "cc5a9b18d482ea69d3e0ce2b827b5b911ab8b63ae9b133a0a4d45be70d461790"
+    },
+    {
+      "path": "kitchen/material-profiles.js",
+      "sha256": "92b347383f8d1521e05228cc9983cfb4f47e86c2cb74de204d50a5bdf3a352e7"
+    },
+    {
+      "path": "kitchen/material-reactions.js",
+      "sha256": "34c7114e1624973aa66f2d47c6830179b2705d5be25dab79717a09c4dd76c450"
+    },
+    {
+      "path": "kitchen/material-search/bridge.js",
+      "sha256": "967876bf3658e677183ea8de4eef688e0532a7f1fc7d5e62daee71ac390b970e"
+    },
+    {
+      "path": "kitchen/material-search/catalog.js",
+      "sha256": "78f01f74c42a2f3f831727baac61ea7efbcd6f508b45c479e739d0cdf405ebfb"
+    },
+    {
+      "path": "kitchen/material-search/client.js",
+      "sha256": "c162433f4c33f1ede69ce68c7909164c603cc3df5215c39c79d680dab767a048"
+    },
+    {
+      "path": "kitchen/material-search/ui.js",
+      "sha256": "4982cd91a72351cc36ad9099936fcbc61188c366850ed44dd863c8e27c59ecdd"
+    },
+    {
+      "path": "kitchen/material-search.css",
+      "sha256": "739116cc178111a272296c8fd1506d8f602b8665b0468be2a0c84353534b4431"
+    },
+    {
+      "path": "kitchen/materials.js",
+      "sha256": "3e3c085bf71df0c054b35549118d693892835cb50ac8a47efb2c1826444d176c"
+    },
+    {
+      "path": "kitchen/meadow.js",
+      "sha256": "15ef837019d53b7bcb24a0b0f06754e7210219fda8346f6b6a6acba152bba0e2"
+    },
+    {
+      "path": "kitchen/motion.js",
+      "sha256": "1d6649a6c795023d3279dc1ee37800bbd932b98baa2a7b393b4eff8b9c8a91f7"
+    },
+    {
+      "path": "kitchen/object-info.js",
+      "sha256": "2d6314ee8ed752b6536a42fb8452c3b2ae013122c2ee20216cf2f2bc735d17d5"
+    },
+    {
+      "path": "kitchen/pages.js",
+      "sha256": "10af8735f65318ecb91bf7b8258b3676e4b9ceb6d1c76f7fce0e5ca4636a4adf"
+    },
+    {
+      "path": "kitchen/prop-models.js",
+      "sha256": "34b09d9d55ed0acd9b126d0e2266f8d0ad88068abf857094ab19a535b1f54d0f"
+    },
+    {
+      "path": "kitchen/props.js",
+      "sha256": "a3efad2486551e7500c5d87f0b0d1bf32e9bcc5e781c1d9ef90fa8adc20d4499"
+    },
+    {
+      "path": "kitchen/reaction-visuals.js",
+      "sha256": "be9b7a142a9ebf40fa66daaaf563cd2eb7792b30b836f1acdf3e5dd352af6040"
+    },
+    {
+      "path": "kitchen/research-db/browser.js",
+      "sha256": "a58bafb767cc3e5961adca66a12c7c7792e5b27ebd509fa87dacd713d5855ddb"
+    },
+    {
+      "path": "kitchen/research-db/data.js",
+      "sha256": "4d20c8cef3f4843c23ce25731e6d4c945ac589efe27b02c3dbd34723239c396f"
+    },
+    {
+      "path": "kitchen/research-db/glossary.js",
+      "sha256": "006b0e5cdf9c4c78cb024aba47789462e8aa24d4dd74c1e687880f2b849d27e3"
+    },
+    {
+      "path": "kitchen/research-db.css",
+      "sha256": "68c56875bf1d269efc5ea193cd7273de410c1be36892f5e54594baa37287b4e0"
+    },
+    {
+      "path": "kitchen/research-source.js",
+      "sha256": "3c51b34bf40103bfa38bfefa76288c4bf7edf35c99a4fcf685af03f4681c3767"
+    },
+    {
+      "path": "kitchen/scene.js",
+      "sha256": "4dff5862fec83697a7642b3941caf91f9684b448059a0ecf136f84a5d560d084"
+    },
+    {
+      "path": "kitchen/shelf3d.js",
+      "sha256": "48151768c6ce5058fb1cd0efe74215e425980e4faa94a00f37ca0e6ab15254d0"
+    },
+    {
+      "path": "kitchen/shop-shapes.js",
+      "sha256": "c822c1bbcbde53a01d766128aa670002f073e12edb9067910c430777af89385f"
+    },
+    {
+      "path": "kitchen/shop.css",
+      "sha256": "c4922a386b722f86d70ab62976516c6296b40479013175e348140c1d37f407d2"
+    },
+    {
+      "path": "kitchen/shop.js",
+      "sha256": "09134d72ba9f36539f3b3cf096f039b7c0d5a6fd7188c2a368acbf91161e747b"
+    },
+    {
+      "path": "kitchen/stars.js",
+      "sha256": "ed71073ae451590bead8c78636de09ef24516a34acb6f50942d342a721141e0a"
+    },
+    {
+      "path": "kitchen/style.css",
+      "sha256": "0c979398008c7201150db08b2c8c224c26f0c71e6400551320a900303cd9c63b"
+    },
+    {
+      "path": "kitchen/terrain.js",
+      "sha256": "13b0d117af5ebb0ec4add2bbf379791ad692fa6fe8c7fbffe9a51940df088f6e"
+    },
+    {
+      "path": "kitchen/wave.js",
+      "sha256": "6977111806532f8e75167fdc2d0029ab68e4e21591af989e169b486e82f72dae"
+    },
+    {
+      "path": "models/landing/lab-rear.glb",
+      "sha256": "72d59c37916fcbe7139982bb6a98c54928719b169e1a10d4bceb85f738c4017e"
+    },
+    {
+      "path": "models/landing/open-bench.glb",
+      "sha256": "1084785146815f09490d261d95867bc77446768151157c9c8f88ef5af961a243"
+    },
+    {
+      "path": "models/landing/orbital-cabin.glb",
+      "sha256": "8e7f5c159902b144a3938c54105bc20e70eb032b63df44b5824cd5a692195e9d"
+    },
+    {
+      "path": "models/landing/oxygen-arm.glb",
+      "sha256": "732dc789b9f3780a3db44230e793e242e2fa9369177f64435dd60e159673338a"
+    },
+    {
+      "path": "models/landing/oxygen-control.glb",
+      "sha256": "bb1d65160d587fb29af78a0e554d57c4bd173e6f8868734cc4917fead776e3ea"
+    },
+    {
+      "path": "models/landing/range-cabinet.glb",
+      "sha256": "a7de12a8682726cedc39b922433365b4ea5883fd8214f46b12a15e9cc55e24af"
+    },
+    {
+      "path": "models/landing/test-chamber.glb",
+      "sha256": "52481ca909d4e654d1fba54d4df1b8aa4035fd281915ea8f6e4af98764c3c42d"
+    },
+    {
+      "path": "models/planet_surfaces/earth.glb",
+      "sha256": "6d0aa485c00d4e9e6e757669a3ca9896e62b8ce9cdfe75a10b48ac81fce0aa48"
+    },
+    {
+      "path": "models/planet_surfaces/mars.glb",
+      "sha256": "55bba684363296d8da33a2fb99560bef4ce2ba07997b60a3a91fea2b46c5b749"
+    },
+    {
+      "path": "models/planet_surfaces/moon.glb",
+      "sha256": "46be1e1470dbbb51ccc9013f4931410e62f0db2ca84eb855883b736e50ea134b"
+    },
+    {
+      "path": "models/shop/beefy-t-shirt.glb",
+      "sha256": "fe42ee7f46326554a7567b651c6aac6f6c072d82ca7e10beff46e14bcc41e9ee"
+    },
+    {
+      "path": "models/shop/mylar-sleeve.glb",
+      "sha256": "5311190d94218f59ad0d0c8620e1045de2029fc8fa8eb1ae3cc73b38be541f1b"
+    },
+    {
+      "path": "models/shop/nomex-glove.glb",
+      "sha256": "ab93067d829c0332f1a264f17a632b94115c40d4a5b26beddb8d72e2e54c6f7d"
+    },
+    {
+      "path": "models/shop/nomex-velcro-strap.glb",
+      "sha256": "fd63e8a25deb7e47027bc4289c9720d9ee685d1a71a492ffee363d76d2980246"
+    },
+    {
+      "path": "models/shop/p213-tape.glb",
+      "sha256": "5438fb995034fc1e30a56f2275b4ede9386641e7cedad5aff4af1725d14a82fa"
+    },
+    {
+      "path": "models/shop/pmma-ruler.glb",
+      "sha256": "394d568f205aed475ff6ed30ba90b1475c5c36dc5644f2fe44a6479d20c8277f"
+    },
+    {
+      "path": "models/shop/polycarbonate-goggles.glb",
+      "sha256": "023db287ea92c62627a19f5df21e85488913ad6a0726856c585a57af0b13db7a"
+    },
+    {
+      "path": "models/shop/shelf.glb",
+      "sha256": "3b7868617a35606059419186aecc30bc070f27781f0c5a30744e18744eb56853"
+    },
+    {
+      "path": "models/shop/shopping-basket.glb",
+      "sha256": "214b9d2634577381e92d8c4fb58a3eb443e24f2c01803b231cadda10399905ec"
+    },
+    {
+      "path": "models/shop/sibal-cloth.glb",
+      "sha256": "736257fa596d438a665aa39bb73b9ee2a524ca7d540d47b0a459f450f6ddcf6b"
+    },
+    {
+      "path": "models/shop/ultem-comb.glb",
+      "sha256": "e2b0d8182b90b23731b2017f0ba2f169007fabc20625429e254435be1ebc6cab"
+    },
+    {
+      "path": "models/soraine_props/soraine_bottle_repaired.glb",
+      "sha256": "fea9fd8206b43f37b21b149ba93f398d48e4666b80ee0b34f5e00e2a2b0c427f"
+    },
+    {
+      "path": "models/soraine_props/soraine_egg_repaired.glb",
+      "sha256": "e6326cb5e69ffe4fee94afe8ee30211fbcf90362e1a986e81c88b4ccd320a443"
+    },
+    {
+      "path": "models/soraine_props/soraine_mug_repaired.glb",
+      "sha256": "8af1ef4578b7bab56e9d99ad7fc59239333c5669bac312cf32560983ec5f0b85"
+    },
+    {
+      "path": "models/soraine_props/soraine_pan_repaired.glb",
+      "sha256": "cc842e1bc32033238e6b901bded86b91c189392f3e58463c08f23a8fd1042611"
+    },
+    {
+      "path": "textures/tonyyuntaolu_Seamless_grayscale_roughness_texture_for_lightly_95cdd381-e47f-41ed-ba2e-66c1f99aaab0_3.png",
+      "sha256": "2a45429874c8299d8db9ab642cb73a024e7bb30012f6520412f0e2f169aba373"
+    },
+    {
+      "path": "textures/tonyyuntaolu_Seamless_smooth_sanded_hard_maple_wood_texture_s_136f4285-c1df-455c-9877-22387a9b45bd_1.png",
+      "sha256": "a9d7e2c7ce10a21d4dcf71a9f592d2f9d48b8413e2fd413beb28cea73bc831b1"
+    },
+    {
+      "path": "vendor/addons/loaders/GLTFLoader.js",
+      "sha256": "d073b438e6a07e1359741dd5d6c76c953420cc0d4fd84eb1bdde94315540e6a3"
+    },
+    {
+      "path": "vendor/addons/utils/BufferGeometryUtils.js",
+      "sha256": "9be041e96308775d00e2695cc607645b9a9b64fd7c0e759dd8f7c00a8d92becb"
+    },
+    {
+      "path": "vendor/cannon-es.js",
+      "sha256": "f0700cbd3a482954949b9d58c1b0f76dcc74767750297647a39d8c40dd63d37c"
+    },
+    {
+      "path": "vendor/LICENSE-cannon-es",
+      "sha256": "4714d0272f50cb21fe46fe29333c7c600d3c85b5ebd2a80f4db07e8cfccbf5b2"
+    },
+    {
+      "path": "vendor/LICENSE-three",
+      "sha256": "852e0e8699169bf9f6fdc6bda3e682d078dcbc738b5d33e74df594721bff271d"
+    },
+    {
+      "path": "vendor/three.module.js",
+      "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Research Explorer — Flame in Freefall</title>
+  <meta name="description" content="Explore NASA combustion evidence across gravity environments, compare experimental conditions, and trace each result to its source.">
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to evidence</a>
+<div class="app">
+  <aside class="sidebar">
+    <a class="brand" href="../index.html" aria-label="Flame in Freefall — open 3D experience"><svg viewBox="0 0 32 38" aria-hidden="true"><path fill="#e8702a" d="m17 0 3 13 7-5 4 16-7 12H9L1 25l7-15 2 10z"/><path fill="#f2b358" d="m17 15 6 11-5 10h-8L7 27z"/></svg><span>Flame in<br>Freefall<span class="brand-sub">RESEARCH EXPLORER</span></span></a>
+    <span class="nav-label">EXPLORE THE EVIDENCE</span>
+    <nav aria-label="Research views">
+      <button class="nav-item active" data-mode="limits"><span class="nav-symbol" aria-hidden="true">⌑</span>Material limits<span class="nav-count">33</span></button>
+      <button class="nav-item" data-mode="spread"><span class="nav-symbol" aria-hidden="true">↗</span>Flame spread<span class="nav-count">8</span></button>
+      <button class="nav-item" data-mode="model"><span class="nav-symbol" aria-hidden="true">◈</span>Model estimates<span class="nav-count">18</span></button>
+      <button class="nav-item" data-mode="sources"><span class="nav-symbol" aria-hidden="true">▤</span>Source library<span class="nav-count">51</span></button>
+    </nav>
+    <div class="sidebar-bottom"><div class="snapshot-dot"></div><strong>Built on NASA research</strong><p>Every value has a source.<br>Every result has conditions.</p><a href="../index.html">Open the 3D experience <span aria-hidden="true">↗</span></a><span class="challenge-label">NASA SPACE APPS · 2026<br>INDEPENDENT CHALLENGE PROJECT</span></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div class="breadcrumb">Research <span>/</span> <strong id="crumb">Material limits</strong></div><div class="top-actions"><span class="snapshot">Snapshot · 14 Nov 2026</span><a href="../index.html" class="observe-link">Observe the flame <span aria-hidden="true">↗</span></a></div></header>
+    <main id="main">
+      <div class="page-heading"><div><p class="eyebrow">LESS GRAVITY. MORE QUESTIONS.</p><h1 id="page-title">What keeps a flame burning?</h1><p id="page-description">Explore how oxygen limits change across gravity environments.</p></div><button id="export" class="button secondary"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></svg>Export data</button></div>
+      <div id="loading" role="status">Loading source-located research…</div>
+      <div id="research" hidden>
+        <section class="environment-section" aria-labelledby="environment-title"><div class="section-kicker"><span id="environment-title">01 / CHOOSE AN ENVIRONMENT</span><span>Nominal gravity · simulated in experiments</span></div><div id="environments" class="environments" role="group" aria-label="Gravity environment"></div></section>
+        <div class="research-grid">
+          <section class="chart-card" aria-labelledby="chart-title">
+            <div class="chart-heading"><div><p class="eyebrow" id="chart-kicker">MATERIAL FLAMMABILITY</p><h2 id="chart-title">Oxygen limits across gravity</h2></div><span id="study-chip" class="chip">EXPERIMENT SUMMARY</span></div>
+            <div class="filters"><label>Material<select id="material"></select></label><label id="metric-label">Metric<select id="metric"></select></label><span id="result-count" class="result-count" aria-live="polite"></span></div>
+            <div id="legend" class="legend"></div>
+            <div id="chart" class="chart" aria-label="Interactive research chart"></div>
+            <div class="chart-footer"><span id="chart-note"></span><a id="chart-source" target="_blank" rel="noopener noreferrer">Read the study <span aria-hidden="true">↗</span></a></div>
+          </section>
+          <aside id="inspector" class="inspector" aria-label="Selected evidence detail" aria-live="polite"></aside>
+        </div>
+        <div class="method-note"><span class="info-mark" aria-hidden="true">i</span><div><strong id="method-title">Same material. Different test criteria.</strong><p id="method-text">Normal-gravity ULOI/MOC and reduced-gravity ULOI*/MOC* use different definitions. Read the conditions before comparing.</p></div></div>
+        <section class="evidence-section" aria-labelledby="table-title"><div class="table-heading"><div><p class="eyebrow">FOLLOW THE OBSERVATION</p><h2 id="table-title">The evidence, row by row</h2></div><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><span class="sr-only">Search evidence</span><input id="search" type="search" placeholder="Search metric or platform…"></label></div><div id="table-wrap" class="table-wrap"></div><p id="table-summary" class="table-summary" aria-live="polite"></p></section>
+      </div>
+      <section id="library" hidden aria-labelledby="library-title"><div class="library-controls"><h2 id="library-title">Research sources</h2><label class="search"><span class="sr-only">Search sources</span><input id="source-search" type="search" placeholder="Search studies or experiments…"></label></div><div class="library-tabs" role="group" aria-label="Source type"><button data-kind="ntrs" aria-pressed="true">NASA papers & presentations <span>27</span></button><button data-kind="psi" aria-pressed="false">PSI investigations <span>24</span></button><button data-kind="resources" aria-pressed="false">Challenge resources <span>10</span></button></div><p id="source-count" aria-live="polite"></p><div id="source-list"></div></section>
+      <footer class="page-footer"><span>Flame in Freefall <span class="footer-separator">/</span> A closer look at combustion beyond Earth.</span><button id="data-note-button" aria-expanded="false" aria-controls="data-note">About this data <span aria-hidden="true">↗</span></button><div id="data-note" hidden><strong>A traceable snapshot, not a risk predictor.</strong><p>This dashboard uses the checksum-matched research snapshot imported into BigQuery on 14 November 2026. It does not query BigQuery live. The 59 numerical records include experimental summaries, fits, derived differences and model estimates; they are not 59 independent trials. The library indexes 24 PSI investigations and 27 NTRS documents. No values shown here are lunar or Martian surface measurements. Missing conditions remain unknown.</p></div></footer>
+    </main>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script type="module" src="app.js"></script>
+</body></html>
