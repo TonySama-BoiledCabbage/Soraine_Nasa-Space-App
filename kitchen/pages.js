@@ -5,6 +5,8 @@ export class Pages {
     this.dots = document.getElementById('dots');
     this.dots.querySelectorAll('button').forEach(b => b.addEventListener('click', () => this.show(b.dataset.page)));
     this.els = { observe: document.getElementById('observe'), detail: document.getElementById('detail'), about: document.getElementById('about') };
+    // Pages outside the three dots (the SORAINE shelf): shown by show(name), skipped by the arrow keys.
+    const shop = document.getElementById('shop'); if (shop) this.els.shop = shop;
     this.readout = document.getElementById('readout'); this.card = document.getElementById('detailCard'); this.bar = document.getElementById('scenarios');
     addEventListener('keydown', (e) => { const order = ['observe', 'detail', 'about']; const i = order.indexOf(this.page); if (e.key === 'ArrowRight' && i >= 0) this.show(order[(i + 1) % 3]); if (e.key === 'ArrowLeft' && i >= 0) this.show(order[(i + 2) % 3]); });
   }

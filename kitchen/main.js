@@ -1,12 +1,20 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { Combustion } from './combustion.js?v=lab-controls-3';
+import { fitPropModel } from './prop-models.js?v=model-swap-1';
+import { ObjectInspector } from './inspect.js?v=object-inspect-1';
+import { applySurfaceMaterials } from './materials.js?v=surface-textures-2';
+import { Combustion } from './combustion.js?v=object-inspect-1';
 import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=lab-controls-3';
 import { buildStars } from './stars.js?v=lab-controls-3';
 import { buildTerrain } from './terrain.js?v=lab-controls-3';
-import { Props } from './props.js?v=lab-controls-3';
-import { WavePass, Wave } from './wave.js?v=lab-controls-3';
-import { Pages } from './pages.js?v=lab-controls-3';
+import { Props } from './props.js?v=basket-1';
+import { WavePass, Wave } from './wave.js?v=object-inspect-1';
+import { Pages } from './pages.js?v=basket-1';
+import { research } from './research-source.js?v=basket-1';
+import { Basket } from './basket.js?v=basket-1';
+import { Shop } from './shop.js?v=basket-1';
+import { PRODUCTS } from './catalog.js?v=basket-1';
+import { Shelf } from './shelf3d.js?v=basket-1';
 
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -27,7 +35,7 @@ const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 900);
 const kitchen = buildKitchen(scene);
 const flame = buildFlame(scene);
 // No tufts on the kitchen footprint or where the camera rigs stand (world metres).
-const KEEP_OUT = [[-1.85, -0.75, 0.85, 0.75], [0.6, -0.75, 2.85, 0.75], [-1.85, 0.3, -0.4, 2.1]];
+const KEEP_OUT = [[-1.85, -0.75, 0.85, 0.75], [0.6, -0.75, 2.85, 0.75], [-1.85, 0.3, -0.4, 2.1], [1.7, -0.9, 4.6, 4.2]];   // last: SORAINE store shelf and the shopper standing in front of it
 const STANDS = [[0.35, 1.75, 0.9], [-2.6, 3.4, 1.1]];
 const keepOut = (x, z) => KEEP_OUT.some(([x0, z0, x1, z1]) => x > x0 && x < x1 && z > z0 && z < z1) || STANDS.some(([cx, cz, r]) => Math.hypot(x - cx, z - cz) < r);
 const terrain = buildTerrain(scene, SWEEP, SWEEP_GLSL, SWEEP_FN, { keepOut });
@@ -39,6 +47,69 @@ const wave = new Wave(WORLD.flame);
 const props = new Props(scene, camera, canvas, WORLD.flame, kitchen);
 const combustion = new Combustion(scene,camera,canvas,WORLD.flame,props);
 const modelLoader = new GLTFLoader();
+const basket = new Basket({ scene, props, loader: modelLoader, getGravity: () => props.gNew, canAct: () => !wave.active });
+const shelf = new Shelf(scene, modelLoader);
+
+// Replace only the visual placeholders; the existing physics bodies and controls stay in place.
+async function replacePropVisuals() {
+  const base = 'models/soraine_props/';
+  const jobs = [
+    ['pan', 'Mesh_42', .34, 0, model => {
+      kitchen.pan.clear();
+      kitchen.pan.add(model);
+    }],
+    ['mug', 'Mesh_64', .09, -.0475, model => {
+      const target = props.bodies.find(b => b.name === 'mug')?.mesh;
+      if (!target) return;
+      target.clear();
+      target.geometry.dispose();
+      target.geometry = new THREE.BufferGeometry();
+      target.add(model);
+    }],
+    ['bottle', 'OilBody', .07, -.11, model => {
+      const target = props.bodies.find(b => b.name === 'oil')?.mesh;
+      if (!target) return;
+      target.clear();
+      target.geometry.dispose();
+      target.geometry = new THREE.BufferGeometry();
+      target.add(model);
+      // Follow the edited nozzle when dragging or tipping the bottle.
+      target.updateWorldMatrix(true, true);
+      const spout = model.getObjectByName('OilSpout');
+      if (spout) {
+        const bounds = new THREE.Box3().setFromObject(spout);
+        const tip = bounds.getCenter(new THREE.Vector3());
+        tip.y = bounds.max.y;
+        const nozzle = new THREE.Object3D();
+        nozzle.name = 'oilNozzle';
+        nozzle.position.copy(target.worldToLocal(tip));
+        target.add(nozzle);
+      }
+    }],
+    ['egg', 'Mesh_45', .17, .008, model => {
+      const target = props.bodies.find(b => b.name === 'friedEgg')?.mesh;
+      if (!target) return;
+      target.clear();
+      target.add(model);
+    }]
+  ];
+  return Promise.all(jobs.map(async ([name, part, width, bottom, replace]) => {
+    try {
+      // Replacing a file in place must not reuse a cached GLB response.
+      const response = await fetch(`${base}soraine_${name}_repaired.glb`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const { scene: model } = await modelLoader.parseAsync(await response.arrayBuffer(), new URL(base, location.href).href);
+      const visual = fitPropModel(model, name, part, width, bottom, name === 'mug' ? .095 : undefined);
+      replace(visual);
+      return { name, loaded: true, ...visual.userData.modelFit };
+    } catch (error) {
+      console.error(`Unable to load ${name} model`, error);
+      return { name, loaded: false, error: String(error) };
+    }
+  }));
+}
+const propVisualsReady = replacePropVisuals();
+const surfaceMaterialsReady = propVisualsReady.then(() => applySurfaceMaterials(props, renderer));
 const chamber = new THREE.Group();
 const labShell = new THREE.Group();
 scene.add(labShell);
@@ -117,7 +188,9 @@ const RIG = {
   orbital: { pos: new THREE.Vector3(.03,1.24,2.25), look: new THREE.Vector3(.04,1.46,0), fov: 52 },
   cook:    { pos: new THREE.Vector3(0.55, 1.40, 2.35), look: WORLD.flame.clone().add(new THREE.Vector3(0,.06,0)), fov: 48 },
   detail:  { pos: new THREE.Vector3(0.42, 1.18, 0.55), look: new THREE.Vector3(0.05, 0.94, 0.08), fov: 34 },
-  about:   { pos: new THREE.Vector3(-2.6, 1.5, 3.4), look: new THREE.Vector3(0.6, 0.8, 0.2), fov: 44 }
+  about:   { pos: new THREE.Vector3(-2.6, 1.5, 3.4), look: new THREE.Vector3(0.6, 0.8, 0.2), fov: 44 },
+  // SORAINE: the worktop the basket is tipped onto (flame stays in frame). Shelf, product and basket views: shelf3d.js.
+  bench:   { pos: new THREE.Vector3(1.55, 1.78, 2.25), look: new THREE.Vector3(0.82, 0.96, 0.32), fov: 46 }
 };
 const cam = { pos: RIG.landing.pos.clone(), look: RIG.landing.look.clone(), fov: RIG.landing.fov, from: null, to: RIG.landing, t: 1, dur: 1 };
 function snap(rig) { cam.pos.copy(rig.pos); cam.look.copy(rig.look); cam.fov = rig.fov; cam.t = 1; cam.to = rig; }
@@ -168,9 +241,11 @@ function setTerrain(a, b) {
 }
 function selectScenario(slug, immediate = false) {
   const s = scenarios.find(x => x.slug === slug); if (!s || (current && s === current && !immediate)) return;
+  inspector?.close({ restore: false });
   if (immediate || !current) { current = target = s; blend = 1; Object.assign(flameTarget, s.flame); Object.assign(flameState, s.flame); applyEnv(s, s, 1); setTerrain(s, s); SWEEP.uRadius.value = 1e5; props.setGravity(s.g, s.g, -1); }
   else { if (wave.active) { current = mixScenario(current, target, blend); } target = s; blend = 0; Object.assign(flameTarget, s.flame); flameSwept = false; setTerrain(current, target); wave.fire(); props.fire(current.g, target.g); }
   pages.setScenario(s);
+  shop?.setScenario(s);
   if (pages.page==='observe') goTo(isSpace(s) && !chamber.visible ? RIG.orbital : RIG.cook,1.2);
   combustion.setSpace(s.slug==='iss');
   setTerrain(current,target);
@@ -178,10 +253,41 @@ function selectScenario(slug, immediate = false) {
 wave.onSweep = () => { /* environment crossfade begins when the front reaches the camera */ };
 
 // ---------- pages ----------
+let inspector = null, shop = null;
+const shopOpen = document.getElementById('shop-open');
 const pages = new Pages({
-  onPage: (p) => { goTo(RIG[p] || (isSpace(target) ? RIG.orbital : RIG.cook), 1.5); pass.uniforms.uDof.value = 0; },
+  onPage: (p) => {
+    inspector?.close({ restore: false });
+    if (p === 'shop') shop.enter();
+    else { if (shop?.active) shop.exit(); goTo(RIG[p] || (isSpace(target) ? RIG.orbital : RIG.cook), 1.5); }
+    shopOpen.hidden = p !== 'observe';
+    document.getElementById('combustion-status').hidden = p === 'shop';
+    pass.uniforms.uDof.value = 0;
+  },
   onScenario: (slug) => selectScenario(slug)
 });
+inspector = new ObjectInspector({
+  props, canvas, camera,
+  getRig: () => ({ pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }),
+  moveCamera: (rig, duration) => goTo(rig, duration),
+  getScenario: () => target || current,
+  canOpen: () => pages.page === 'observe' && !wave.active,
+  isObserve: () => pages.page === 'observe'
+});
+shop = new Shop({
+  basket, research, shelf, rigs: RIG, getScenario: () => target || current, isWorldBusy: () => wave.active,
+  onView: (rig, dur) => { if (pages.page === 'shop' && rig) goTo(rig, dur ?? 1.3); },
+  onExit: () => pages.show('observe')
+});
+// shelf display: tags carry record counts, so wait for the snapshot (it is small); the tag tilt aims at the shelf eye
+research.load().catch(() => {}).then(() => shelf.ready).then(() => shelf.populate(PRODUCTS, (p) => basket.template(p),
+  (p) => research.byId ? research.byIds(p.measurementIds).length : 0, shelf.shelfRig(16 / 10).pos)).catch(e => console.error('Shelf display failed', e));
+shopOpen.addEventListener('click', () => pages.show('shop'));
+props.canInteract = () => pages.page === 'observe' && !inspector.active;
+// Released SORAINE samples open their product view at the shelf instead of the object inspector.
+const openObject = props.onInspect;
+props.onInspect = (b) => { if (!b.sample) return openObject(b); pages.show('shop'); shop.openSample(b); };
+combustion.canInteract = () => !inspector.active;
 
 document.getElementById('start').addEventListener('click', () => {
   chamber.visible = false;
@@ -190,7 +296,7 @@ document.getElementById('start').addEventListener('click', () => {
   if (current) setTerrain(current, target);
   document.getElementById('landing').classList.add('gone');
   goTo(RIG.cook, 2.4);
-  setTimeout(() => { document.getElementById('dots').hidden = false; pages.show('observe'); }, 900);
+  setTimeout(() => { document.getElementById('dots').hidden = false; pages.show(new URLSearchParams(location.search).has('shop') ? 'shop' : 'observe'); }, 900);
 });
 
 // ---------- resize ----------
@@ -215,7 +321,8 @@ function govern(rawDt) {
 }
 
 // ---------- loop ----------
-const clock = new THREE.Clock(); let time = 0;
+const clock = new THREE.Clock(); let time = 0, burn = 1;
+const viewShift = { x: 0, y: 0 };
 const tmpUp = new THREE.Vector3(0, 1, 0);
 function frame() {
   const rawDt = clock.getDelta(); govern(rawDt);
@@ -226,22 +333,33 @@ function frame() {
     cam.pos.lerpVectors(cam.from.pos, cam.to.pos, k); cam.look.lerpVectors(cam.from.look, cam.to.look, k); cam.fov = THREE.MathUtils.lerp(cam.from.fov, cam.to.fov, k);
   }
   // idle drift (breathing) in cook view
-  const drift = pages.page === 'observe' ? 1 : 0.4;
+  const drift = inspector.active || pages.page === 'shop' ? 0 : pages.page === 'observe' ? 1 : 0.4;   // shop: hotspots track a still camera
   camera.position.copy(cam.pos); camera.position.x += Math.sin(time * 0.45) * 0.012 * drift; camera.position.y += Math.sin(time * 0.7) * 0.008 * drift;
-  camera.fov = cam.fov; camera.updateProjectionMatrix();
+  camera.fov = cam.fov;
+  // Store on a phone: shift the projection so the product sits above the text panel.
+  const ins = shop.insets(), sv = viewShift;
+  sv.x += ((ins.left - ins.right) / 2 - sv.x) * (1 - Math.exp(-dt * 6)); sv.y += ((ins.top - ins.bottom) / 2 - sv.y) * (1 - Math.exp(-dt * 6));
+  if (Math.abs(sv.x) + Math.abs(sv.y) > 0.5) {
+    const W = innerWidth + 2 * Math.abs(sv.x), H = innerHeight + 2 * Math.abs(sv.y);
+    camera.aspect = W / H; camera.setViewOffset(W, H, sv.x > 0 ? 0 : 2 * -sv.x, sv.y > 0 ? 0 : 2 * -sv.y, innerWidth, innerHeight);
+  } else if (camera.view?.enabled) { camera.clearViewOffset(); camera.aspect = innerWidth / innerHeight; }
+  camera.updateProjectionMatrix();
   camera.lookAt(cam.look);
   // wave + shake
-  wave.update(dt, camera.position);
-  const sh = wave.shake(camera.position, time);
+  if (!inspector.active) wave.update(dt, camera.position);
+  const sh = inspector.active ? null : wave.shake(camera.position, time);
   if (sh) { camera.position.add(new THREE.Vector3(sh.x, sh.y, 0).applyQuaternion(camera.quaternion)); camera.rotateZ(sh.roll); }
-  SWEEP.uRadius.value = wave.active ? wave.R : 1e5; SWEEP.uSweepW.value = wave.trail() * 0.8; props.R = wave.active ? wave.R : 1e5; props.update(dt, time);
+  SWEEP.uRadius.value = wave.active ? wave.R : 1e5; SWEEP.uSweepW.value = wave.trail() * 0.8; props.R = wave.active ? wave.R : 1e5;
+  const paused = inspector.active || shop.paused;
+  if (!paused) { basket.update(dt); props.update(dt, time); } else basket.sync();
   pass.uniforms.uRadius.value = wave.R; pass.uniforms.uStrength.value = wave.strength(); pass.uniforms.uCenter.value.copy(wave.center);
   pass.uniforms.uTrail.value = wave.trail(); pass.uniforms.uSpacing.value = 0.25 + Math.max(wave.R, 0) * 0.045;   // lines ride with the front, so spacing can grow
   // flame morphs as soon as the wave leaves it (it is the origin)
   if (!flameSwept && wave.active) flameSwept = true;
   const fk = 1 - Math.exp(-dt * 2.2);
   for (const key in flameState) flameState[key] += (flameTarget[key] - flameState[key]) * fk;
-  const burn=combustion.update(dt);
+  if (!inspector.active) burn=combustion.update(dt);
+  else combustion.frameArm();
   if (oxygenCap) oxygenCap.position.y=oxygenCapRest-(combustion.buttonTravel>0?.004:0);
   flame.group.visible=burn>.01;
   flame.uniforms.uTime.value = time; flame.uniforms.uBlue.value = flameState.blue; flame.uniforms.uSphere.value = flameState.sphere; flame.uniforms.uFlicker.value = flameState.flicker;
@@ -258,8 +376,14 @@ function frame() {
     if (!wave.active) { current = target; setTerrain(current, current); }
   }
   // detail page DoF
-  const wantDof = pages.page === 'detail' ? 1 : 0; pass.uniforms.uDof.value += (wantDof - pass.uniforms.uDof.value) * (1 - Math.exp(-dt * 3));
-  pass.uniforms.uFocus.value = camera.position.distanceTo(WORLD.pan);
+  const wantDof = inspector.active || pages.page === 'detail' ? 1 : 0; pass.uniforms.uDof.value += (wantDof - pass.uniforms.uDof.value) * (1 - Math.exp(-dt * 5));
+  const focusPoint = inspector.active ? inspector.focus : WORLD.pan;
+  pass.uniforms.uFocus.value = Math.max(.02, focusPoint.clone().sub(camera.position).dot(camera.getWorldDirection(new THREE.Vector3())));
+  pass.uniforms.uFocusRange.value = inspector.active ? inspector.focusRange : .02;
+  pass.uniforms.uBlurRadius.value = inspector.active ? 22 : 9;
+  pass.focusObject = inspector.active?.mesh || null;
+  inspector.update();
+  shop.update(dt, camera);
   terrain.update(time, camera);
   stars.uniforms.uTime.value = time;
   lights.sun.target.position.set(0.3, 0.8, 0.2);
@@ -274,5 +398,5 @@ Promise.all([fetch('data/scenarios.json').then(r => r.json()), landingModels]).t
   scenarios = d.scenarios; terrain.preload(scenarios); pages.setScenarios(scenarios); selectScenario('earth', true); frame();
 }).catch(e => { console.error(e); document.body.insertAdjacentHTML('beforeend', `<pre style="position:fixed;left:12px;bottom:12px;color:#fff">${e}</pre>`); });
 
-window.__kitchen = { combustion, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
+window.__kitchen = { basket, shop, shelf, research, inspector, combustion, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
 
