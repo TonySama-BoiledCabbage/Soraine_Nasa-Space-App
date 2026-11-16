@@ -34,6 +34,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/material-search",
+      "destination": "https://soraine-dashboard-334840303039.us-central1.run.app/api/material-search"
+    },
+    {
       "source": "/api/research",
       "destination": "https://soraine-dashboard-334840303039.us-central1.run.app/api/research"
     },

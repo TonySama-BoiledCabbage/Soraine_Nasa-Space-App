@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="./mobile-polish.css?v=1">
   <link rel="stylesheet" href="./scenes.css?v=1">
   <link rel="stylesheet" href="./compat.css?v=1">
+  <link rel="stylesheet" href="./material-search.css?v=1">
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to research</a>
@@ -56,5 +57,6 @@
       .then(wasm => wasm.startPage(), error => { console.warn('Rust build unavailable; using the JavaScript build.', error); return import('./app.mjs'); });
   </script>
   <script type="module" src="./audio.mjs?v=1"></script>
+  <script type="module" src="./material-search-ui.mjs?v=1"></script>
 </body>
 </html>
