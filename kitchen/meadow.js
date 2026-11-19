@@ -36,17 +36,13 @@ function tuftGeometry() {
 }
 
 // keepOut(worldX, worldZ) -> true where no tuft may stand
-// flatten: { rect: [x0, z0, x1, z1], floor: { y } } (world) -> inside the rect the canopy is not lifted and the ground is
-// pressed down to floor.y, fading back over 0.8 m, so the store shelf's lower boards are not buried in the meadow surface
-export function enableMeadowWind(root, { SWEEP, SWEEP_GLSL, SWEEP_FN, roleU, keepOut, flatten }) {
+export function enableMeadowWind(root, { SWEEP, SWEEP_GLSL, SWEEP_FN, roleU, keepOut }) {
   const ground = root.getObjectByName('TallMeadowGround') || root.getObjectByName('MeadowGround');
   const blade = root.getObjectByName('BladeTemplate');
   const positions = ground.geometry.attributes.position;
   const cameraPos = new THREE.Vector3();
   const uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog]);
   Object.assign(uniforms, { uTime: { value: 0 }, uStrength: { value: 1 }, uEye: { value: cameraPos } }, SWEEP, { uRole: roleU });
-  const fr = flatten?.rect || [1e6, 1e6, 1e6, 1e6];
-  Object.assign(uniforms, { uFlat: { value: new THREE.Vector4(...fr) }, uFlatY: { value: flatten?.floor?.y ?? -0.02 }, uFlatFade: { value: 0.8 } });
   const make = (vertexShader, fragmentShader) => new THREE.ShaderMaterial({ uniforms, vertexColors: true, side: THREE.DoubleSide, fog: true, vertexShader, fragmentShader });
   const clip = SWEEP_GLSL + '\n' + SWEEP_FN + `
    uniform float uRole;
@@ -79,11 +75,9 @@ export function enableMeadowWind(root, { SWEEP, SWEEP_GLSL, SWEEP_FN, roleU, kee
    void main(){ clipBySweep(vSweepW); vec2 ink=texture2D(strands,strandUV).rg;if(ink.r<.23)discard;gl_FragColor=vec4(shade*(.78+.35*ink.g),1.);` + output);
   const canopy = make(`
    #include <fog_pars_vertex>
-   uniform vec3 uEye; uniform vec4 uFlat; uniform float uFlatY, uFlatFade; varying vec2 coord;varying vec3 paint; varying vec3 vSweepW;
+   uniform vec3 uEye; varying vec2 coord;varying vec3 paint; varying vec3 vSweepW;
    void main(){
-    vec3 p=position; vec3 w=(modelMatrix*vec4(p,1.)).xyz;
-    vec2 q=max(max(uFlat.xy-w.xz, w.xz-uFlat.zw), 0.); float flatK=1.-smoothstep(0., uFlatFade, length(q));
-    p.y+=(.15+.64*smoothstep(3.,11.,distance(p.xz,uEye.xz)))*(1.-flatK) - max(0., w.y-uFlatY)*flatK;coord=p.xz;paint=color.rgb;
+    vec3 p=position;p.y+=.15+.64*smoothstep(3.,11.,distance(p.xz,uEye.xz));coord=p.xz;paint=color.rgb;
     vSweepW=(modelMatrix*vec4(p,1.)).xyz;
     vec4 mvPosition=modelViewMatrix*vec4(p,1.);
     gl_Position=projectionMatrix*mvPosition;

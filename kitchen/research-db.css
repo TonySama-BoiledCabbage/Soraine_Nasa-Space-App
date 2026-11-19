@@ -1,10 +1,10 @@
 /* Detail page research database. Paper-glass panel like the lab's cards, opened wide: the database is the content,
    the blurred 3D scene stays only as a frame. A record column (evidence chain) opens beside the list. */
-#detail .rdb{--ink:#1d1a16;--muted:#5e574e;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);--paper:#f6f1e7;
+#detail .rdb{--ink:#1d1a16;--muted:#6f675d;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);--paper:#f6f1e7;
   position:absolute;inset:64px max(20px,2vw) 20px;display:flex;flex-direction:column;border-radius:18px;background:rgba(246,241,231,.95);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.28);pointer-events:auto;color:var(--ink);overflow:hidden}
 .rdb *{box-sizing:border-box}.rdb [hidden]{display:none!important}
-.rdb button,.rdb input,.rdb select{font:inherit;color:inherit}.rdb button{cursor:pointer}.rdb button:disabled{cursor:default;opacity:.65}
+.rdb button,.rdb input,.rdb select{font:inherit;color:inherit}.rdb button{cursor:pointer}.rdb button:disabled{cursor:default;opacity:.45}
 .rdb :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .rdb-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:20px 26px 10px;flex-wrap:wrap}
 .rdb-head h2{margin:4px 0 0;font-size:clamp(19px,2vw,24px);font-weight:600;letter-spacing:-.02em}
@@ -41,7 +41,7 @@
 .rdb-chip{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:999px;background:#e5dccb;color:#5c5346;white-space:nowrap}
 .rdb-chip.amber{background:#f3d9c7;color:#8a4716}
 .rdb-term{text-decoration:underline dotted rgba(232,112,42,.7);text-underline-offset:3px;cursor:help}
-.rdb-na{color:var(--muted);font-style:italic}
+.rdb-na{color:#a59c90;font-style:italic}
 .rdb-pager{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12.5px;color:var(--muted)}
 .rdb-pager button{min-width:36px;min-height:34px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.75)}
 .rdb-list{display:flex;flex-direction:column;gap:8px}
@@ -82,16 +82,10 @@
 .rdb-empty{color:var(--muted)}
 .rdb-search-host{max-width:1100px}
 @media(max-width:900px){
-  #detail .rdb{inset:60px 8px max(8px,env(safe-area-inset-bottom))}
-  .rdb-head{gap:6px}.rdb-head h2{font-size:17px}.rdb-eyebrow{font-size:10px}
-  .rdb-prov{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;font-size:11.5px}
-  .rdb-prov.full{display:block}
+  #detail .rdb{inset:60px 8px 8px}
   .rdb-head{padding:14px 16px 8px}.rdb-tabs{padding:0 10px}.rdb-view{padding:12px 14px 18px}
   .rdb.has-record .rdb-view{display:none}.rdb.has-record .rdb-record{width:100%;border-left:0}
   .rdb-fields>div{grid-template-columns:120px minmax(0,1fr)}
   .rdb-export{margin-left:0}
 }
 @media(prefers-reduced-motion:no-preference){#detail:not([hidden]) .rdb{animation:rdb-in .35s cubic-bezier(.2,.8,.2,1)}@keyframes rdb-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}
-
-/* iOS Safari zooms the page into any field under 16px and leaves it zoomed: keep form text at 16px on touch screens */
-@media(pointer:coarse){.rdb input,.rdb select,.ms-panel input,.ms-panel select{font-size:16px}}

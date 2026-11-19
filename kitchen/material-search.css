@@ -1,11 +1,11 @@
 /* SORAINE material search on the detail page. Same paper-glass card language as the lab (style.css .card):
    warm paper over the blurred 3D scene, ink text, orange accent, pill controls. Layout follows the dashboard
    search (result list | material in focus), sized to leave the flame visible on wide screens. */
-.ms-panel{--ink:#1d1a16;--muted:#5e574e;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);color:var(--ink)}
+.ms-panel{--ink:#1d1a16;--muted:#7a7268;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);color:var(--ink)}
 .ms-heading{display:none}  /* the database header above already titles the page */
 .ms-panel *{box-sizing:border-box}.ms-panel [hidden]{display:none!important}
 .ms-panel button,.ms-panel input,.ms-panel select{font:inherit;color:inherit}
-.ms-panel button{cursor:pointer}.ms-panel button:disabled{cursor:default;opacity:.65}
+.ms-panel button{cursor:pointer}.ms-panel button:disabled{cursor:default;opacity:.5}
 .ms-panel :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .ms-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .ms-heading h2{margin:6px 0 16px;font-size:clamp(20px,2.2vw,26px);font-weight:600;letter-spacing:-.02em;line-height:1.2}

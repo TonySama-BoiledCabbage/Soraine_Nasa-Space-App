@@ -28,17 +28,14 @@ export function mountResearchBrowser(host, { searchOptions }) {
 <div class="rdb-body"><section class="rdb-view" data-view="search"><div class="rdb-search-host"></div></section>${TABS.slice(1).map(([id]) => `<section class="rdb-view" data-view="${id}" hidden></section>`).join('')}<aside class="rdb-record" aria-label="Evidence chain" hidden></aside></div>`;
   const $ = (s) => host.querySelector(s), views = Object.fromEntries(TABS.map(([id]) => [id, host.querySelector(`[data-view="${id}"]`)]));
   const recordEl = $('.rdb-record'), prov = $('.rdb-prov');
-  prov.addEventListener('click', () => prov.classList.toggle('full'));   // phones clamp the provenance line; tap to read it all
   // Search falls back to the same full database bundle (live BigQuery or the saved export) the other tabs use.
   const search = mountMaterialSearch($('.rdb-search-host'), { ...searchOptions, loadBundle: () => loadResearch().then((r) => r.data) });
   const st = { tab: 'search', record: null, trail: [], f: { measurements: { q: '', material: '', gravity: '', type: '', page: 0 }, experiments: { q: '', material: '', gravity: '', page: 0 }, sources: { q: '', type: '', used: false, page: 0 }, statements: { q: '', page: 0 }, original: { ds: null, q: '', kind: '', page: 0 } } };
   let R = null, O = null, db = null;
 
   // ---------- loading ----------
-  // Fetched the first time the detail page opens (or a record is requested), not on every visit to the lab.
-  let job = null;
-  const ready = () => job ??= loadResearch().then((r) => { R = r; db = r.db; renderProvenance(); counts(); renderTab(); return r; })
-    .catch((e) => { job = null; prov.textContent = 'The research database could not be loaded: ' + (e.message || e); throw e; });
+  const ready = loadResearch().then((r) => { R = r; db = r.db; renderProvenance(); counts(); renderTab(); return r; })
+    .catch((e) => { prov.textContent = 'The research database could not be loaded: ' + (e.message || e); throw e; });
   function provenanceText() {
     const b = R.data, when = b.exportedAt ? new Date(b.exportedAt).toLocaleString('en-CA', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC' : 'date not stated';
     if (R.via === 'saved') return `Saved BigQuery export of ${esc(b.dataset)} (${esc(b.project)}), exported ${when}. The live service could not be reached, so this is not a live query.`;
@@ -231,7 +228,7 @@ ${safeUrl(d.sourceUrl) ? `<p><a href="${safeUrl(d.sourceUrl)}" target="_blank" r
     const t = ev.target.closest('[data-tab],[data-go],[data-page],[data-ds],[data-ds-open],[data-export],[data-dl],[data-back],[data-close]');
     if (!t || !host.contains(t)) return;
     if (t.dataset.tab) setTab(t.dataset.tab);
-    else if (t.dataset.go) ready().then(() => openRecord(t.dataset.go, t.dataset.id));
+    else if (t.dataset.go) ready.then(() => openRecord(t.dataset.go, t.dataset.id));
     else if (t.dataset.page) { st.f[t.dataset.page].page += +t.dataset.d; renderTab(); }
     else if (t.dataset.ds) { Object.assign(st.f.original, { ds: t.dataset.ds, page: 0, q: '', kind: '' }); renderTab(); }
     else if (t.dataset.dsOpen) { Object.assign(st.f.original, { ds: t.dataset.dsOpen, page: 0, q: '', kind: '' }); closeRecord(); setTab('original'); }
@@ -254,9 +251,9 @@ ${safeUrl(d.sourceUrl) ? `<p><a href="${safeUrl(d.sourceUrl)}" target="_blank" r
   host.addEventListener('change', (ev) => { if (ev.target.type !== 'search') onFilter(ev); });
 
   return {
-    show() { ready().catch(() => {}); if (st.tab === 'search') search.show(); },
+    show() { if (st.tab === 'search') search.show(); },
     hide() { search.hide(); },
-    openRecord: (kind, id) => ready().then(() => openRecord(kind, id)),
+    openRecord: (kind, id) => ready.then(() => openRecord(kind, id)),
     ready
   };
 }

@@ -1,13 +1,6 @@
 // Describes the implemented demonstration, not measured material properties.
 // Keep this separate from the viewer so the object copy can be edited independently.
 export const OBJECT_INFO = {
-  flame: {
-    title: 'Burner flame', kind: 'Heat source · mechanism demo', surface: 'Shader cone · colour shifts toward blue', role: 'Visual centre and heat source',
-    intro: 'Every scene change starts at the flame. Its shape and colour follow the selected gravity setting.',
-    action: 'Return to the scene and press O2 SUPPLY (or O) to add oxygen. Drag a worktop sample near the burner to expose it to heat.',
-    observe: 'Switch gravity and compare: tall and flickering on Earth, lower and wider on Mars and the Moon, round and blue in orbit.',
-    note: 'Schematic. Flame height, roundness and colour are visual parameters, not a validated combustion model. Fuel and oxygen are demonstration scales, not measured concentrations or temperatures.'
-  },
   oil: {
     title: 'Oil dispenser', kind: 'Fuel delivery', surface: 'Tinted body · metal nozzle', role: 'Fuel source',
     intro: 'Follow the fuel from the bottle to the burner. This is the starting point of the fuel-delivery demonstration.',

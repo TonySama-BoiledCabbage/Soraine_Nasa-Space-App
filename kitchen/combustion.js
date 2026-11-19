@@ -21,7 +21,7 @@ export class Combustion {
     this.drops = [];
     this.spillTimer = 0;
     this.releaseTimer = 0;
-    this.autoInterval = 15;   // orbital cabin: automatic oxygen pulse period (s)
+    this.autoInterval = 5;
     this.scene = scene;
     this.dropGeo = new THREE.SphereGeometry(.012,8,6);
     this.dropMat = new THREE.MeshStandardMaterial({color:0xc68820,roughness:.25});
@@ -87,16 +87,14 @@ export class Combustion {
   inject(auto=false) {
     if (!this.arm) return;
     this.pending=true;
-    if (!auto) { this.buttonTravel=.18; this.onButton?.(); }   // sound hook (main.js)
+    if (!auto) this.buttonTravel=.18;
     if (auto) this.autoCount++; else this.manualCount++;
-    this.lastAuto=auto;
     this.status.textContent = auto ? 'Automatic oxygen supply' : 'Oxygen requested';
   }
   // Timings (s): deploy is done by ~0.85 so a press or an orbital pulse flows within 0.9;
   // stowing takes ~0.75 after the 1 s pulse. Overshoot: slide ~3 % (a few cm), swivel ~12 %, gun ~16 %.
   planArm(deploy) {
     const {slide,unfold,aim}=this;
-    this.onArm?.(deploy, this.lastAuto);   // sound hook (main.js)
     if (deploy) {
       slide.go(1,{dur:.5,curve:spring(.72)});
       unfold.go(1,{delay:.2*(1-Math.min(1,slide.v)),dur:.5,curve:spring(.56)});
@@ -127,7 +125,6 @@ export class Combustion {
       this.oxygen=Math.min(1.6,this.oxygen+.75);
       this.pulse=1;
       this.kickT=0;
-      this.onInject?.(this.lastAuto);   // sound hook (main.js)
       this.status.textContent='Oxygen injected';
     }
     this.jet.visible=this.pulse>0;
@@ -156,7 +153,6 @@ export class Combustion {
     }
     this.scene.add(mesh);
     this.drops.push({mesh,velocity,age:0,g});
-    this.onDrop?.();   // sound hook (main.js)
   }
   update(dt) {
     const oil=this.props.bodies.find(b=>b.name==='oil');
@@ -176,15 +172,14 @@ export class Combustion {
       d.age+=dt; d.velocity.y-=d.g*dt;
       d.mesh.position.addScaledVector(d.velocity,dt);
       const received=d.mesh.position.distanceTo(this.origin.clone().add(new THREE.Vector3(0,.04,0)))<.13;
-      if (received) { this.fuel=Math.min(2,this.fuel+.12); this.onDropReceived?.(); }
+      if (received) this.fuel=Math.min(2,this.fuel+.12);
       if (received || d.age>5 || d.mesh.position.y<.02) {
         this.scene.remove(d.mesh); this.drops.splice(i,1);
       }
     }
     // Default burner reservoir lasts several minutes. Incoming droplets refill it.
     this.fuel=Math.max(0,this.fuel-dt*.0035);
-    // space: each pulse (+.75) outlasts its period with the same margin as the old 5 s cycle (.375 used per pulse)
-    this.oxygen=Math.max(0,this.oxygen-dt*(this.space?.375/this.autoInterval:.015));
+    this.oxygen=Math.max(0,this.oxygen-dt*(this.space?.075:.015));
     if (!this.space) this.oxygen=Math.max(.8,this.oxygen);
     return Math.min(1,this.fuel*3,this.oxygen*3)*(1+Math.max(0,this.fuel-1)*.65+this.pulse*.18);
   }

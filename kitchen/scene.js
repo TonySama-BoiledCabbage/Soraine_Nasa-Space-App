@@ -54,7 +54,7 @@ export function buildKitchen(scene) {
   }
   for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; trivet.add(cyl(0.006, 0.006, 0.07, M.dark, WORLD.flame.x + Math.cos(a) * 0.15, H + 0.09, WORLD.flame.z + Math.sin(a) * 0.15, 8)); }
   root.add(trivet);
-  // (three decorative knobs used to sit on the worktop's front edge; dark on dark they read as ghost marks, so they are gone)
+  for (let i = 0; i < 3; i++) root.add(cyl(0.025, 0.025, 0.03, M.dark, -0.4 + i * 0.12, H + 0.025, 0.4));  // knobs
 
   // pan
   const pan = new THREE.Group(); pan.position.copy(WORLD.pan); root.add(pan);
