@@ -2,7 +2,7 @@
 #object-tools{position:fixed;top:22px;right:28px;z-index:8;color:#fff}
 #objects-toggle,#object-close,.object-nav button{appearance:none;font:inherit;cursor:pointer;color:inherit;min-height:44px;transition:background-color 120ms ease-out,border-color 120ms ease-out}
 #objects-toggle{display:flex;align-items:center;gap:12px;border:1px solid #ffffff40;border-radius:99px;padding:0 16px;background:#1118209c;backdrop-filter:blur(12px);font-size:13px}
-#objects-toggle>span{font-size:11px;opacity:.55;font-variant-numeric:tabular-nums}
+#objects-toggle>span{font-size:11px;opacity:.85;font-variant-numeric:tabular-nums}
 #objects-toggle:hover,#object-close:hover{background:#222c38d9}
 #objects-toggle:disabled{cursor:default;opacity:.5}
 #object-menu{position:absolute;right:0;top:56px;width:268px;max-height:calc(100dvh - 100px);overflow:auto;background:#141b23ed;border:1px solid #ffffff26;box-shadow:0 16px 50px #0004;border-radius:14px;padding:12px;backdrop-filter:blur(18px);overscroll-behavior:contain}
@@ -19,11 +19,12 @@
 #object-inspector{--detail-white:#f7f8fa;--detail-muted:#b5c1cc;position:fixed;inset:0;z-index:10;color:var(--detail-white);pointer-events:none}
 .object-scrim{position:absolute;inset:0;background:none;pointer-events:none}
 #object-close{position:absolute;left:28px;top:24px;display:flex;align-items:center;gap:12px;border:1px solid #ffffff36;border-radius:99px;background:#111820b8;backdrop-filter:blur(12px);padding:0 17px;font-size:13px;pointer-events:auto}
-.object-escape{font-size:10px;opacity:.5;border:1px solid #ffffff4a;border-radius:4px;padding:1px 4px;margin-left:8px}
-.object-pause{position:absolute;left:30px;bottom:32px;display:flex;gap:8px;align-items:center;text-transform:uppercase;letter-spacing:.12em;font-size:10px;color:#d0d9df}
+.object-escape{font-size:10px;opacity:.85;border:1px solid #ffffff80;border-radius:4px;padding:1px 4px;margin-left:8px}
+.object-pause{position:absolute;left:30px;bottom:32px;display:flex;gap:8px;align-items:center;text-transform:uppercase;letter-spacing:.12em;font-size:10px;color:#e6ecf0;background:rgba(14,16,20,.62);padding:6px 11px;border-radius:99px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .object-pause i{display:block;height:5px;width:5px;border-radius:50%;background:#e8702a}
-/* Detail card: transparent white frosted glass, dark text. brightness() lifts the dark scene behind it so the text keeps contrast. */
-.object-copy{--glass-ink:#13181e;--glass-text:#2a323b;--glass-muted:#4f5a66;--glass-line:#13181e1f;position:absolute;right:4vw;top:50%;transform:translateY(-50%);box-sizing:border-box;width:min(420px,36vw);max-height:calc(100dvh - 96px);display:flex;flex-direction:column;padding:26px 26px 18px;border-radius:20px;color:var(--glass-ink);background:linear-gradient(160deg,#ffffff5c,#ffffff38);border:1px solid #ffffff8c;box-shadow:0 18px 50px #0b10162e,inset 0 1px #ffffffb3;backdrop-filter:blur(26px) saturate(1.35) brightness(1.18);-webkit-backdrop-filter:blur(26px) saturate(1.35) brightness(1.18);pointer-events:auto;animation:object-copy-enter 320ms ease-out}
+/* Detail card: frosted glass, dark text. The paper layer is 82-88 % opaque so the text keeps WCAG AA contrast whatever is
+   behind it (orange Mars ground, black space, grass): muted >= 5.6:1, body text >= 8.4:1 even over pure black. */
+.object-copy{--glass-ink:#11161c;--glass-text:#252c34;--glass-muted:#3e4751;--glass-line:#13181e29;position:absolute;right:4vw;top:50%;transform:translateY(-50%);box-sizing:border-box;width:min(420px,36vw);max-height:calc(100dvh - 96px);display:flex;flex-direction:column;padding:26px 26px 18px;border-radius:20px;color:var(--glass-ink);background:linear-gradient(160deg,rgba(246,243,238,.88),rgba(246,243,238,.82));border:1px solid #ffffffb3;box-shadow:0 18px 50px #0b10162e,inset 0 1px #ffffffb3;backdrop-filter:blur(26px) saturate(1.35) brightness(1.18);-webkit-backdrop-filter:blur(26px) saturate(1.35) brightness(1.18);pointer-events:auto;animation:object-copy-enter 320ms ease-out}
 .object-copy-scroll{overflow-y:auto;overscroll-behavior:contain;padding-right:8px;scrollbar-width:thin;scrollbar-color:#13181e33 transparent}
 .object-overline{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--glass-muted)}
 #object-number{white-space:nowrap;font-family:ui-monospace,monospace}
@@ -38,12 +39,12 @@
 .object-facts dd{margin:0;color:var(--glass-ink)}
 .object-facts a{color:var(--glass-ink);text-underline-offset:3px;font-size:11px}
 .object-copy h3{font-size:11px;font-weight:600;letter-spacing:.045em;color:var(--glass-ink);margin:0 0 6px}
-#object-note{font-size:11px;line-height:1.65;color:var(--glass-muted);border-left:2px solid #e8702a99;padding-left:12px;margin-top:23px}
-#object-research{display:inline-flex;align-items:center;gap:12px;min-height:36px;color:var(--glass-ink);font-size:12px;font-weight:500;text-decoration:none;border-bottom:1px solid #13181e59;margin-bottom:5px}
+#object-note{font-size:11.5px;line-height:1.65;color:var(--glass-muted);border-left:2px solid #e8702a;padding-left:12px;margin-top:23px}
+#object-research{display:inline-flex;align-items:center;gap:12px;min-height:36px;color:var(--glass-ink);font-size:12px;font-weight:600;text-decoration:none;border-bottom:1px solid #13181e80;margin-bottom:5px}
 #object-research:hover{border-bottom-color:var(--glass-ink)}
 .object-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--glass-line);padding-top:13px;margin-top:24px;flex-shrink:0}
-.object-nav button{background:#ffffff4d;border:1px solid #13181e24;color:var(--glass-ink);border-radius:7px;padding:0 12px;font-size:12px;display:flex;align-items:center;gap:10px}
-.object-nav button:hover{background:#ffffffa6;border-color:#13181e4d}
+.object-nav button{background:#ffffffb3;border:1px solid #13181e38;color:var(--glass-ink);border-radius:7px;padding:0 12px;font-size:12px;display:flex;align-items:center;gap:10px}
+.object-nav button:hover{background:#fff;border-color:#13181e66}
 #object-counter{font:11px ui-monospace,monospace;color:var(--glass-muted);letter-spacing:.08em;white-space:nowrap}
 #object-tools button:focus-visible,#object-inspector button:focus-visible,#object-inspector a:focus-visible{outline:2px solid #e8702a;outline-offset:4px}
 body.inspecting-object #dots,body.inspecting-object #observe,body.inspecting-object #combustion-status{visibility:hidden;pointer-events:none}

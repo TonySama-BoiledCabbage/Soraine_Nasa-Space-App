@@ -1,10 +1,10 @@
 /* Detail page research database. Paper-glass panel like the lab's cards, opened wide: the database is the content,
    the blurred 3D scene stays only as a frame. A record column (evidence chain) opens beside the list. */
-#detail .rdb{--ink:#1d1a16;--muted:#6f675d;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);--paper:#f6f1e7;
+#detail .rdb{--ink:#1d1a16;--muted:#5e574e;--accent:#e8702a;--line:rgba(29,26,22,.12);--soft:rgba(29,26,22,.05);--paper:#f6f1e7;
   position:absolute;inset:64px max(20px,2vw) 20px;display:flex;flex-direction:column;border-radius:18px;background:rgba(246,241,231,.95);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.28);pointer-events:auto;color:var(--ink);overflow:hidden}
 .rdb *{box-sizing:border-box}.rdb [hidden]{display:none!important}
-.rdb button,.rdb input,.rdb select{font:inherit;color:inherit}.rdb button{cursor:pointer}.rdb button:disabled{cursor:default;opacity:.45}
+.rdb button,.rdb input,.rdb select{font:inherit;color:inherit}.rdb button{cursor:pointer}.rdb button:disabled{cursor:default;opacity:.65}
 .rdb :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .rdb-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:20px 26px 10px;flex-wrap:wrap}
 .rdb-head h2{margin:4px 0 0;font-size:clamp(19px,2vw,24px);font-weight:600;letter-spacing:-.02em}
@@ -41,7 +41,7 @@
 .rdb-chip{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:999px;background:#e5dccb;color:#5c5346;white-space:nowrap}
 .rdb-chip.amber{background:#f3d9c7;color:#8a4716}
 .rdb-term{text-decoration:underline dotted rgba(232,112,42,.7);text-underline-offset:3px;cursor:help}
-.rdb-na{color:#a59c90;font-style:italic}
+.rdb-na{color:var(--muted);font-style:italic}
 .rdb-pager{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12.5px;color:var(--muted)}
 .rdb-pager button{min-width:36px;min-height:34px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.75)}
 .rdb-list{display:flex;flex-direction:column;gap:8px}

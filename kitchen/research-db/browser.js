@@ -35,8 +35,10 @@ export function mountResearchBrowser(host, { searchOptions }) {
   let R = null, O = null, db = null;
 
   // ---------- loading ----------
-  const ready = loadResearch().then((r) => { R = r; db = r.db; renderProvenance(); counts(); renderTab(); return r; })
-    .catch((e) => { prov.textContent = 'The research database could not be loaded: ' + (e.message || e); throw e; });
+  // Fetched the first time the detail page opens (or a record is requested), not on every visit to the lab.
+  let job = null;
+  const ready = () => job ??= loadResearch().then((r) => { R = r; db = r.db; renderProvenance(); counts(); renderTab(); return r; })
+    .catch((e) => { job = null; prov.textContent = 'The research database could not be loaded: ' + (e.message || e); throw e; });
   function provenanceText() {
     const b = R.data, when = b.exportedAt ? new Date(b.exportedAt).toLocaleString('en-CA', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC' : 'date not stated';
     if (R.via === 'saved') return `Saved BigQuery export of ${esc(b.dataset)} (${esc(b.project)}), exported ${when}. The live service could not be reached, so this is not a live query.`;
@@ -229,7 +231,7 @@ ${safeUrl(d.sourceUrl) ? `<p><a href="${safeUrl(d.sourceUrl)}" target="_blank" r
     const t = ev.target.closest('[data-tab],[data-go],[data-page],[data-ds],[data-ds-open],[data-export],[data-dl],[data-back],[data-close]');
     if (!t || !host.contains(t)) return;
     if (t.dataset.tab) setTab(t.dataset.tab);
-    else if (t.dataset.go) ready.then(() => openRecord(t.dataset.go, t.dataset.id));
+    else if (t.dataset.go) ready().then(() => openRecord(t.dataset.go, t.dataset.id));
     else if (t.dataset.page) { st.f[t.dataset.page].page += +t.dataset.d; renderTab(); }
     else if (t.dataset.ds) { Object.assign(st.f.original, { ds: t.dataset.ds, page: 0, q: '', kind: '' }); renderTab(); }
     else if (t.dataset.dsOpen) { Object.assign(st.f.original, { ds: t.dataset.dsOpen, page: 0, q: '', kind: '' }); closeRecord(); setTab('original'); }
@@ -252,9 +254,9 @@ ${safeUrl(d.sourceUrl) ? `<p><a href="${safeUrl(d.sourceUrl)}" target="_blank" r
   host.addEventListener('change', (ev) => { if (ev.target.type !== 'search') onFilter(ev); });
 
   return {
-    show() { if (st.tab === 'search') search.show(); },
+    show() { ready().catch(() => {}); if (st.tab === 'search') search.show(); },
     hide() { search.hide(); },
-    openRecord: (kind, id) => ready.then(() => openRecord(kind, id)),
+    openRecord: (kind, id) => ready().then(() => openRecord(kind, id)),
     ready
   };
 }

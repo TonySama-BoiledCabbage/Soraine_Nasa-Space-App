@@ -1,4 +1,4 @@
-:root{--ink:#1d1a16;--paper:#f6f1e7;--muted:#7a7268;--accent:#e8702a}
+:root{--ink:#1d1a16;--paper:#f6f1e7;--muted:#5e574e;--accent:#e8702a}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0;height:100%;background:#0b0d10;color:var(--ink);font:15px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
@@ -26,11 +26,11 @@ html,body{margin:0;height:100%;background:#0b0d10;color:var(--ink);font:15px/1.5
 /* pages */
 .page{position:fixed;inset:0;z-index:3;pointer-events:none}
 .page[hidden]{display:none}
-.scenarios{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;gap:8px;pointer-events:auto;padding:6px;border-radius:999px;background:rgba(14,16,20,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.scenarios button{appearance:none;border:0;background:none;color:rgba(255,255,255,.75);font:inherit;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
-.scenarios button small{font-size:10px;opacity:.6;letter-spacing:.05em}
+.scenarios{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;gap:8px;pointer-events:auto;padding:6px;border-radius:999px;background:rgba(14,16,20,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.scenarios button{appearance:none;border:0;background:none;color:rgba(255,255,255,.92);font:inherit;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.scenarios button small{font-size:10px;opacity:.9;letter-spacing:.05em}
 .scenarios button.on{background:rgba(255,255,255,.92);color:var(--ink)}
-.scenarios button.on small{opacity:.55}
+.scenarios button.on small{opacity:.8}
 .readout{position:absolute;left:28px;bottom:34px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 12px rgba(0,0,0,.4)}
 .readout b{display:block;font-size:30px;font-weight:600;letter-spacing:-.02em}
 .readout span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
@@ -56,3 +56,16 @@ html,body{margin:0;height:100%;background:#0b0d10;color:var(--ink);font:15px/1.5
   /* phone: the hint sits below the gravity bar, clear of the basket button, one or two short lines */
   #combustion-status{left:16px;right:84px;bottom:max(22px,env(safe-area-inset-bottom));max-width:none;font-size:11.5px}}
 
+
+/* sound toggle: top left on every page and on the start screen */
+#sound-toggle{position:fixed;left:max(16px,env(safe-area-inset-left));top:max(14px,env(safe-area-inset-top));z-index:9;width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;background:rgba(14,16,20,.5);color:#fff;cursor:pointer;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background .2s,left .25s}
+#sound-toggle:hover{background:rgba(14,16,20,.72)}
+#sound-toggle[aria-pressed=true]{color:rgba(255,255,255,.6)}
+#sound-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+html[data-page=shop] #sound-toggle{left:calc(max(18px,env(safe-area-inset-left)) + 64px);top:calc(max(18px,env(safe-area-inset-top)) + 5px)}   /* beside ↩ */
+html.inspecting #sound-toggle{display:none}   /* the inspector's "Back to scene" owns that corner */
+@media(max-width:700px){html #dots{left:calc(max(16px,env(safe-area-inset-left)) + 52px);gap:4px}
+  html #dots button{position:relative;min-width:34px;min-height:34px;justify-content:center}
+  html #dots span{position:absolute;top:100%;left:8px;margin-top:-4px;white-space:nowrap;pointer-events:none}}   /* labels hang below, taking no width */   /* phones: dots are left-aligned (inspect.css); start them after the toggle */
