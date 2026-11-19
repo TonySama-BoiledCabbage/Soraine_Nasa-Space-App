@@ -1,23 +1,26 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { fitPropModel } from './prop-models.js?v=model-swap-1';
-import { ObjectInspector } from './inspect.js?v=object-inspect-1';
+import { ObjectInspector } from './inspect.js?v=roof-1';
 import { applySurfaceMaterials } from './materials.js?v=surface-textures-2';
-import { Combustion } from './combustion.js?v=motion-1';
+import { Combustion } from './combustion.js?v=o2-15';
 import { CameraMotion } from './motion.js?v=motion-1';
-import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=lab-controls-3';
+import { WORLD, SWEEP, SWEEP_GLSL, SWEEP_FN, buildKitchen, buildFlame, buildSky, buildLights } from './scene.js?v=noknobs-1';
 import { buildStars } from './stars.js?v=lab-controls-3';
-import { buildTerrain } from './terrain.js?v=lab-controls-3';
+import { buildTerrain } from './terrain.js?v=flat-1';
 import { Props } from './props.js?v=basket-1';
 import { WavePass, Wave } from './wave.js?v=object-inspect-1';
 import { Pages } from './pages.js?v=basket-1';
 import { research } from './research-source.js?v=basket-1';
-import { Basket } from './basket.js?v=basket-1';
-import { Shop } from './shop.js?v=basket-1';
-import { mountResearchBrowser } from './research-db/browser.js?v=rdb-1';
+import { Basket } from './basket.js?v=feet-1';
+import { Shop } from './shop.js?v=loot-1';
+import { mountResearchBrowser } from './research-db/browser.js?v=lazy-1';
+import { sfx, HIT_TAKES } from './sfx.js?v=sfx-10';
+import { mountSoundToggle } from './sound-toggle.js?v=sfx-8';
 import { registerMaterialLibrary } from './material-search/bridge.js';   // same URL as ui.js imports: one basket bridge
 import { PRODUCTS } from './catalog.js?v=basket-1';
-import { Shelf } from './shelf3d.js?v=basket-1';
+import { Shelf } from './shelf3d.js?v=loot-1';
+import { DistantEarth } from './distant-earth.js?v=scan-6';
 import { ReactionSystem } from './reaction-visuals.js';
 
 const canvas = document.getElementById('gl');
@@ -41,8 +44,12 @@ const flame = buildFlame(scene);
 // No tufts on the kitchen footprint or where the camera rigs stand (world metres).
 const KEEP_OUT = [[-1.85, -0.75, 0.85, 0.75], [0.6, -0.75, 2.85, 0.75], [-1.85, 0.3, -0.4, 2.1], [1.7, -0.9, 4.6, 4.2]];   // last: SORAINE store shelf and the shopper standing in front of it
 const STANDS = [[0.35, 1.75, 0.9], [-2.6, 3.4, 1.1]];
-const keepOut = (x, z) => KEEP_OUT.some(([x0, z0, x1, z1]) => x > x0 && x < x1 && z > z0 && z < z1) || STANDS.some(([cx, cz, r]) => Math.hypot(x - cx, z - cz) < r);
-const terrain = buildTerrain(scene, SWEEP, SWEEP_GLSL, SWEEP_FN, { keepOut });
+// A tuft is a ~1 m wide, ~1.2 m tall card that leans in the wind, so a blade reaches ~0.7 m from the spot it is rooted at:
+// the zones are grown by GRASS_REACH so no blade pokes through the cabinets, the shelf or the basket.
+const GRASS_REACH = 0.7;
+const keepOut = (x, z) => KEEP_OUT.some(([x0, z0, x1, z1]) => x > x0 - GRASS_REACH && x < x1 + GRASS_REACH && z > z0 - GRASS_REACH && z < z1 + GRASS_REACH) || STANDS.some(([cx, cz, r]) => Math.hypot(x - cx, z - cz) < r + GRASS_REACH * 0.6);
+// The Mars / Moon meshes carry rocks: level them inside the store rectangle so none cuts through the shelf or hides its tags.
+const terrain = buildTerrain(scene, SWEEP, SWEEP_GLSL, SWEEP_FN, { keepOut, flatten: { rect: [1.7, -0.9, 4.6, 4.2], floor: { rect: [1.9, -0.9, 4.4, 0.7], y: -0.02 } } });
 const stars = buildStars(scene);
 const sky = buildSky(scene);
 const lights = buildLights(scene);
@@ -121,6 +128,7 @@ scene.add(labShell);
 labShell.name='Lab shell';
 let oxygenCap=null, oxygenCapRest=0;
 scene.add(chamber);
+const distantEarth = new DistantEarth(scene, WORLD.flame);   // the Earth outside the orbital cabin: global scan, drawn on the globe itself
 const orbital = new THREE.Group();
 orbital.visible=false;
 scene.add(orbital);
@@ -161,11 +169,11 @@ function setSpaceEnv(a, b) {
 const loadPart = async (name, parent) => {
   const { scene: model } = await modelLoader.loadAsync('models/landing/' + name + '.glb');
   parent.add(model);
+  let earthMesh = null;
   if (name==='orbital-cabin') model.traverse(o=>{
-    if (o.isMesh && o.name.startsWith('Distant_Earth')) {
-      o.material=new THREE.MeshBasicMaterial({vertexColors:true});
-    }
+    if (o.isMesh && o.name.startsWith('Distant_Earth')) earthMesh = o;
   });
+  if (earthMesh) distantEarth.adopt(earthMesh);   // own material + scan; moved out of the orbital group's clip
   if (name==='oxygen-control') {
     combustion.control=model;
     oxygenCap=model.getObjectByName('O2_press_cap');
@@ -206,9 +214,18 @@ const workView = { active: false, requested: false, lastInput: 0, idleMs: 7000 }
 const workRay = new THREE.Raycaster(), workPointer = new THREE.Vector2(), workHit = new THREE.Vector3();
 const workPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -.98);
 function restRig() { return isSpace(target) && !chamber.visible ? RIG.orbital : RIG.cook; }
+// Narrow screens need more width: widen the lens first (up to 75°), then pull back for the rest. Inside the lab /
+// orbital cabin the pull-back stops below the ceiling (shell top 4.13 m); pulling 2x on a phone put the camera
+// outside the cabin, which rendered as an empty dark screen.
+const WORK_ASPECT = .95, WORK_FOV_MAX = 75, WORK_CEILING = 3.75;
 function workRig() {
-  const scale = Math.max(1, Math.min(2.2, .95 / camera.aspect));
-  return { pos: RIG.work.look.clone().add(RIG.work.pos.clone().sub(RIG.work.look).multiplyScalar(scale)), look: RIG.work.look, fov: RIG.work.fov };
+  const half = (deg) => Math.tan(THREE.MathUtils.degToRad(deg) / 2);
+  const need = half(RIG.work.fov) * WORK_ASPECT / Math.max(.2, camera.aspect);           // tan(vfov/2) that keeps the width
+  const fov = Math.min(WORK_FOV_MAX, Math.max(RIG.work.fov, THREE.MathUtils.radToDeg(2 * Math.atan(need))));
+  const offset = RIG.work.pos.clone().sub(RIG.work.look);
+  const roof = labShell.visible ? (WORK_CEILING - RIG.work.look.y) / offset.y : 2.2;
+  const scale = Math.max(1, Math.min(roof, need / half(fov)));
+  return { pos: RIG.work.look.clone().add(offset.multiplyScalar(scale)), look: RIG.work.look, fov };
 }
 function resetWorkView() { workView.active = workView.requested = false; }
 function requestWorkView() {
@@ -273,7 +290,7 @@ function selectScenario(slug, immediate = false) {
   inspector?.close({ restore: false });
   resetWorkView();
   if (immediate || !current) { current = target = s; blend = 1; Object.assign(flameTarget, s.flame); Object.assign(flameState, s.flame); applyEnv(s, s, 1); setTerrain(s, s); SWEEP.uRadius.value = 1e5; props.setGravity(s.g, s.g, -1); }
-  else { if (wave.active) { current = mixScenario(current, target, blend); } target = s; blend = 0; Object.assign(flameTarget, s.flame); flameSwept = false; setTerrain(current, target); wave.fire(); props.fire(current.g, target.g); }
+  else { if (wave.active) { current = mixScenario(current, target, blend); } target = s; blend = 0; Object.assign(flameTarget, s.flame); flameSwept = false; setTerrain(current, target); wave.fire(); sfx.play('planet-switch', { delay: .15 }); props.fire(current.g, target.g); }
   pages.setScenario(s);
   shop?.setScenario(s);
   if (pages.page==='observe') goTo(isSpace(s) && !chamber.visible ? RIG.orbital : RIG.cook,1.2);
@@ -287,6 +304,7 @@ let inspector = null, shop = null;
 const shopOpen = document.getElementById('shop-open');
 const pages = new Pages({
   onPage: (p) => {
+    document.documentElement.dataset.page = p;   // sound toggle moves beside ↩ in the store
     resetWorkView();
     inspector?.close({ restore: false });
     if (p === 'shop') shop.enter();
@@ -298,18 +316,35 @@ const pages = new Pages({
   },
   onScenario: (slug) => selectScenario(slug)
 });
+// The flame is not a physics body: an invisible, unscaled pick volume makes it hoverable and clickable.
+const flamePick = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .2, 12), new THREE.MeshBasicMaterial({ visible: false }));
+flamePick.position.y = .09; flame.group.add(flamePick);
+const pct = v => `${Math.round(v * 100)}% · demo scale`;
+const flameExtra = { name: 'flame', mesh: flame.group, extra: true, hint: () => ({
+  fields: { state: burn > .01 ? (flameState.sphere > .5 ? 'Burning · rounded' : 'Burning') : 'Out',
+    heat: pct(combustion.fuel), temperature: 'Not modelled', thermal: pct(combustion.oxygen),
+    change: `${Math.round(flameState.height * 100)}% height · ${Math.round(flameState.width * 100)}% width` },
+  labels: { heat: 'Fuel', thermal: 'Oxygen', change: 'Shape vs Earth' },
+  note: 'Mechanism demo · not a combustion simulation' }) };
 inspector = new ObjectInspector({
-  props, canvas, camera, reactions: reactionSystem.reactions, research,
-  getRig: () => ({ pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov }),
+  props, canvas, camera, reactions: reactionSystem.reactions, research, extras: [flameExtra],
+  // Where Back to scene returns: the view the camera is settling on, never the pose it happens to be passing through.
+  // Opening an object while the camera is still flying (into or out of the work view, back to the cabin rig) used to
+  // store a half-way pose, and Back left the camera parked there.
+  getRig: () => {
+    const rig = pages.page !== 'observe' ? cam.to : workView.active ? workRig() : restRig();
+    return { pos: rig.pos.clone(), look: rig.look.clone(), fov: rig.fov };
+  },
   moveCamera: (rig, duration) => goTo(rig, duration),
   getScenario: () => target || current,
   canOpen: () => pages.page === 'observe' && !wave.active,
-  isObserve: () => pages.page === 'observe'
+  isObserve: () => pages.page === 'observe',
+  ceiling: () => labShell.visible ? WORK_CEILING : Infinity   // lab / orbital cabin roof (shell top 4.13 m)
 });
 shop = new Shop({
   basket, research, shelf, rigs: RIG, getScenario: () => target || current, isWorldBusy: () => wave.active,
   onView: (rig, dur) => { if (pages.page === 'shop' && rig) goTo(rig, dur ?? 1.3); },
-  onExit: () => pages.show('observe')
+  onExit: (note) => { pages.show('observe'); if (note) document.getElementById('combustion-status').textContent = note; }
 });
 // shelf display: tags carry record counts, so wait for the snapshot (it is small); the tag tilt aims at the shelf eye
 research.load().catch(() => {}).then(() => shelf.ready).then(() => shelf.populate(PRODUCTS, (p) => basket.template(p),
@@ -380,6 +415,55 @@ function govern(rawDt) {
 
 // ---------- loop ----------
 const clock = new THREE.Clock(); let time = 0, burn = 1, drift = 0;
+// ---------- sound (kitchen/sfx.js) ----------
+mountSoundToggle(sfx); let inspecting = false;
+// Collisions. Each body's physics material picks a class; a pair sounds as its softest/hardest member:
+// fabric absorbs (fabric wins), then metal rings, then wood, else hard. Loudness follows impact speed;
+// a per-body cooldown and a global budget keep a landing from machine-gunning.
+const HIT_CLASS = { wood: 'wood', counter: 'wood', steel: 'metal', castIron: 'metal', enamel: 'metal', glass: 'hard', ceramic: 'hard',
+  plastic: 'hard', film: 'hard', eggshell: 'hard', fabric: 'fabric', tape: 'fabric', tomato: 'fabric', ground: 'fabric' };
+const hitClassOf = (body, rec) => rec?.name === 'friedEgg' ? 'fabric' : HIT_CLASS[(body.material?.name || '').split(':')[0]] || 'hard';
+let hitBudget = 0;
+function wireHits() {
+  for (const rec of props.bodies) {
+    if (rec.hitWired) continue; rec.hitWired = true; rec.lastHit = 0; rec.lastV = 0;
+    rec.body.addEventListener('collide', (e) => {
+      const other = e.body; if (other.mass > 0 && other.id < rec.body.id) return;   // a moving pair sounds once
+      const v = Math.abs(e.contact.getImpactVelocityAlongNormal()); if (v < .35) return;
+      // A harder hit gets through the cooldown and the budget a moment after a grazing one (egg nudged, then the board).
+      const now = performance.now(); if (now - rec.lastHit < 90 && v < rec.lastV * 1.5) return;
+      if (hitBudget < 1 && v < 1.2) return;
+      rec.lastHit = now; rec.lastV = v; hitBudget = Math.max(0, hitBudget - 1);
+      const a = hitClassOf(rec.body, rec), b = hitClassOf(other, other.mass > 0 ? props.bodies.find(r => r.body === other) : null);
+      const cls = a === 'fabric' || b === 'fabric' ? 'fabric' : a === 'metal' || b === 'metal' ? 'metal' : a === 'wood' || b === 'wood' ? 'wood' : 'hard';
+      const volume = Math.min(1, ((v - .35) / 2.2) ** .8 + .12) * Math.min(1, .45 + rec.body.mass * 1.5);   // light samples tap softer
+      sfx.play(`hit-${cls}-${1 + Math.floor(Math.random() * HIT_TAKES[cls])}`, { volume, rate: .92 + Math.random() * .16 });
+    });
+  }
+}
+const fire = sfx.loop('fire-loop');
+const sizzle = sfx.loop('pan-sizzle'); let sizzleKick = 0;
+combustion.onDrop = () => sfx.play(sfx.pick('oil-drop-1', 'oil-drop-2'), { rate: 1.45 + Math.random() * .35, volume: .7 + Math.random() * .3 });   // sped-up drip
+combustion.onDropReceived = () => { sizzleKick = Math.min(1.2, sizzleKick + .45); };
+// Oxygen arm. The orbital cabin injects automatically every 15 s (combustion.autoInterval), so those repeats play softer.
+combustion.onArm = (deploy, auto) => deploy
+  ? sfx.play(sfx.pick('arm-deploy-1', 'arm-deploy-2', 'arm-deploy-3'), { volume: auto ? .6 : 1, rate: .97 + Math.random() * .06 })
+  : sfx.play('arm-stow', { volume: auto ? .6 : 1 });
+combustion.onButton = () => sfx.play('o2-button', { rate: .97 + Math.random() * .06 });
+combustion.onInject = (auto) => sfx.play('oxygen-hiss', { volume: auto ? .6 : 1, rate: .95 + Math.random() * .1 });
+// Ambience per world, following the air each place has: Earth grass + wind; Mars only a low, muffled wind (thin
+// CO2 atmosphere: same recording slowed and low-passed); Moon silent (no atmosphere); orbital cabin: fan hum (ambience-cabin).
+// Mixed with the same blend as the sky/fog, so it changes as the scan front passes the camera.
+const amb = { grass: sfx.loop('ambience-grass'), wind: sfx.loop('ambience-wind'), marsWind: sfx.loop('ambience-wind', { rate: .62, lowpass: 520 }), cabin: sfx.loop('ambience-cabin') };
+const AMB = { earth: { grass: 1, wind: .55 }, mars: { marsWind: 1 }, moon: {}, iss: { cabin: 1 } };
+function updateAmbience() {
+  const a = AMB[current?.slug] || {}, b = AMB[target?.slug] || {}, k = target === current ? 1 : blend;
+  // Moon: no atmosphere, so the whole scene goes silent, fading with the scan front like the sky does.
+  const moon = (current?.slug === 'moon' ? 1 : 0) * (1 - k) + (target?.slug === 'moon' ? 1 : 0) * k;
+  sfx.setWorld(1 - moon);
+  const page = chamber.visible ? 0 : ({ observe: 1, about: .8, shop: .7, detail: .3 }[pages.page] ?? 0);
+  for (const [key, h] of Object.entries(amb)) { h.tick(); h.set(((a[key] || 0) * (1 - k) + (b[key] || 0) * k) * page * (inspector.active ? .7 : 1), .6); }
+}
 const viewShift = { x: 0, y: 0 };
 const tmpUp = new THREE.Vector3(0, 1, 0);
 const heldCameraPosition = new THREE.Vector3(); let holdingCamera = false;
@@ -422,6 +506,20 @@ function frame() {
   for (const key in flameState) flameState[key] += (flameTarget[key] - flameState[key]) * fk;
   if (!paused) burn=combustion.update(dt);
   else combustion.frameArm();
+  // Pan sizzle follows the burner; quieter away from the bench, and a short flare when oil reaches the flame.
+  sizzleKick = Math.max(0, sizzleKick - dt * 1.8);
+  const sizzlePage = { observe: 1, about: .6, detail: .35, shop: .3 }[pages.page] ?? 0;
+  // Only while the pan sits over the burner (it rests 8 cm above the flame): fades out as it is lifted, moved off or floats away.
+  const panBody = props.bodies.find(b => b.name === 'pan')?.body, fo = combustion.origin;
+  const onBurner = !panBody ? 0 : (1 - THREE.MathUtils.smoothstep(Math.hypot(panBody.position.x - fo.x, panBody.position.z - fo.z), .06, .18))
+    * (1 - THREE.MathUtils.smoothstep(Math.abs(panBody.position.y - fo.y - .08), .04, .22));
+  sizzle.tick(); sizzle.set(Math.min(1, burn / 1.1) * onBurner * sizzlePage * (paused ? .55 : 1) * (1 + sizzleKick), .2);
+  // Fire: a soft bed under the burner flame, much louder while any sample is burning.
+  let flaming = 0; for (const s of reactionSystem.reactions?.states?.values?.() || []) if (s.combustionState === 'flaming') flaming++;
+  fire.tick(); fire.set((Math.min(1, burn / 1.1) * .35 + Math.min(1, flaming / 2) * .8) * sizzlePage * (paused ? .55 : 1), .3);
+  hitBudget = Math.min(4, hitBudget + dt * 12); wireHits();
+  updateAmbience();
+  if (inspector.active !== inspecting) { inspecting = !!inspector.active; document.documentElement.classList.toggle('inspecting', inspecting); }
   reactionSystem.update(dt, { paused, burn, oxygenAvailability: Math.min(1, combustion.oxygen) });
   if (oxygenCap) oxygenCap.position.y=oxygenCapRest-(combustion.buttonTravel>0?.004:0);
   flame.group.visible=burn>.01;
@@ -447,6 +545,7 @@ function frame() {
   pass.focusObject = inspector.active?.mesh || null;
   inspector.update();
   shop.update(dt, camera);
+  distantEarth.update({ R: SWEEP.uRadius.value, trail: wave.trail(), spacing: pass.uniforms.uSpacing.value, role: orbitalRole.value, visible: orbital.visible });
   terrain.update(time, camera);
   stars.uniforms.uTime.value = time;
   lights.sun.target.position.set(0.3, 0.8, 0.2);
@@ -461,5 +560,5 @@ Promise.all([fetch('data/scenarios.json').then(r => r.json()), landingModels]).t
   scenarios = d.scenarios; terrain.preload(scenarios); pages.setScenarios(scenarios); selectScenario('earth', true); frame();
 }).catch(e => { console.error(e); document.body.insertAdjacentHTML('beforeend', `<pre style="position:fixed;left:12px;bottom:12px;color:#fff">${e}</pre>`); });
 
-window.__kitchen = { basket, shop, shelf, research, inspector, combustion, reactionSystem, workView, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
+window.__kitchen = { distantEarth, sfx, sizzle, amb, fire, basket, shop, shelf, research, inspector, combustion, reactionSystem, workView, orbital, kitchen, flame, chamber, renderer, quality: () => ({ pixelRatio, PR_MIN, PR_MAX, ceiling: gov.ceiling }), terrain, props, pass, scene, camera, wave, selectScenario, goTo, snap, RIG, pages, env: () => ({ current: current?.slug, target: target?.slug, blend, R: wave.R }) };
 

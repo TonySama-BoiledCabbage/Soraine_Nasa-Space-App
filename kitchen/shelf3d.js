@@ -7,15 +7,29 @@ import * as THREE from 'three';
 export const SHELF = { url: 'models/shop/shelf.glb', x: 3.15, z: -0.1, yaw: 0, scale: 0.62 };
 const NATIVE = { cols: [-1.033, 0, 1.033], top: 2.2, front: 0.25, back: -0.095 };   // lab.glb shelf frame (metres)
 const PER_PAGE = 9;
+// Hover: the item floats out of its bay like a game loot drop and turns about the vertical axis (Blender's Z, three's Y).
+const LOOT = { lift: 0.05, out: 0.06, bob: 0.008, spin: 1.9, grow: 0.06, ease: 7 };   // world metres, rad/s, scale
 
+// Tag artwork is drawn at 2048 x 440 (the tag is only ~120-250 px wide on screen, so the GPU minifies it hard): trilinear +
+// 16x anisotropic filtering keeps the small lines legible, and the second line is large enough to read at that size.
+const TAG_W = 2048, TAG_H = 440, TAG_PAD = 96, TAG_RIGHT = 56;
 function tagTexture(p, about) {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 220;
-  const g = c.getContext('2d');
-  g.fillStyle = '#f4f1e8'; g.fillRect(0, 0, 1024, 220);
-  g.fillStyle = '#ffd814'; g.fillRect(0, 0, 18, 220);
-  g.fillStyle = '#131921'; g.font = '700 84px Arial, sans-serif'; g.fillText(p.label || p.name, 48, 98);
-  g.fillStyle = '#2f343b'; g.font = '600 58px Arial, sans-serif'; g.fillText(about, 48, 184);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+  const c = document.createElement('canvas'); c.width = TAG_W; c.height = TAG_H;
+  const g = c.getContext('2d'), maxW = TAG_W - TAG_PAD - TAG_RIGHT;
+  g.fillStyle = '#f4f1e8'; g.fillRect(0, 0, TAG_W, TAG_H);
+  g.fillStyle = '#ffd814'; g.fillRect(0, 0, 36, TAG_H);
+  g.textBaseline = 'alphabetic';
+  // shrink a line until it fits the tag, then cut with an ellipsis as a last resort (long names / material lists)
+  const draw = (text, weight, size, min, y, color) => {
+    let px = size; g.font = `${weight} ${px}px Arial, sans-serif`;
+    while (g.measureText(text).width > maxW && px > min) { px -= 2; g.font = `${weight} ${px}px Arial, sans-serif`; }
+    if (g.measureText(text).width > maxW) { while (text.length > 1 && g.measureText(text + '…').width > maxW) text = text.slice(0, -1); text += '…'; }
+    g.fillStyle = color; g.fillText(text, TAG_PAD, y);
+  };
+  draw(p.label || p.name, 800, 176, 104, 192, '#0b0f14');
+  draw(about, 700, 124, 72, 372, '#1f252c');
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 16; t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter; return t;
 }
 
 export class Shelf {
@@ -79,13 +93,20 @@ export class Shelf {
       this.group.add(tag); tag.updateMatrixWorld(true);
       const tw = tag.getWorldPosition(new THREE.Vector3()), up = Math.atan2(eye.y - tw.y, eye.z - tw.z);
       tag.rotation.x = -THREE.MathUtils.clamp(up + 0.12, 0.17, 0.75);   // 10 to 43 deg, like a shelf label holder
-      this.items.set(p.id, { root, spin: show, tag, product: p, slot: s });
+      // rest pose: the hotspot and the product camera use it, so neither chases the floating / turning copy
+      root.updateMatrixWorld(true);
+      const rest = new THREE.Box3().setFromObject(show);
+      const c = this.group.worldToLocal(rest.getCenter(new THREE.Vector3())).sub(root.position);   // turn about the item's own centre
+      this.items.set(p.id, { root, spin: show, tag, product: p, slot: s, rest, c, base: root.position.clone(), hov: 0, ang: 0, wob: 0 });
     }
     return this;
   }
   setPage(n) { this.page = (n + this.pages) % this.pages; return this.populate(this.products, this.template, this.rowsFor, this.eye); }
   worldOf(id, out = new THREE.Vector3()) { const box = this.boxOf(id); return box ? box.getCenter(out) : null; }
   boxOf(id) { const it = this.items.get(id); return it ? new THREE.Box3().setFromObject(it.spin) : null; }
+  restBox(id) { const it = this.items.get(id); return it ? it.rest.clone() : null; }
+  // screen hotspot: the item at rest plus the space it floats into, so the hover target never moves under the pointer
+  hotBox(id) { const b = this.restBox(id); if (!b) return null; b.max.y += LOOT.lift + LOOT.bob; b.max.z += LOOT.out; return b; }
   tagBox(id) { const it = this.items.get(id); return it ? new THREE.Box3().setFromObject(it.tag) : null; }
   front() { return new THREE.Vector3(Math.sin(SHELF.yaw), 0, Math.cos(SHELF.yaw)); }
   bounds() { this.group.updateMatrixWorld(true); return new THREE.Box3().setFromObject(this.model || this.group); }
@@ -104,7 +125,7 @@ export class Shelf {
     return { pos: new THREE.Vector3(SHELF.x, cy + 0.04, SHELF.z + d), look: new THREE.Vector3(SHELF.x, lookY, SHELF.z), fov };
   }
   productRig(id, aspect = 1.5) {
-    const box = this.boxOf(id); if (!box) return null;
+    const box = this.restBox(id); if (!box) return null;
     const c = box.getCenter(new THREE.Vector3()), r = box.getSize(new THREE.Vector3()).length() / 2, fov = 34;
     const d = Math.max(0.62, r / (Math.tan(THREE.MathUtils.degToRad(fov / 2)) * Math.min(1, aspect) * 0.5));
     return { pos: c.clone().addScaledVector(this.front(), d).add(new THREE.Vector3(0, d * 0.1, 0)), look: c, fov };
@@ -128,10 +149,26 @@ export class Shelf {
     const c = new THREE.Vector3(anchor.x, anchor.y + 0.1, anchor.z);   // basket sits low in the frame, summary above it
     return { pos: c.clone().add(new THREE.Vector3(0, 0.78, 0.42)), look: c.clone().add(new THREE.Vector3(0, 0.06, -0.16)), fov: 50 };
   }
-  update(dt, focusId) {
+  update(dt, focusId, hoverId = null) {
+    const k = 1 - Math.exp(-dt * LOOT.ease), t = performance.now() / 1000, TAU = Math.PI * 2, S = SHELF.scale;
     for (const [id, it] of this.items) {
-      const want = id === focusId ? Math.sin(performance.now() / 1400) * 0.35 : 0;
-      it.root.rotation.y += (want - it.root.rotation.y) * Math.min(1, dt * 3);
+      const on = id === hoverId && id !== focusId;
+      it.hov += ((on ? 1 : 0) - it.hov) * k;
+      // spin while hovered; afterwards finish the turn to the nearest full revolution so it lands facing the shopper
+      if (on) it.ang += dt * LOOT.spin;
+      else { const home = Math.round(it.ang / TAU) * TAU; it.ang += (home - it.ang) * k; if (Math.abs(home - it.ang) < 1e-3) it.ang = 0; }
+      const want = id === focusId ? Math.sin(t / 1.4) * 0.35 : 0;   // product view: slow sway, as before
+      it.wob += (want - it.wob) * Math.min(1, dt * 3);
+      const r = it.ang + it.wob, cs = Math.cos(r), sn = Math.sin(r), h = it.hov;
+      const e = h * h * (3 - 2 * h);
+      const f = 1 + LOOT.grow * e;
+      it.root.rotation.y = r;
+      it.root.scale.setScalar(f / S);
+      // keep the item's centre on its spot while turning, then lift it and bring it to the front of the bay
+      it.root.position.set(
+        it.base.x + it.c.x - f * (it.c.x * cs + it.c.z * sn),
+        it.base.y + (LOOT.lift + Math.sin(t * 2.6) * LOOT.bob) * e / S,
+        it.base.z + it.c.z - f * (-it.c.x * sn + it.c.z * cs) + LOOT.out * e / S);
     }
   }
 }

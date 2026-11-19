@@ -1,17 +1,19 @@
 // SORAINE store, following Tony's flow sketch (2026-11-15):
 //   shelf    straight-on L01 shelf, 3 x 3, tilted tags (Name + About). ↩ leaves the store. The held basket's rim
-//            shows along the bottom; hovering it tilts the camera down into the basket, moving away comes back.
+//            shows along the bottom; the camera only looks down into it on the Basket button (click again / Esc to return),
+//            never because the pointer reached the bottom edge.
 //   product  click an item: the camera zooms onto it; text on the left, [− n +] on the right sets how many are in
 //            the basket, ◁ ▷ step through the items, ↩ back to the shelf.
 //   basket   look-down preview with an "item × n" summary along the top.
-//   checkout ↩ from the shelf with samples in the basket: it is carried to the worktop and tipped out, then the
-//            lab view returns. No other controls.
+//   checkout the labelled "Place on worktop" action stays visible after selection in all three shopping views.
+//            The basket is carried to the worktop and tipped out; ↩ only navigates back.
 // This module owns DOM and view state. Samples: basket.js. Records: research-source.js. Shelf + rigs: shelf3d.js.
 import * as THREE from 'three';
 import { PRODUCTS, CATEGORIES } from './catalog.js?v=basket-1';
 import { readValue } from './research-source.js?v=basket-1';
-import { MAX_ITEMS } from './basket.js?v=basket-1';
+import { MAX_ITEMS } from './basket.js?v=feet-1';
 
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const safeUrl = (u) => { try { const x = new URL(u); return x.protocol === 'https:' ? esc(x.href) : '#'; } catch { return '#'; } };
 const catLabel = Object.fromEntries(CATEGORIES);
@@ -23,6 +25,7 @@ const METRIC = {
 };
 const gap = '<span class="sh-gap">Not reported</span>';
 const fmt = (v) => { const r = readValue(v); return r.num != null ? r.num.toLocaleString('en-US', { maximumFractionDigits: 6 }) : r.text ? esc(r.text) : gap; };
+const EDGE_OUTLINE = false;   // silhouette outline on hover: on hold (Tony 2026-11-18); hover now floats the item instead
 const ICON = {
   back: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
   prev: '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M16 4 6 12l10 8Z"/></svg>',
@@ -38,6 +41,7 @@ export class Shop {
       <button class="sh-back" id="sh-back" type="button" aria-label="Leave the store">${ICON.back}</button>
       <button class="sh-arrow sh-prev" id="sh-prev" type="button" aria-label="Previous item" hidden>${ICON.prev}</button>
       <button class="sh-arrow sh-next" id="sh-next" type="button" aria-label="Next item" hidden>${ICON.next}</button>
+      <canvas class="sh-edge" id="sh-edge" aria-hidden="true"></canvas>
       <div class="sh-hots" id="sh-hots" role="group" aria-label="Materials on the shelf"></div>
       <section class="sh-info" id="sh-info" aria-labelledby="sh-p-title" hidden></section>
       <div class="sh-qty" id="sh-qty" role="group" aria-label="Quantity in the basket" hidden>
@@ -46,7 +50,10 @@ export class Shop {
       </div>
       <div class="sh-basketzone" id="sh-basketzone">
         <ul class="sh-summary" id="sh-summary" aria-label="In the basket" hidden></ul>
-        <button type="button" class="sh-bz" id="sh-bz" aria-label="Basket. Hover or press to look inside."></button>
+      </div>
+      <div class="sh-footer" id="sh-footer" role="group" aria-label="Basket actions">
+        <button type="button" class="sh-bz" id="sh-bz" aria-label="Look inside the basket"></button>
+        <button type="button" class="sh-place" id="sh-place" hidden>Place on worktop</button>
       </div>
       <button class="sh-clear" id="sh-clear" type="button" hidden></button>
       <p class="sh-status" id="sh-status" role="status" aria-live="polite"></p>`;
@@ -62,8 +69,15 @@ export class Shop {
   wire() {
     const $ = this.$;
     $('sh-back').addEventListener('click', () => this.back());
+    $('sh-place').addEventListener('click', () => this.checkout());
     $('sh-prev').addEventListener('click', () => this.view === 'product' ? this.step(-1) : this.shelf.setPage(this.shelf.page - 1).then(() => this.renderHotspots()));
     $('sh-next').addEventListener('click', () => this.view === 'product' ? this.step(1) : this.shelf.setPage(this.shelf.page + 1).then(() => this.renderHotspots()));
+    // hovering / focusing a hotspot makes that item float and turn (shelf3d.js); no box is drawn around it
+    const hots = $('sh-hots'), hotOf = (e) => e.target.closest?.('[data-id]')?.dataset.id || null;
+    hots.addEventListener('pointerover', e => { if (e.pointerType === 'mouse' || e.pointerType === 'pen') this.hotId = hotOf(e); });
+    hots.addEventListener('pointerout', e => { if (!e.relatedTarget?.closest?.('[data-id]')) this.hotId = null; });
+    hots.addEventListener('focusin', e => { this.hotId = hotOf(e); });
+    hots.addEventListener('focusout', () => { this.hotId = null; });
     $('sh-hots').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) this.openProduct(PRODUCTS.find(p => p.id === b.dataset.id)); });
     $('sh-qty').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) this.setQty(+b.dataset.q); });
     $('sh-info').addEventListener('click', e => {
@@ -73,21 +87,12 @@ export class Shop {
     });
     $('sh-summary').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) this.openProduct(PRODUCTS.find(p => p.id === b.dataset.id)); });
     $('sh-clear').addEventListener('click', () => { this.basket.clearReleased(); this.say('Worktop samples removed.'); });
-    // hover (mouse) previews the basket; touch and keyboard toggle it
+    // The camera never tilts by itself: the pointer resting at (or moving to) the bottom edge does nothing. The zone only
+    // exists to size the basket view's overlay; the footer Basket button toggles the look-in on every input type.
     const zone = $('sh-basketzone');
-    // a pointer already resting there when the view changes (e.g. on the entry button) does not count; it has to move
-    // (Chrome also sends pointer events when the strip moves under a still cursor, so require a real move)
     addEventListener('pointermove', e => { this.pointer = { x: e.clientX, y: e.clientY }; }, { passive: true });
-    const hoverIn = e => {
-      const from = this.pointerAtView || { x: -1e3, y: -1e3 };
-      if (e.pointerType === 'mouse' && this.view !== 'basket' && performance.now() - this.viewAt > 450 && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) this.lookIn(true);
-    };
-    zone.addEventListener('pointerenter', hoverIn); zone.addEventListener('pointermove', hoverIn);
-    zone.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') this.lookIn(false); });
-    // the zone is the bottom strip (where the rim shows); while looking in it grows to the lower ~70%, so moving the
-    // pointer up toward the shelf is "moving away"
-    $('sh-bz').addEventListener('click', e => { if (e.pointerType !== 'mouse' || e.detail === 0) this.lookIn(this.view !== 'basket'); });
-    zone.addEventListener('click', e => { if (e.target === zone && e.pointerType && e.pointerType !== 'mouse' && this.view === 'basket') this.lookIn(false); });
+    $('sh-bz').addEventListener('click', () => this.lookIn(this.view !== 'basket'));
+    zone.addEventListener('click', e => { if (e.target === zone && this.view === 'basket') this.lookIn(false); });
     addEventListener('keydown', e => {
       if (!this.active || e.target.closest?.('input')) return;
       if (e.key === 'Escape' && this.view !== 'shelf' && this.view !== 'checkout') { e.preventDefault(); e.stopPropagation(); this.view === 'basket' ? this.lookIn(false) : this.toShelf(); }
@@ -109,7 +114,7 @@ export class Shop {
     this.renderThumbs();
   }
   exit() {
-    this.open = false; this.root.hidden = true; this.view = 'shelf'; this.focus = null;
+    this.open = false; this.root.hidden = true; this.view = 'shelf'; this.focus = null; this.hotId = null;
     if (!this.basket.busy) this.basket.park();
   }
   shelfRig() { return this.shelf.shelfRig(innerWidth / innerHeight); }
@@ -121,6 +126,7 @@ export class Shop {
     return this.shelfRig();
   }
   setView(v, dur) {
+    clearTimeout(this.backT); this.watching = false;
     this.view = v; this.root.dataset.view = v; this.viewAt = performance.now(); this.pointerAtView = this.pointer && { ...this.pointer };
     const $ = this.$, multi = this.shelf.pages > 1;
     $('sh-info').hidden = $('sh-qty').hidden = v !== 'product';
@@ -128,7 +134,7 @@ export class Shop {
     $('sh-summary').hidden = v !== 'basket';
     $('sh-basketzone').hidden = v === 'checkout';
     $('sh-back').hidden = v === 'checkout' || v === 'basket';
-    $('sh-back').setAttribute('aria-label', v === 'product' ? 'Back to the shelf' : this.basket.inCart().length ? 'Take the basket to the lab bench' : 'Leave the store');
+    $('sh-back').setAttribute('aria-label', v === 'product' ? 'Back to the shelf' : 'Leave the store');
     $('sh-prev').setAttribute('aria-label', v === 'product' ? 'Previous item' : 'Previous shelf');
     $('sh-next').setAttribute('aria-label', v === 'product' ? 'Next item' : 'Next shelf');
     this.renderBasket();
@@ -140,7 +146,6 @@ export class Shop {
   }
   back() {
     if (this.view === 'product') return this.toShelf();
-    if (this.basket.inCart().length) return this.checkout();
     this.onExit();
   }
   lookIn(on) {
@@ -160,7 +165,7 @@ export class Shop {
   }
   // Each hotspot covers its item and tag on screen. Called every frame from main.
   update(dt, camera) {
-    this.shelf.update(dt, this.view === 'product' ? this.focus?.id : null);
+    this.shelf.update(dt, this.view === 'product' ? this.focus?.id : null, this.active && this.view === 'shelf' ? this.hotId : null);
     if (!this.active) return;
     // the hover strip spans the basket as drawn on screen (shelf view), not the whole bottom edge
     const zone = this.$('sh-basketzone');
@@ -172,11 +177,12 @@ export class Shop {
       zone.style.left = l.toFixed(0) + 'px'; zone.style.width = w.toFixed(0) + 'px';
     } else if (this.view === 'basket') { zone.style.left = '0px'; zone.style.width = '100%'; }
     else { zone.style.left = '30%'; zone.style.width = '40%'; }
+    this.drawEdge(camera);
     if (this.view !== 'shelf') return;
     if (this.$('sh-hots').children.length !== this.shelf.items.size) this.renderHotspots();
     const v = new THREE.Vector3();
     for (const el of this.$('sh-hots').children) {
-      const box = this.shelf.boxOf(el.dataset.id), tag = this.shelf.tagBox(el.dataset.id); if (!box) { el.hidden = true; continue; }
+      const box = this.shelf.hotBox(el.dataset.id), tag = this.shelf.tagBox(el.dataset.id); if (!box) { el.hidden = true; continue; }
       box.union(tag);
       let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
       for (let i = 0; i < 8; i++) {
@@ -189,9 +195,52 @@ export class Shop {
     }
   }
 
+  // Silhouette outline of the hovered item: every triangle of its display copy is projected to the screen, filled as one
+  // mask, and a 3 px band is kept just outside it (stroke all edges, then cut the filled mask away). Cached until the
+  // camera, the window or the item's turn changes, so a resting pointer costs nothing.
+  drawEdge(camera) {
+    const cv = this.$('sh-edge'), id = EDGE_OUTLINE && this.view === 'shelf' && this.active ? this.hotId : null, it = id && this.shelf.items.get(id);
+    if (!it) { if (this.edgeKey) { cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); this.edgeKey = ''; } return; }
+    const dpr = Math.min(devicePixelRatio || 1, 2), W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr);
+    camera.updateMatrixWorld();
+    const key = [id, W, H, this.shelf.page, it.root.rotation.y.toFixed(3), camera.matrixWorld.elements.join(), camera.projectionMatrix.elements.join()].join('|');
+    if (key === this.edgeKey) return;
+    this.edgeKey = key;
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    const g = cv.getContext('2d'), v = new THREE.Vector3(), m = new THREE.Matrix4();
+    g.clearRect(0, 0, W, H);
+    g.beginPath();
+    it.spin.updateWorldMatrix(true, true);
+    it.spin.traverse(o => {
+      if (!o.isMesh || !o.visible) return;
+      const pos = o.geometry.attributes.position, idx = o.geometry.index; if (!pos) return;
+      m.multiplyMatrices(camera.matrixWorldInverse, o.matrixWorld);
+      const sx = new Float32Array(pos.count), sy = new Float32Array(pos.count), ok = new Uint8Array(pos.count);
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(m);
+        if (v.z >= -camera.near) continue;                               // behind the lens
+        v.applyMatrix4(camera.projectionMatrix);
+        sx[i] = (v.x + 1) / 2 * W; sy[i] = (1 - v.y) / 2 * H; ok[i] = 1;
+      }
+      const n = idx ? idx.count : pos.count;
+      for (let t = 0; t + 2 < n; t += 3) {
+        let a = idx ? idx.getX(t) : t, b = idx ? idx.getX(t + 1) : t + 1, c = idx ? idx.getX(t + 2) : t + 2;
+        if (!(ok[a] && ok[b] && ok[c])) continue;
+        // one winding for every triangle so overlapping front and back faces never cancel in the nonzero fill
+        if ((sx[b] - sx[a]) * (sy[c] - sy[a]) - (sy[b] - sy[a]) * (sx[c] - sx[a]) < 0) { const k = b; b = c; c = k; }
+        g.moveTo(sx[a], sy[a]); g.lineTo(sx[b], sy[b]); g.lineTo(sx[c], sy[c]); g.closePath();
+      }
+    });
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.strokeStyle = 'rgba(255,216,20,.28)'; g.lineWidth = 2 * 6.5 * dpr; g.stroke();   // soft halo
+    g.strokeStyle = '#ffd814'; g.lineWidth = 2 * 2.5 * dpr; g.stroke();                // crisp edge
+    g.globalCompositeOperation = 'destination-out'; g.fill(); g.globalCompositeOperation = 'source-over';   // keep only the outside
+  }
+
   // ---------- product ----------
   async openProduct(p) {
     if (!p) return;
+    this.hotId = null;
     if (!this.shelf.items.has(p.id)) { await this.shelf.setPage(Math.floor(PRODUCTS.indexOf(p) / 9)); this.renderHotspots(); }
     this.focus = p; this.renderProduct(); this.setView('product');
   }
@@ -250,13 +299,32 @@ export class Shop {
     minus.disabled = !n || !here; plus.disabled = !here || total >= MAX_ITEMS || this.busyAdd;
     minus.setAttribute('aria-label', `One fewer ${p.label || p.name}`); plus.setAttribute('aria-label', `One more ${p.label || p.name}`);
     this.$('sh-cap').textContent = total >= MAX_ITEMS ? `Basket full (${MAX_ITEMS})` : `in basket`;
+    this.renderCheckout();
   }
   async setQty(d) {
     const p = this.focus; if (!p) return;
     try {
       if (d < 0) this.basket.removeOne(p.id);
-      else { if (this.isWorldBusy()) throw new Error('Wait for the gravity scan to finish.'); this.busyAdd = true; this.renderQty(); await this.basket.add(p); }
-    } catch (e) { this.say(e.message, true); }
+      else {
+        if (this.isWorldBusy()) throw new Error('Wait for the gravity scan to finish.');
+        this.busyAdd = true; this.renderQty();
+        // From the product close-up the camera pulls back to the shelf view (basket rim along the bottom) so the
+        // sample is seen dropping in, then returns. Quick repeat presses stay pulled back until the last one lands.
+        const watch = this.view === 'product';
+        if (watch) {
+          clearTimeout(this.backT);
+          if (!this.watching) { this.watching = true; this.onView(this.shelfRig(), 0.5); await wait(420); }
+        }
+        const rec = await this.basket.add(p);
+        if (watch) {
+          this.busyAdd = false; this.renderQty();
+          const t0 = performance.now();
+          while (rec.state === 'loading' && performance.now() - t0 < 1100) await wait(50);
+          clearTimeout(this.backT);
+          this.backT = setTimeout(() => { this.watching = false; if (this.view === 'product') this.onView(this.rig(), 0.6); }, 300);
+        }
+      }
+    } catch (e) { this.say(e.message, true); if (this.watching) { this.watching = false; if (this.view === 'product') this.onView(this.rig(), 0.6); } }
     finally { this.busyAdd = false; this.renderQty(); }
   }
 
@@ -270,19 +338,34 @@ export class Shop {
     this.$('sh-summary').innerHTML = counts.length ? counts.map(([p, c]) => `<li><button type="button" data-id="${p.id}" aria-label="${esc(p.label || p.name)}, ${c} in the basket">${this.thumbs.get(p.id) ? `<img src="${this.thumbs.get(p.id)}" alt="">` : ''}<span>${esc(p.label || p.name)}</span><b>×${c}</b></button></li>`).join('') : '<li class="sh-empty">The basket is empty.</li>';
     this.$('sh-clear').hidden = !(rel && this.view === 'shelf' && !this.basket.busy);
     this.$('sh-clear').textContent = `Clear worktop samples (${rel})`;
-    if (this.view === 'shelf') this.$('sh-back').setAttribute('aria-label', n ? 'Take the basket to the lab bench' : 'Leave the store');
     this.root.classList.toggle('has-items', n > 0);
     if (this.view === 'product') this.renderQty();
+    else this.renderCheckout();
+  }
+  renderCheckout() {
+    const n = this.basket.inCart().length, placing = this.view === 'checkout', button = this.$('sh-place');
+    button.hidden = !n && !placing;
+    button.disabled = placing || !n || this.busyAdd || !!this.basket.busy || this.basket.mode !== 'held';
+    button.textContent = placing ? 'Placing on worktop…' : `Place on worktop · ${n}`;
+    this.$('sh-bz').hidden = placing;
+    this.$('sh-footer').setAttribute('aria-busy', String(placing));
   }
   async checkout() {
+    if (this.view === 'checkout' || this.busyAdd || this.basket.busy || !this.basket.inCart().length || this.basket.mode !== 'held') return;
     if (this.isWorldBusy()) { this.say('Wait for the gravity scan to finish.', true); return; }
-    this.setView('checkout');
+    this.setView('checkout', 1.0);
     this.say('Taking the basket to the lab bench…');
     try {
-      const r = await this.basket.checkout();
-      this.say(r.kept ? `${r.released} on the worktop, ${r.kept} stayed in the basket.` : `${r.released} sample${r.released === 1 ? '' : 's'} on the worktop. Drag them toward the flame.`);
-      setTimeout(() => this.onExit(), 600);
-    } catch (e) { this.say(e.message, true); this.setView('shelf'); }
+      // the lab view comes back as soon as the samples are on the worktop; the basket untips and leaves meanwhile
+      await this.basket.checkout({ onReleased: (r) => {
+        const note = r.kept ? `${r.released} on the worktop, ${r.kept} stayed in the basket.` : `${r.released} sample${r.released === 1 ? '' : 's'} on the worktop. Drag them toward the flame.`;
+        this.say(note);
+        setTimeout(() => { if (this.open && this.view === 'checkout') this.onExit(note); }, 250);
+      } });
+    } catch (e) { this.say(e.message, true); if (this.open) this.setView('shelf'); return; }
+    if (!this.open) this.basket.park();
+    else if (this.view === 'checkout') { this.placeBasket(); this.setView('shelf'); }
+    else this.renderBasket();
   }
 
   // ---------- thumbnails for the basket summary (one throwaway renderer) ----------

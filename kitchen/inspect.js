@@ -8,13 +8,15 @@ const damageText = s => [['Softening / melt', s.damage.melted], ['Charring', s.d
   .filter(([, v]) => v >= 0.01).map(([name, v]) => `${name} ${Math.round(v * 100)}%`).join(' · ') || 'No lasting change';
 
 export class ObjectInspector {
-  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research }) {
-    Object.assign(this, { props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research });
+  constructor({ props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research, extras = [], ceiling = () => Infinity }) {
+    Object.assign(this, { props, canvas, camera, getRig, moveCamera, getScenario, canOpen, isObserve, reactions, research, ceiling });
+    // Non-physics objects (the flame): { name, mesh, extra: true, hint() } — hoverable and openable like props.
+    this.extras = extras.filter(o => OBJECT_INFO[o.name]);
     this.active = null;
     this.focus = new THREE.Vector3();
     this.focusRange = .03;
     this.motion = matchMedia('(prefers-reduced-motion: reduce)');
-    this.objects = props.bodies.filter(body => OBJECT_INFO[body.name]);
+    this.objects = [...this.extras, ...props.bodies.filter(body => OBJECT_INFO[body.name])];
     this.tools = document.createElement('div');
     this.tools.id = 'object-tools';
     this.tools.hidden = true;
@@ -35,7 +37,6 @@ export class ObjectInspector {
           <section id="sample-reaction" hidden aria-label="This sample's reaction state">
             <h3>Current sample state · schematic</h3><p id="reaction-status"></p>
             <dl class="object-facts"><div><dt>Heat load</dt><dd id="reaction-heat"></dd></div>
-              <div><dt>Temperature</dt><dd>Not modelled</dd></div>
               <div><dt id="reaction-thermal-label">Thermal reference</dt><dd><span id="reaction-thermal"></span> <a id="reaction-thermal-source" target="_blank" rel="noopener noreferrer" hidden>Source ↗</a></dd></div>
               <div><dt>Changes</dt><dd id="reaction-damage"></dd></div></dl>
           </section>
@@ -52,7 +53,6 @@ export class ObjectInspector {
     this.hint.innerHTML = `<strong></strong><dl>
       <div><dt>State</dt><dd data-field="state"></dd></div>
       <div><dt data-label="heat">Heat load</dt><dd data-field="heat"></dd></div>
-      <div><dt>Temperature</dt><dd data-field="temperature"></dd></div>
       <div><dt data-label="thermal">Thermal reference</dt><dd data-field="thermal"></dd></div>
       <div><dt data-label="change">Changes</dt><dd data-field="change"></dd></div>
       </dl><small></small>`;
@@ -72,10 +72,21 @@ export class ObjectInspector {
     canvas.addEventListener('pointerleave', () => this.clearHover());
     canvas.addEventListener('pointerdown', event => {
       this.setMenu(false);
-      if (!this.active) return;
+      if (!this.active) {
+        // Extras are not physics bodies, so Props never reports a click on them. Claim the press when
+        // an extra is the nearest object under the pointer; a short press without movement opens it.
+        const extra = event.button === 0 && this.canOpen() && !this.props.held && !this.props.pending && this.extraAt(event.clientX, event.clientY);
+        if (extra) { event.preventDefault(); event.stopImmediatePropagation(); this.extraPress = { body: extra, x: event.clientX, y: event.clientY, id: event.pointerId }; }
+        return;
+      }
       event.preventDefault(); event.stopImmediatePropagation();
       this.close();
     }, true);
+    addEventListener('pointerup', event => {
+      const press = this.extraPress; this.extraPress = null;
+      if (press && event.pointerId === press.id && Math.hypot(event.clientX - press.x, event.clientY - press.y) < (event.pointerType === 'touch' ? 9 : 6)) this.open(press.body);
+    });
+    addEventListener('pointercancel', () => { this.extraPress = null; });
     document.addEventListener('pointerdown', event => { if (!this.tools.contains(event.target)) this.setMenu(false); });
     window.addEventListener('keydown', event => this.keydown(event), true);
     addEventListener('resize', () => { this.hintSignature = null; if (this.active) this.frameObject(.25); });
@@ -88,14 +99,21 @@ export class ObjectInspector {
   }
 
   allObjects() { return [...this.objects, ...this.props.bodies.filter(b => b.sample && b.state === 'released')]; }
+  pick(clientX, clientY) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.ray.setFromCamera(new THREE.Vector2((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2), this.camera);
+    const objects = this.allObjects(), hit = this.ray.intersectObjects(objects.map(body => body.mesh), true)[0];
+    return hit && objects.find(body => body.mesh === hit.object || body.mesh.getObjectById(hit.object.id));
+  }
+  extraAt(clientX, clientY) { const body = this.pick(clientX, clientY); return body?.extra ? body : null; }
   infoFor(body) {
     if (!body.sample) return OBJECT_INFO[body.name];
     const p = body.product, s = this.reactions?.getState(body.instanceId);
     return { title: p.label || p.name, kind: p.materials.join(' · '), intro: p.form, surface: p.phys.surface,
       role: `Individual worktop sample · ${body.instanceId}`,
       action: 'Return to the scene and drag this sample near the burner. Move it away to observe cooling.',
-      observe: 'Heat tint, surface darkening and gloss represent the configured reaction. Damage remains after cooling.',
-      note: `SCHEMATIC · ${s?.note || 'Reaction profile unavailable.'} Heat load and damage are demonstration progress, not temperature or mass. Geometry and collisions remain rigid.` };
+      observe: 'Watch local charring, wrinkling, plastic slump and burn-through according to this material’s configuration. Damage remains after cooling.',
+      note: `SCHEMATIC · ${s?.note || 'Reaction profile unavailable.'} Heat load and damage are demonstration progress, not temperature or mass. Shape damage is illustrative; collisions use an approximate box.` };
   }
   renderMenu() {
     this.menu.replaceChildren();
@@ -172,28 +190,38 @@ export class ObjectInspector {
     bounds.getCenter(this.focus);
     const mobile = innerWidth <= 700;
     const flat = this.active.sample || ['pan', 'friedEgg', 'board'].includes(this.active.name);
-    const direction = this.savedRig.pos.clone().sub(this.savedRig.look);
-    direction.y = 0;
-    if (direction.lengthSq() < .001) direction.set(.2, 0, 1);
-    direction.normalize().add(new THREE.Vector3(0, flat ? .9 : .45, 0)).normalize();
-    const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), direction).normalize();
-    const up = new THREE.Vector3().crossVectors(direction, right).normalize();
-    let halfWidth = 0, halfHeight = 0, halfDepth = 0;
-    for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) {
-      const corner = new THREE.Vector3(x, y, z).sub(this.focus);
-      halfWidth = Math.max(halfWidth, Math.abs(corner.dot(right)));
-      halfHeight = Math.max(halfHeight, Math.abs(corner.dot(up)));
-      halfDepth = Math.max(halfDepth, Math.abs(corner.dot(direction)));
-    }
+    const ground = this.savedRig.pos.clone().sub(this.savedRig.look);
+    ground.y = 0;
+    if (ground.lengthSq() < .001) ground.set(.2, 0, 1);
+    ground.normalize();
+    // Inside the lab / orbital cabin the close-up must stay under the roof: a high tilt over an object floating near the
+    // ceiling (phone framing pulls back further) put the camera outside the shell, which rendered as an empty dark screen.
+    // Lower the tilt step by step until the eye fits; the last step is a level view.
+    const roof = this.ceiling();
     const fov = 35, tanV = Math.tan(THREE.MathUtils.degToRad(fov / 2)), tanH = tanV * innerWidth / innerHeight;
-    const distance = Math.max(.22, halfDepth + Math.max(halfHeight / (tanV * (mobile ? .34 : .7)), halfWidth / (tanH * (mobile ? .78 : .48))));
-    const look = this.focus.clone();
-    if (mobile) look.addScaledVector(up, -distance * tanV * .48);
-    else look.addScaledVector(right, distance * tanH * .38);
-    // Shift the camera and target together to keep the focal plane perpendicular
-    // to the same viewing direction while placing the object beside the text.
-    const offset = look.clone().sub(this.focus);
-    const pos = this.focus.clone().addScaledVector(direction, distance).add(offset);
+    let pos, look, direction, halfDepth;
+    for (const tilt of [flat ? .9 : .45, .45, .25, .1, 0]) {
+      direction = ground.clone().add(new THREE.Vector3(0, tilt, 0)).normalize();
+      const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), direction).normalize();
+      const up = new THREE.Vector3().crossVectors(direction, right).normalize();
+      let halfWidth = 0, halfHeight = 0; halfDepth = 0;
+      for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) {
+        const corner = new THREE.Vector3(x, y, z).sub(this.focus);
+        halfWidth = Math.max(halfWidth, Math.abs(corner.dot(right)));
+        halfHeight = Math.max(halfHeight, Math.abs(corner.dot(up)));
+        halfDepth = Math.max(halfDepth, Math.abs(corner.dot(direction)));
+      }
+      const distance = Math.max(.22, halfDepth + Math.max(halfHeight / (tanV * (mobile ? .34 : .7)), halfWidth / (tanH * (mobile ? .78 : .48))));
+      look = this.focus.clone();
+      if (mobile) look.addScaledVector(up, -distance * tanV * .48);
+      else look.addScaledVector(right, distance * tanH * .38);
+      // Shift the camera and target together to keep the focal plane perpendicular
+      // to the same viewing direction while placing the object beside the text.
+      const offset = look.clone().sub(this.focus);
+      pos = this.focus.clone().addScaledVector(direction, distance).add(offset);
+      if (pos.y <= roof) break;
+    }
+    if (pos.y > roof) { const drop = pos.y - roof; pos.y -= drop; look.y -= drop; }
     this.focusRange = Math.max(.018, halfDepth * 1.05);
     this.targetRig = { pos, look, fov };
     this.moveCamera(this.targetRig, duration);
@@ -238,36 +266,32 @@ export class ObjectInspector {
   updateHint(body) {
     const s = body.sample && this.reactions?.getState(body.instanceId);
     const ref = THERMAL_REFERENCES[body.product?.id];
-    const speed = body.body.velocity.length();
-    const fields = { state: s ? stateText(s) : speed < .02 ? 'At rest' : 'Moving',
+    const x = body.extra ? body.hint() : null, speed = x ? 0 : body.body.velocity.length();
+    const fields = x ? x.fields : { state: s ? stateText(s) : speed < .02 ? 'At rest' : 'Moving',
       heat: s ? `${Math.round(s.heatLevel * 100)}% · demo` : `${speed.toFixed(2)} m/s · simulated`,
-      temperature: 'Not modelled', thermal: ref?.value || 'Not verified for this object',
+      thermal: ref?.value || 'Not verified for this object',
       change: s ? damageText(s) : `${Math.round(body.body.mass * 1000)} g · demo` };
     const signature = [body.instanceId || body.name, ...Object.values(fields)].join('|');
     if (signature === this.hintSignature) return;
     this.hintSignature = signature;
     this.hint.dataset.instance = body.instanceId || body.name;
     this.hint.querySelector('strong').textContent = this.infoFor(body).title;
-    for (const [key, value] of Object.entries(fields)) this.hintFields[key].textContent = value;
-    this.hint.querySelector('[data-label="heat"]').textContent = s ? 'Heat load' : 'Speed';
-    this.hint.querySelector('[data-label="thermal"]').textContent = ref?.label || 'Thermal reference';
-    this.hint.querySelector('[data-label="change"]').textContent = s ? 'Changes' : 'Mass';
-    this.hint.querySelector('small').textContent = ref?.sourceLabel ? `${ref.sourceLabel} reference · ${ref.note || 'Not an ignition threshold.'}` : 'Mechanism demo · temperature is not calculated';
+    for (const [key, value] of Object.entries(fields)) if (this.hintFields[key]) this.hintFields[key].textContent = value;
+    const labels = x ? x.labels : { heat: s ? 'Heat load' : 'Speed', thermal: ref?.label || 'Thermal reference', change: s ? 'Changes' : 'Mass' };
+    for (const key of ['heat', 'thermal', 'change']) this.hint.querySelector(`[data-label="${key}"]`).textContent = labels[key];
+    this.hint.querySelector('small').textContent = x ? x.note : ref?.sourceLabel ? `${ref.sourceLabel} reference · ${ref.note || 'Not an ignition threshold.'}` : 'Mechanism demo · heat and damage are relative progress';
     this.hintSize = this.hint.getBoundingClientRect();
   }
 
   update() {
-    if (this.active && !this.props.bodies.includes(this.active)) this.close();
+    if (this.active && !this.active.extra && !this.props.bodies.includes(this.active)) this.close();
     this.tools.hidden = !this.isObserve() || !!this.active;
     this.toggle.disabled = !this.canOpen();
     if (this.active || !this.canOpen() || this.props.held || this.props.pending || !this.pointer) {
       this.hint.hidden = true;
       return;
     }
-    const rect = this.canvas.getBoundingClientRect();
-    this.ray.setFromCamera(new THREE.Vector2((this.pointer.x - rect.left) / rect.width * 2 - 1, 1 - (this.pointer.y - rect.top) / rect.height * 2), this.camera);
-    const objects = this.allObjects(), hit = this.ray.intersectObjects(objects.map(body => body.mesh), true)[0];
-    const body = hit && objects.find(body => body.mesh === hit.object || body.mesh.getObjectById(hit.object.id));
+    const body = this.pick(this.pointer.x, this.pointer.y);
     this.hint.hidden = !body;
     this.canvas.style.cursor = body ? 'pointer' : '';
     if (body) {

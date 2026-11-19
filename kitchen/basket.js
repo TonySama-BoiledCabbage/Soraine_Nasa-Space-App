@@ -13,15 +13,19 @@ import { buildShape } from './shop-shapes.js?v=basket-1';
 export const BASKET_URL = 'models/shop/shopping-basket.glb';
 export const MAX_ITEMS = 12;
 const RIM = 0.24;
+const FOOT_DROP = 0.006;                                            // metres the foot pads sit below the shell
 const PIVOT = new THREE.Vector3(0, RIM, -0.147);                     // back rim edge: the pour hinge
 const INSIDE = { x: 0.23, z: 0.17, y0: -0.03, y1: 0.62 };           // basket + drop-in space above the rim
 const BASKET = { x: 0.215, z: 0.152, y0: -0.03, y1: RIM };          // strictly below the rim (pour result)
+const CLEAR = { x: 0.38, z: 0.32, y0: -0.22, y1: 0.58 };           // microgravity: floating samples must drift this far before the basket moves
 export const PARK = { x: 3.2, y: -4, z: 3.0, yaw: 0, tilt: 0 };     // out of sight while not shopping
 // Over the right half of the worktop (x 0.61-1.54, z +/-0.46); the opening tips toward the back of the bench.
 // The hinge (back rim) ends just inside the front edge (z 0.33), so samples spill back across the free front half.
 export const BENCH = { x: 1.1, y: 1.0, z: 0.48, yaw: 0, tilt: 0 };
 const POUR_TILT = THREE.MathUtils.degToRad(125);
 const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const smooth = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
+const PRE_TILT = THREE.MathUtils.degToRad(30);   // starts tipping in the last part of the carry, so the pour flows on
 const rand = (a, b) => a + Math.random() * (b - a);
 
 function poseMatrix(p, m = new THREE.Matrix4()) {
@@ -67,6 +71,10 @@ export class Basket {
     try {
       const { scene: model } = await this.loader.loadAsync(BASKET_URL);
       model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      // the four graphite foot pads share their bottom plane (y = 0) with the blue shell's feet and vanish into it; drop them
+      // 6 mm so they stand proud of the shell and show under the basket
+      const body = model.getObjectByName('BasketBody');   // the handles use the same graphite material, leave them alone
+      body?.traverse(o => { if (o.isMesh && /graphite/i.test(o.material?.name || '')) o.position.y -= FOOT_DROP; });
       // the model's own handle pivots: folded down outside the walls while held (they would block the shelf),
       // raised while the basket is carried to the bench
       this.handles = [['HandleBackPivot', 2.6], ['HandleFrontPivot', -2.6]].map(([n, fold]) => ({ node: model.getObjectByName(n), fold })).filter(h => h.node);
@@ -100,7 +108,7 @@ export class Basket {
     this.body.wakeUp();
     a.t = Math.min(a.dur, a.t + h);
     const k = a.ease(a.t / a.dur), p = {};
-    for (const key of ['x', 'y', 'z', 'yaw', 'tilt']) p[key] = a.from[key] + (a.to[key] - a.from[key]) * (key === 'y' && a.curveY ? a.curveY(k) : k) + (key === 'y' ? (a.arc || 0) * Math.sin(Math.PI * k) : 0);
+    for (const key of ['x', 'y', 'z', 'yaw', 'tilt']) p[key] = a.from[key] + (a.to[key] - a.from[key]) * (a.curves?.[key] ? a.curves[key](k) : key === 'y' && a.curveY ? a.curveY(k) : k) + (key === 'y' ? (a.arc || 0) * Math.sin(Math.PI * k) : 0);
     this.pose = p;
     const m = poseMatrix(p), pos = new THREE.Vector3(), q = new THREE.Quaternion(), s = new THREE.Vector3();
     m.decompose(pos, q, s);
@@ -116,7 +124,7 @@ export class Basket {
   tween(to, dur, opts = {}) {
     return new Promise(done => {
       this.props.minSubsteps = 2;
-      this.anim = { from: { ...this.pose }, to: { ...this.pose, ...to }, dur, t: 0, ease: opts.ease || ease, arc: opts.arc, curveY: opts.curveY, done };
+      this.anim = { from: { ...this.pose }, to: { ...this.pose, ...to }, dur, t: 0, ease: opts.ease || ease, arc: opts.arc, curveY: opts.curveY, curves: opts.curves, done };
     });
   }
   run(name, fn) {
@@ -212,22 +220,29 @@ export class Basket {
   clearCart() { for (const r of this.inCart()) this.remove(r); }
   clearReleased() { for (const r of this.released()) this.remove(r); }
 
-  // ---------- checkout: carry to the worktop, tip out, come back ----------
+  // ---------- checkout: carry to the worktop, tip out, carry off ----------
+  // One continuous move (2026-11-16, faster unload): the carry already starts tipping, the pour waits only until the
+  // samples are out (with a timeout), and opts.onReleased fires as soon as they are counted so the lab view can come
+  // back while the basket untips and is carried off. Earth ~3 s to onReleased (was ~7.4 s to the lab view).
   // Microgravity: the net opens at ~60 deg and each sample is pushed toward the worktop (nothing falls on its own).
-  checkout() {
+  checkout(opts = {}) {
     return this.run('pouring', async () => {
       if (this.mode !== 'held') throw new Error('The basket is not here.');
       if (!this.inCart().length) throw new Error('The basket is empty.');
       if (!this.canAct()) throw new Error('Wait for the gravity scan to finish.');
       const before = this.inCart(), home = { ...this.pose };
-      this.mode = 'moving'; this.emit();
-      await this.tween(BENCH, 1.6, { arc: 0.35 });
-      this.mode = 'pouring'; this.emit();
       const g = this.getGravity(), micro = g < 0.5;
-      // low gravity: tip slower and wait longer, otherwise the swing throws samples past the back of the worktop
+      // low gravity: tip slower, otherwise the swing throws samples past the back of the worktop
       const slow = micro ? 1 : THREE.MathUtils.clamp(Math.sqrt(9.81 / g), 1, 2.2);
+      this.mode = 'moving'; this.emit();
+      // low gravity: a slower, flatter carry so the arc never lifts the samples off the floor of an open basket
+      // (Mars/Moon: samples piled above the rim keep sliding when the carry stops, so no early tip there either)
+      const carry = 1.15 * Math.pow(slow, 0.75), arc = micro ? 0.22 : Math.min(0.22, 0.45 * g * carry * carry / (Math.PI * Math.PI));
+      const pre = slow > 1.2 ? 0 : PRE_TILT;
+      await this.tween({ ...BENCH, tilt: pre }, carry, { arc, curves: { tilt: (k) => smooth((k - 0.62) / 0.38) } });
+      this.mode = 'pouring'; this.emit();
       // past ~50 deg the body has swung clear of the worktop, so the hinge comes down to cut the drop to ~14 cm
-      const tilt = this.tween({ tilt: POUR_TILT, y: BENCH.y - 0.14 }, 1.4 * slow, { ease: (k) => k * k * (3 - 2 * k), curveY: (k) => Math.max(0, (k - 0.4) / 0.6) });
+      const tilt = this.tween({ tilt: POUR_TILT, y: BENCH.y - 0.14 }, 1.35 * slow, { ease: smooth, curveY: (k) => Math.max(0, (k - 0.35) / 0.65) });
       if (micro) {
         await this.waitFor(() => this.pose.tilt > THREE.MathUtils.degToRad(60));
         this.setNet(false);
@@ -238,8 +253,14 @@ export class Basket {
         }
       }
       await tilt;
-      await this.hold_(micro ? 1.5 : 1.1 * slow);
-      await this.tween({ y: BENCH.y + 0.1 }, 0.4);   // lift clear first: samples lying under the opening are not "in" it
+      const out = () => before.every(r => !this.items.includes(r) || !this.inside(r, BASKET));
+      await this.waitFor(out, micro ? 1.5 : 0.9 * slow);
+      // with gravity: let the spilled samples stop sliding first, or untipping nudges them off the back edge
+      if (!micro) await this.waitFor(() => before.every(r => !this.items.includes(r) || this.inside(r, BASKET) || r.body.velocity.length() < 0.12), 1.2 * slow);
+      // floating samples leave slowly (0.3-0.4 m/s); untipping while they are beside the rim would bat them away
+      if (micro) await this.waitFor(() => before.every(r => !this.items.includes(r) || this.inside(r, BASKET) || !this.inside(r, CLEAR)), 1.2);
+      await this.hold_(0.12);
+      await this.tween({ y: BENCH.y + 0.1 }, 0.25);   // lift clear first: samples lying under the opening are not "in" it
       let kept = 0;
       for (const r of before) {
         if (!this.items.includes(r)) continue;
@@ -247,12 +268,13 @@ export class Basket {
         r.state = 'released'; r.locked = false; r.noRecover = false;
         r.home.copy(r.body.position); r.home.y = Math.max(r.home.y, 1.0); r.homeQ.copy(r.body.quaternion);
       }
-      this.emit();
-      await this.tween({ tilt: 0, y: BENCH.y + 0.12 }, 0.9);
+      const result = { released: before.length - kept, kept };
+      this.emit(); opts.onReleased?.(result);
+      await this.tween({ tilt: 0, y: BENCH.y + 0.2 }, 0.6, { ease: smooth });
       this.mode = 'moving'; this.emit();
-      await this.tween(this.anchor || home, 1.4, { arc: 0.3 });
+      await this.tween(this.anchor || home, 0.8, { arc: 0.12, ease: (k) => k * k * (3 - 2 * k) });
       this.mode = 'held';
-      return { released: before.length - kept, kept };
+      return result;
     });
   }
   hold_(sec) { return this.waitFor(() => false, sec); }
